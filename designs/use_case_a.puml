@@ -1,0 +1,57 @@
+@startuml
+actor User as usr
+control "FHIR zorg Aanbieder (DVA)" as za
+boundary "IdP van Zorg Aanbieder" as idp
+actor PGO as "PGO"
+actor "Module Aanbieder" as module
+
+
+group pgo
+  usr -> pgo: aanmelden PGO
+  pgo -> za: ophalen
+  za -> idp: /authorize
+  idp <-> usr: login
+  idp --> za: id_token, access_token
+  za --> pgo: beschikbare modules
+  pgo --> user: view modules
+end
+
+group selecteer taak
+  usr -> pgo: selecteer module
+  pgo -> za: creëer Task
+
+  alt notify
+  za -> module: notify task create
+  end
+end
+
+group launch
+  pgo -> module: launch (Task, FHIR service)
+  module -> za: get ./well-known/smart-configuration
+  module -> module: extract smart-configuration['authorization_endpoint']
+  module -> idp: /authorize
+  idp <-> usr: login (SSO)
+  idp --> module: id_token, access_token
+  module -> za: get Task
+  za --> module: Task
+end
+
+group uitvoeren
+  module <-> usr: taak uitvoeren
+  module -> za: update Task
+
+  alt notify
+  za -> pgo: notify task update
+  end
+end
+
+group pgo inzien
+  usr -> pgo: aanmelden PGO
+  pgo -> za: ophalen status
+  za -> idp: /authorize
+  idp <-> usr: login  (SSO)
+  idp --> za: id_token, access_token
+  za --> pgo: huidige taken
+  pgo --> user: view status
+end
+@enduml
