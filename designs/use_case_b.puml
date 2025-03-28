@@ -10,15 +10,15 @@ actor "Module Aanbieder" as module
 group zorgverlener start
   zv -> ecd: login applicatie
   ecd <-> zv: authenticatie (eigen login mechanisme)
-  ecd -> za: ophalen beschikbare interventies
-  za --> ecd: beschikbare digitale interventies
-  ecd --> zv: toon beschikbare digitale interventies
+  ecd -> za: ophalen ActivityDefinitions
+  za --> ecd: ActivityDefinitions
+  ecd --> zv: toon ActivityDefinitions
 end
 
 group toewijzen interventie
-  zv -> ecd: selecteer interventie voor cliënt
-  zv -> ecd: wijs interventie toe aan cliënt
-  ecd -> za: creëer Task
+  zv -> ecd: selecteer ActivityDefinition voor cliënt
+  zv -> ecd: wijs ActivityDefinition toe aan cliënt
+  ecd -> za: creëer Task (gebaseerd op ActivityDefinition)
   za --> ecd: bevestiging Task aangemaakt
   ecd --> zv: bevestiging toewijzing
   zv -> client: notificatie over opdracht (papier/mail)
@@ -30,12 +30,12 @@ group cliënt start
   za -> idp: /authorize
   idp <-> client: login
   idp --> za: id_token, access_token
-  za --> pgo: toegewezen interventie(s)
-  pgo --> client: view toegewezen interventie(s)
+  za --> pgo: toegewezen Tasks
+  pgo --> client: view toegewezen Tasks
 end
 
 group launch interventie
-  client -> pgo: selecteer interventie
+  client -> pgo: selecteer Task
   pgo -> module: launch (Task, FHIR service)
   module -> za: get ./well-known/smart-configuration
   module -> module: extract smart-configuration['authorization_endpoint']
@@ -51,40 +51,43 @@ group uitvoeren interventie
   module -> za: update Task status
 
   alt notify
-    za -> pgo: notify task update
+    za -> pgo: notify Task update
+    za -> ecd: notify Task update
   end
 end
 
-group volgen interventie
+group volgen interventie zorgverlener
   zv -> ecd: vraag status op
-  ecd -> za: haal Task status op
-  za --> ecd: Task status
+  ecd -> za: haal Task op
+  za --> ecd: Task
   ecd --> zv: toon status interventie
+end
 
+group volgen interventie cliënt
   client -> pgo: bekijk status
   pgo -> za: vraag status op
   za -> idp: /authorize
   idp <-> client: login (SSO)
   idp --> za: id_token, access_token
-  za --> pgo: Task status
+  za --> pgo: Task
   pgo --> client: view status
 end
 
-group inzien resultaten zorgverlener
-  zv -> ecd: vraag resultaten interventie
-  ecd -> za: haal resultaten op
-  za --> ecd: resultaten
-  ecd --> zv: toon resultaten
+group inzien status zorgverlener
+  zv -> ecd: vraag status interventie
+  ecd -> za: haal Task op
+  za --> ecd: Task
+  ecd --> zv: toon status
 end
 
-group inzien resultaten cliënt
-  client -> pgo: bekijk resultaten
+group inzien status cliënt
+  client -> pgo: bekijk status
   pgo -> za: ophalen
   za -> idp: /authorize
   idp <-> client: login (SSO)
   idp --> za: id_token, access_token
-  za -> za: haal resultaten op
-  za --> pgo: resultaten
-  pgo --> client: view resultaten
+  za -> za: haal Task op
+  za --> pgo: Task
+  pgo --> client: view status
 end
 @enduml
