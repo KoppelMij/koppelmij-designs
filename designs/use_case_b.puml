@@ -1,0 +1,90 @@
+@startuml
+actor "Zorgverlener" as zv
+actor "Cliënt" as client
+boundary "PGO (Persoonlijke Gezondheidsomgeving)" as pgo
+boundary "ECD Applicatie" as ecd
+control "FHIR zorg Aanbieder (DVA)" as za
+boundary "IdP van Zorg Aanbieder" as idp
+actor "Module Aanbieder" as module
+
+group zorgverlener start
+  zv -> ecd: login applicatie
+  ecd <-> zv: authenticatie (eigen login mechanisme)
+  ecd -> za: ophalen beschikbare interventies
+  za --> ecd: beschikbare digitale interventies
+  ecd --> zv: toon beschikbare digitale interventies
+end
+
+group toewijzen interventie
+  zv -> ecd: selecteer interventie voor cliënt
+  zv -> ecd: wijs interventie toe aan cliënt
+  ecd -> za: creëer Task
+  za --> ecd: bevestiging Task aangemaakt
+  ecd --> zv: bevestiging toewijzing
+  zv -> client: notificatie over opdracht (papier/mail)
+end
+
+group cliënt start
+  client -> pgo: aanmelden/inloggen PGO
+  pgo -> za: ophalen
+  za -> idp: /authorize
+  idp <-> client: login
+  idp --> za: id_token, access_token
+  za --> pgo: toegewezen interventie(s)
+  pgo --> client: view toegewezen interventie(s)
+end
+
+group launch interventie
+  client -> pgo: selecteer interventie
+  pgo -> module: launch (Task, FHIR service)
+  module -> za: get ./well-known/smart-configuration
+  module -> module: extract smart-configuration['authorization_endpoint']
+  module -> idp: /authorize
+  idp <-> client: login bij module (SSO)
+  idp --> module: id_token, access_token
+  module -> za: get Task
+  za --> module: Task
+end
+
+group uitvoeren interventie
+  module <-> client: uitvoeren van interventie
+  module -> za: update Task status
+
+  alt notify
+    za -> pgo: notify task update
+  end
+end
+
+group volgen interventie
+  zv -> ecd: vraag status op
+  ecd -> za: haal Task status op
+  za --> ecd: Task status
+  ecd --> zv: toon status interventie
+
+  client -> pgo: bekijk status
+  pgo -> za: vraag status op
+  za -> idp: /authorize
+  idp <-> client: login (SSO)
+  idp --> za: id_token, access_token
+  za --> pgo: Task status
+  pgo --> client: view status
+end
+
+group inzien resultaten zorgverlener
+  zv -> ecd: vraag resultaten interventie
+  ecd -> za: haal resultaten op
+  za --> ecd: resultaten
+  ecd --> zv: toon resultaten
+end
+
+group inzien resultaten cliënt
+  client -> pgo: bekijk resultaten
+  pgo -> za: ophalen
+  za -> idp: /authorize
+  idp <-> client: login (SSO)
+  idp --> za: id_token, access_token
+  za -> za: haal resultaten op
+  za --> pgo: resultaten
+  pgo --> client: view resultaten
+end
+@enduml
