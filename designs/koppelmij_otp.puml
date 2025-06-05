@@ -1,0 +1,71 @@
+@startuml
+title DVA Proces Flow - Response Type OTP Mechanisme Detailed
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+actor Browser
+control DVA
+control PGO
+control Module
+control DigID
+boundary DVA_fhir
+
+group login at PGO
+Browser -> PGO: login
+end
+
+group verzamelen
+PGO -> DVA: verzamelen
+DVA -> DigID: inloggen
+DigID -> Browser: credentials
+DigID -> Browser: NO Cookie
+Browser --> DigID
+DigID --> DVA: id_token
+DVA -> Browser: NO Cookie
+note right
+There is no session (Cookie) on the DVA
+end note
+DVA --> PGO: access_token
+PGO -> DVA_fhir: get FHIR tasks
+end
+
+group launch voorbereiding
+Browser -> PGO: click start module
+PGO -> PGO: crate state and bind it to the PGO session
+PGO -> Browser: 302 to DVA/authorize?state=x&redirect_uri=y&response_type=code
+DVA -> Browser: /authorize?state=x&redirect_uri=y
+note right
+This call is "empty", in the sense that it only sets a short lived cookie linked
+to the OTP. The redirect back does contain a code and the state
+end note
+DVA -> Browser: set cookie & generate code,otp_token
+DVA -> Browser: 302 {redirect_uri}?code=z&state=x
+Browser --> PGO: {redirect_uri}?code=z&state=x
+PGO -> DVA: /token?code=z&state=x, Authorization: Bearer {access_token}
+note right
+Note that the PGO uses the access_token as client_credentials
+end note
+DVA --> PGO: access_token, id_token, otp_token
+note right
+Note that the otp_token is opaque and is "just a number" and not a JWT
+as it is being used in the FE channel
+end note
+end
+
+group launch naar module met SMART on FHIR
+PGO -> Module: /launch?launch=otp_token (302 of FORM_POST_REDIRECT)
+Module -> Browser: 302 naar DVA
+Browser -> DVA: /authorize?launch=otp_token&response_type=code
+DVA -> DVA: correlate otp_token with Cookie
+DVA --> Browser: 302 {redirect_uri}?code=x&state=y
+Browser --> Module: GET {redirect_uri}?code=x&state=y
+Module -> DVA: /token?code=x&client_creds
+DVA -> DVA: check credentials & create access_token
+DVA --> Module: access_token & id_token
+end
+@enduml
+
+
