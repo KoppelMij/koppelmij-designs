@@ -1,0 +1,63 @@
+@startuml
+title DVA Proces Flow Optie 2 \n  PGO Proces Flow - PGO als SMART on FHIR Authorization Server met Token Exchange (met DPoP) Short
+
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+participant "Browser" as BR
+participant "PGO" as PGO
+participant "DVA" as DVA
+participant "Module" as MOD
+
+
+group PGO Login
+BR -> PGO : Login bij PGO
+PGO -> BR : PGO sessie actief
+end
+
+group Initiële Verzameling
+PGO -> DVA : Verzamelen gegevens
+DVA -> BR: DigID authenticatie
+DVA --> PGO : Krijgt access_token
+note right of PGO
+PGO slaat DVA access_token op
+voor latere Token Exchange
+end note
+end
+
+group PGO Launch naar Module
+BR -> PGO : Click start module
+PGO -> BR : 302 redirect naar module\n/launch?launch={launch_token}&iss={PGO_FHIR_URL}
+note right of PGO
+PGO genereert launch_token
+gekoppeld aan PGO sessie
+end note
+BR -> MOD : GET /launch?launch=launch_token
+end
+
+group Module Start SMART on FHIR flow met PGO
+note over MOD, PGO : SMART on FHIR flow
+
+MOD -> BR : 302 naar PGO
+BR -> PGO : /authorize\n(launch=launch_token&response_type=code)\n(front channel)
+PGO -> PGO : Valideer PGO sessie\nCorreleer launch_token
+note right of PGO
+Browser authenticatie via
+bestaande PGO sessie
+end note
+PGO -> BR : 302 {redirect_uri}?code=x&state=y
+BR -> MOD : GET {redirect_uri}?code=x&state=y
+
+MOD -> PGO : /token\n(code=x&client_assertion via RFC 7523)\n(backchannel)
+note over PGO, DVA : Token Exchange tijdens /token stap
+PGO -> DVA : Token Exchange\n(subject_token=DVA_access_token)\n(actor_token=module_JWT_assertion)\n(backchannel)
+DVA -> PGO : Delegation token
+PGO -> MOD : access_token (gebaseerd op delegation token)
+end
+
+note over PGO, MOD : Module kan nu functioneren\nvia PGO met DVA resources
+
+@enduml

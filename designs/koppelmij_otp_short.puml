@@ -1,49 +1,61 @@
-@startuml DVA_Process_Flow
-!theme plain
-skinparam backgroundColor white
-skinparam sequenceArrowThickness 2
-skinparam roundcorner 10
-skinparam maxMessageSize 200
+@startuml
+   title DVA Proces Flow Optie 1 \n DVA Proces Flow - Response Type OTP Mechanisme met Token Exchange Short
+   !theme plain
+   skinparam backgroundColor white
+   skinparam sequenceArrowThickness 2
+   skinparam roundcorner 10
+   skinparam maxMessageSize 200
 
-participant "Browser" as BR
-participant "PGO" as PGO
-participant "DVA" as DVA
-participant "Module" as MOD
+   participant "Browser" as BR
+   participant "PGO" as PGO
+   participant "DVA" as DVA
+   participant "Module" as MOD
 
-title DVA Proces Flow - OIDC voor otp_token
+   group Initiële Verzameling
+   PGO -> DVA : Verzamelen gegevens
+   DVA -> BR: DigID authenticatie
+   DVA -> BR : **Zet cookie tijdens verzamelen**
+   note right of DVA
+   Cookie wordt nu gezet tijdens
+   de verzamelen fase
+   end note
+   DVA --> PGO : Krijgt access_token
+   end
 
-group Initiële Verzameling
-PGO -> DVA : Verzamelen gegevens
-DVA -> BR: DigID
-DVA --> PGO : Krijgt access_token
-end
+   group PGO Start Launch via DVA
+   note over PGO, DVA : Token Exchange (RFC 8693) Flow
 
-group PGO Start Launch via DVA
-note over PGO, DVA : OIDC Flow
+   PGO -> DVA : /token\n(grant_type=urn:ietf:params:oauth:grant-type:token-exchange)\n(subject_token=access_token)\n(requested_token_type=urn:ietf:params:oauth:token-type:access_token)\n(backchannel)
+   note right of DVA
+   Token exchange voor impersonation token
+   volgens RFC 8693
+   end note
+   DVA --> PGO : Token response\n(access_token als otp_token)
+   note right of DVA
+   De impersonation token wordt
+   gebruikt als otp_token
+   end note
+   end
 
-PGO -> DVA : /authorize\n(response_type=code)\n(front channel)
-DVA -> BR : Zet kort-geldige cookie\n(gebonden aan otp_token)
-DVA --> PGO : Authorize response
+   group Launch naar Module
+   PGO -> MOD : Launch met otp_token
+   end
 
-PGO -> DVA : /token\n(backchannel)
-DVA --> PGO : Token response\n(met oa otp_token)
-end
+   group Module Start SMART on FHIR flow
+   note over MOD, DVA : SMART on FHIR flow
 
-group Launch naar Module
-PGO -> MOD : Launch met otp_token
-end
+   MOD -> DVA : /authorize\n(launch=otp_token)\n(front channel)
+   DVA -> BR : Correleer otp_token\nmet browser cookie
+   note right of DVA
+   Cookie bestaat al sinds verzamelen fase,
+   kan nu gecorreleerd worden met otp_token
+   end note
+   DVA --> MOD : Authorize response
 
-group Module Start SMART on FHIR flow
-note over MOD, DVA : SMART on FHIR flow
+   MOD -> DVA : /token\n(backchannel)
+   DVA --> MOD : Token response\n(met access_token)
+   end
 
-MOD -> DVA : /authorize\n(launch=otp_token)\n(front channel)
-DVA -> BR : Correleer otp_token\nmet browser cookie
-DVA --> MOD : Authorize response
+   note over PGO, MOD : Module kan nu functioneren\nmet geauthenticeerde browser
 
-MOD -> DVA : /token\n(backchannel)
-DVA --> MOD : Token response\n(met access_token)
-end
-
-note over PGO, MOD : Module kan nu functioneren\nmet geauthenticeerde browser
-
-@enduml
+   @enduml

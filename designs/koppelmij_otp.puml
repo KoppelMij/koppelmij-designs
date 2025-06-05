@@ -1,5 +1,5 @@
 @startuml
-title DVA Proces Flow - Response Type OTP Mechanisme Detailed
+title DVA Proces Flow Optie 1 \n DVA Proces Flow - Response Type OTP Mechanisme met Token Exchange
 !theme plain
 skinparam backgroundColor white
 skinparam sequenceArrowThickness 2
@@ -24,9 +24,10 @@ DigID -> Browser: credentials
 DigID -> Browser: NO Cookie
 Browser --> DigID
 DigID --> DVA: id_token
-DVA -> Browser: NO Cookie
+DVA -> Browser: **SET Cookie**
 note right
-There is no session (Cookie) on the DVA
+Cookie wordt nu WEL gezet tijdens verzamelen
+voor latere correlatie met otp_token
 end note
 DVA --> PGO: access_token
 PGO -> DVA_fhir: get FHIR tasks
@@ -34,24 +35,19 @@ end
 
 group launch voorbereiding
 Browser -> PGO: click start module
-PGO -> PGO: crate state and bind it to the PGO session
-PGO -> Browser: 302 to DVA/authorize?state=x&redirect_uri=y&response_type=code
-DVA -> Browser: /authorize?state=x&redirect_uri=y
+PGO -> PGO: create state and bind it to the PGO session
+PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\nAuthorization: Bearer {access_token}
 note right
-This call is "empty", in the sense that it only sets a short lived cookie linked
-to the OTP. The redirect back does contain a code and the state
+RFC 8693 Token Exchange voor impersonation token
+PGO gebruikt access_token als subject_token
 end note
-DVA -> Browser: set cookie & generate code,otp_token
-DVA -> Browser: 302 {redirect_uri}?code=z&state=x
-Browser --> PGO: {redirect_uri}?code=z&state=x
-PGO -> DVA: /token?code=z&state=x, Authorization: Bearer {access_token}
+DVA -> DVA: generate impersonation token
+DVA --> PGO: **Token Exchange Response**\naccess_token (as otp_token), token_type, expires_in
 note right
-Note that the PGO uses the access_token as client_credentials
-end note
-DVA --> PGO: access_token, id_token, otp_token
-note right
-Note that the otp_token is opaque and is "just a number" and not a JWT
-as it is being used in the FE channel
+De impersonation token uit de token exchange
+wordt gebruikt als otp_token.
+Het is opaque en "just a number", niet een JWT
+omdat het in de FE channel gebruikt wordt
 end note
 end
 
@@ -60,6 +56,10 @@ PGO -> Module: /launch?launch=otp_token (302 of FORM_POST_REDIRECT)
 Module -> Browser: 302 naar DVA
 Browser -> DVA: /authorize?launch=otp_token&response_type=code
 DVA -> DVA: correlate otp_token with Cookie
+note right
+Cookie bestaat al sinds verzamelen fase
+en kan nu gecorreleerd worden met otp_token
+end note
 DVA --> Browser: 302 {redirect_uri}?code=x&state=y
 Browser --> Module: GET {redirect_uri}?code=x&state=y
 Module -> DVA: /token?code=x&client_creds
@@ -67,5 +67,3 @@ DVA -> DVA: check credentials & create access_token
 DVA --> Module: access_token & id_token
 end
 @enduml
-
-
