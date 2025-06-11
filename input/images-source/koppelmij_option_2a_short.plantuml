@@ -55,7 +55,11 @@ MOD -> PGO : /token\n(code=x&client_assertion via RFC 7523)\n(backchannel)
 note over PGO, DVA : Token Exchange tijdens /token stap
 PGO -> DVA : Token Exchange\n(subject_token=DVA_access_token)\n(actor_token=module_JWT_assertion)\n(backchannel)
 DVA -> PGO : Delegation token
-PGO -> MOD : access_token (gebaseerd op delegation token)
+PGO -> MOD : access_token (gebaseerd op delegation token)\n**met aud veld: {DVA_URL}/fhir**
+note right of PGO
+Token response bevat aud veld
+met DVA FHIR resource service URL
+end note
 end
 
 note over PGO, MOD : Module kan nu functioneren\nvia PGO met DVA resources

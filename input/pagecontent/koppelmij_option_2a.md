@@ -93,6 +93,21 @@ Module kan functioneren met DVA resources via directe DVA interactie
 - Module gebruikt RFC 7523 voor client authenticatie in `/token` stap
 - **DPoP verplicht: Module moet `cnf` claim in JWT client assertion opnemen**
 
+**Token Response Specificatie:**
+- **Het token response van de SMART on FHIR `/token` request bevat een `aud` veld met de DVA FHIR resource service URL**
+- **Het `aud` veld bevat de waarde `{DVA_URL}/fhir` om de beoogde audience van het token aan te geven**
+- **Dit is een extra veld buiten de standaard SMART on FHIR en OIDC specificaties**
+- **Voorbeeld token response:**
+  ```json
+  {
+    "access_token": "...",
+    "token_type": "DPoP",
+    "expires_in": 3600,
+    "scope": "...",
+    "aud": "{DVA_URL}/fhir"
+  }
+  ```
+
 **Token Exchange tussen PGO en DVA (tijdens PGO `/token` stap):**
 - Exchange endpoint: `{DVA_URL}/token`
 - Subject token: DVA access_token van PGO (uit verzamelen fase)

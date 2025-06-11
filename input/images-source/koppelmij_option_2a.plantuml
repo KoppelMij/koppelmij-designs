@@ -1,4 +1,3 @@
-
 @startuml
 title DVA Proces Flow Optie 2 \n  PGO Proces Flow - PGO als SMART on FHIR Authorization Server met Token Exchange (met DPoP)
 !theme plain
@@ -80,11 +79,12 @@ end note
 DVA -> DVA: generate DPoP delegation token\nwith module context and key binding\nfrom cnf claim in actor_token JWT
 DVA --> PGO: **Token Exchange Response**\naccess_token (DPoP delegation token)\ntoken_type=DPoP, expires_in
 
-PGO -> Module: **Token Response**\naccess_token (DPoP delegation token)\ntoken_type=DPoP, id_token
+PGO -> Module: **Token Response**\naccess_token (DPoP delegation token)\ntoken_type=DPoP, id_token\n**aud: {DVA_URL}/fhir**
 note right of PGO
 Module krijgt DPoP delegation token voor
 directe FHIR requests naar DVA
 Altijd DPoP type voor extra beveiliging
+Token response bevat aud veld met DVA FHIR URL
 end note
 end
 
