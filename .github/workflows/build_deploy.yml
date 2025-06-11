@@ -45,7 +45,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: localhost:5000/gidsopenstandaarden/publisher:latest
+          tags: localhost:5000/gidsopenstandaarden/koppelmij-publisher:latest
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
@@ -53,7 +53,7 @@ jobs:
       - name: Build
         run: |
           mkdir -p ./output
-          docker run --name=scp --rm -v ./ig.ini:/app/ig.ini  -v ./sushi-config.yaml:/app/sushi-config.yaml -v ./input:/app/input -v ./output:/app/output localhost:5000/gidsopenstandaarden /publisher:latest
+          docker run --name=scp --rm -v ./ig.ini:/app/ig.ini  -v ./sushi-config.yaml:/app/sushi-config.yaml -v ./input:/app/input -v ./output:/app/output localhost:5000/gidsopenstandaarden/koppelmij-publisher:latest
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
