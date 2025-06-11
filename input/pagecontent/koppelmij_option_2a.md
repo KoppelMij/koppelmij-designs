@@ -1,4 +1,3 @@
-
 # Optie 2: PGO als SMART on FHIR Resource Service met Token Exchange
 
 Het probleem wat we oplossen is het feit dat in het launch proces de browser geauthenticeerd moet worden. Indien we dit niet doen, is het stelen van de launch request (POST of GET) een onacceptabel risico.
@@ -25,7 +24,7 @@ Deze optie beschrijft een architectuur waarbij **het PGO een dual-role vervult: 
 - **Directe toegang**: Module communiceert direct met DVA FHIR service
 
 {::nomarkdown}
-{% include koppelmij_smart_on_fhir_short.svg %}
+{% include koppelmij_option_2a_short.svg %}
 {:/}
 
 
@@ -122,5 +121,5 @@ Module kan functioneren met DVA resources via directe DVA interactie
 - **Replay protection**: DPoP proof bevat timestamp en nonce voor replay-resistance
 
 {::nomarkdown}
-{% include koppelmij_smart_on_fhir.svg %}
+{% include koppelmij_option_2a.svg %}
 {:/}

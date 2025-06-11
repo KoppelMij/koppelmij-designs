@@ -63,9 +63,9 @@ pages:
     title: Home
   overview.md:
     title: Overview
-  koppelmij_otp.md:
+  koppelmij_option_1.md:
     title: Option 1 - OTP
-  koppelmij_smart_on_fhir.md:
+  koppelmij_option_2a.md:
     title: Option 2 - PGO als SMART on FHIR Resource Service
 
 #
@@ -95,8 +95,7 @@ menu:
   Home: index.html
   Overview:
     Overview: overview.html
-    Primary Use Case: primary-use-case.html
   Solution Designs:
-    Option 1: koppelmij_otp.html
-    Option 2a: koppelmij_smart_on_fhir.html
+    Option 1: koppelmij_option_1.html
+    Option 2a: koppelmij_option_2a.html
 
