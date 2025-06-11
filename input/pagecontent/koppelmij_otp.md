@@ -15,7 +15,9 @@ Deze optie beschrijft de werking van het DVA (Dienstverlener Aanbieder) proces w
   * **Het otp_token wordt gecorreleerd met de cookie die al tijdens verzamelen is gezet**
   * Bij de /token stap wordt het access_token via de backchannel verkregen en met de bestaande client_credentials opgehaald.
 
-![Koppelmij OTP Flow Diagram](images/koppelmij_otp_short.svg)
+{::nomarkdown}
+{% include koppelmij_otp_short.svg %}
+{:/}
 
 
 Hoofdstappen van het proces
@@ -50,4 +52,6 @@ Hoofdstappen van het proces
    DVA genereert finale toegangstokens en stuurt gebruiker terug naar module
    Module krijgt uiteindelijk een access_token en id_token om te kunnen functioneren
 
-![Koppelmij OTP Flow Diagram](images/koppelmij_otp.svg)
+{::nomarkdown}
+{% include koppelmij_otp.svg %}
+{:/}

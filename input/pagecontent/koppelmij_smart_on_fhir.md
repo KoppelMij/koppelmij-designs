@@ -24,7 +24,10 @@ Deze optie beschrijft een architectuur waarbij **het PGO een dual-role vervult: 
 - **DPoP ondersteuning**: Verplichte sender-constrained tokens via RFC 9449
 - **Directe toegang**: Module communiceert direct met DVA FHIR service
 
-![Koppelmij SMART on FHIR Flow Diagram](images/koppelmij_smart_on_fhir_short.svg)
+{::nomarkdown}
+{% include koppelmij_smart_on_fhir_short.svg %}
+{:/}
+
 
 ## Hoofdstappen van het proces
 
@@ -118,4 +121,6 @@ Module kan functioneren met DVA resources via directe DVA interactie
 - **Key binding**: Token is cryptografisch gebonden aan module's private key
 - **Replay protection**: DPoP proof bevat timestamp en nonce voor replay-resistance
 
-![Koppelmij SMART on FHIR Flow Diagram](images/koppelmij_smart_on_fhir.svg)
+{::nomarkdown}
+{% include koppelmij_smart_on_fhir.svg %}
+{:/}
