@@ -1,0 +1,75 @@
+@startuml
+title DVA Proces Flow Optie 2b \n  PGO Proces Flow - PGO als SMART on FHIR Authorization Server met Module Token Exchange (met DPoP) Short
+
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+participant "Browser" as BR
+participant "PGO" as PGO
+participant "DVA" as DVA
+participant "Module" as MOD
+
+
+group PGO Login
+BR -> PGO : Login bij PGO
+PGO -> BR : PGO sessie actief
+end
+
+group Initiële Verzameling
+PGO -> DVA : Verzamelen gegevens
+DVA -> BR: DigID authenticatie
+DVA --> PGO : Krijgt access_token
+note right of PGO
+PGO slaat DVA access_token op
+voor Token Exchange operaties
+end note
+end
+
+group PGO Launch naar Module
+BR -> PGO : Click start module
+PGO -> BR : 302 redirect naar module\n/launch?launch={launch_token}&iss={PGO_FHIR_URL}
+note right of PGO
+PGO genereert launch_token
+gekoppeld aan PGO sessie
+end note
+BR -> MOD : GET /launch?launch=launch_token
+end
+
+group Module Start SMART on FHIR flow met PGO
+note over MOD, PGO : SMART on FHIR flow
+
+MOD -> BR : 302 naar PGO
+BR -> PGO : /authorize\n(launch=launch_token&response_type=code)\n(front channel)
+PGO -> PGO : Valideer PGO sessie\nCorreleer launch_token
+note right of PGO
+Browser authenticatie via
+bestaande PGO sessie
+end note
+PGO -> BR : 302 {redirect_uri}?code=x&state=y
+BR -> MOD : GET {redirect_uri}?code=x&state=y
+
+MOD -> PGO : /token\n(code=x&client_assertion via RFC 7523)\n(backchannel)
+PGO -> MOD : **tijdelijk token + DVA endpoint info**
+note right of PGO
+Token response bevat tijdelijk token
+en DVA Token Exchange endpoint
+(geen aud veld, korte levensduur: 5 min)
+end note
+end
+
+group Module Token Exchange met DVA
+note over MOD, DVA : Module voert de Token Exchange uit
+MOD -> DVA : Token Exchange\n(subject_token=tijdelijk_token)\n(actor_token=module_JWT_assertion)\n(backchannel)
+note right of DVA
+Module gebruikt tijdelijk token van PGO
+als subject_token voor Token Exchange
+end note
+DVA -> MOD : DPoP delegation token
+end
+
+note over MOD, DVA : Module kan nu functioneren\nmet directe DVA toegang
+
+@enduml

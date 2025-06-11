@@ -1,0 +1,116 @@
+@startuml
+title DVA Proces Flow Optie 2b \n  PGO Proces Flow - PGO als SMART on FHIR Authorization Server met Module Token Exchange (met DPoP)
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+actor Browser
+control PGO
+control DVA
+control Module
+control DigID
+boundary DVA_fhir
+
+group login at PGO
+Browser -> PGO: login
+PGO -> Browser: PGO sessie actief
+end
+
+group verzamelen
+PGO -> DVA: verzamelen
+DVA -> DigID: inloggen
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: id_token
+DVA --> PGO: access_token
+note right of PGO
+PGO slaat DVA access_token op
+voor Token Exchange operaties
+end note
+PGO -> DVA_fhir: get FHIR tasks
+DVA_fhir --> PGO: tasks
+end
+
+group launch voorbereiding
+Browser -> PGO: click start module
+PGO -> PGO: create launch_token and bind it to the PGO session
+note right of PGO
+Launch token gekoppeld aan PGO sessie
+voor latere correlatie tijdens /authorize
+end note
+end
+
+group launch naar module met SMART on FHIR
+PGO -> Browser: 302 redirect naar module\n/launch?launch={launch_token}&iss={PGO_FHIR_BASE_URL}
+Browser -> Module: GET /launch?launch=launch_token&iss=PGO_FHIR_URL
+
+Module -> Module: genereer DPoP key pair\nvoor sender-constrained tokens
+note right of Module
+Module genereert verplicht DPoP key pair
+voor beveiliging via RFC 9449
+end note
+
+Module -> Browser: 302 naar PGO authorization endpoint
+Browser -> PGO: /authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}
+PGO -> PGO: validate PGO session\ncorrelate launch_token with session
+note right of PGO
+Browser authenticatie via bestaande PGO sessie
+Geen nieuwe login nodig
+end note
+PGO -> Browser: 302 {redirect_uri}?code=x&state=y
+Browser -> Module: GET {redirect_uri}?code=x&state=y
+
+Module -> PGO: **POST /token**\ncode=x&client_assertion={JWT via RFC 7523 met cnf claim}\n&grant_type=authorization_code\n(backchannel)
+note right of Module
+Module authenticeert zich via RFC 7523 JWT Bearer assertion
+cnf claim in JWT bevat JWK thumbprint voor DPoP
+end note
+
+PGO -> PGO: genereer tijdelijk token\ngekoppeld aan DVA access_token
+PGO -> Module: **Token Response**\n**tijdelijk token + DVA endpoint info**\ntoken_type=Bearer, expires_in=300\n**token_exchange_endpoint: {DVA_URL}/token**\n**resource_server: {DVA_URL}/fhir**
+note right of PGO
+Module krijgt tijdelijk token voor Token Exchange
+Korte levensduur (5 minuten) voor extra beveiliging
+Geen aud veld, wel Token Exchange endpoint informatie
+end note
+end
+
+group module token exchange met DVA
+note over Module, DVA : Module voert zelf Token Exchange uit (met DPoP)
+Module -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={tijdelijk_token}\n&actor_token={module_JWT_assertion met cnf claim}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n(backchannel)
+note right of Module
+RFC 8693 Token Exchange uitgevoerd door module
+Module gebruikt tijdelijk token van PGO als subject_token
+Module JWT assertion (met cnf claim) als actor_token
+end note
+DVA -> DVA: validate tijdelijk token\nextract cnf claim for DPoP binding\ngenerate DPoP delegation token
+DVA --> Module: **Token Exchange Response**\naccess_token (DPoP delegation token)\ntoken_type=DPoP, expires_in
+note right of DVA
+DVA valideert tijdelijk token en genereert
+DPoP delegation token met module context
+Token gebonden aan module's publieke sleutel
+end note
+end
+
+group module functioneren
+Module -> Module: create DPoP proof JWT\n(ath, jti, htm, htu, iat)
+note right of Module
+DPoP proof bevat verplicht:
+- ath: access token hash
+- jti: unique identifier
+- htm: HTTP method
+- htu: HTTP URI
+- iat: timestamp
+end note
+Module -> DVA_fhir: **FHIR requests**\nAuthorization: DPoP {delegation_token}\n**DPoP: {DPoP_proof_JWT}**
+DVA_fhir -> DVA_fhir: validate DPoP delegation token\nen DPoP proof
+DVA_fhir --> Module: FHIR response
+note right of Module
+Module communiceert direct met DVA
+met DPoP delegation token uit eigen Token Exchange
+Verplichte DPoP beveiliging via key binding
+end note
+end
+@enduml
