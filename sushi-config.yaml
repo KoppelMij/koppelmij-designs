@@ -69,7 +69,7 @@ pages:
     title: Option 2a - PGO als SMART on FHIR Resource Service
   koppelmij_option_2b.md:
     title: Option 2b - PGO als SMART on FHIR Authorization Server met Module Token Exchange
-  comparison_all;md:
+  comparison_all.md:
     title: Alle opties
   comparison_option2_a_b.md:
     title: 2a en 2b
