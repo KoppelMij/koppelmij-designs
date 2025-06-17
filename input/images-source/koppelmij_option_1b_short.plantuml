@@ -1,0 +1,69 @@
+@startuml
+   title DVA Proces Flow Optie 1b \n DVA Proces Flow - OIDC Launch met Cookie Correlatie en Toestemming Short
+   !theme plain
+   skinparam backgroundColor white
+   skinparam sequenceArrowThickness 2
+   skinparam roundcorner 10
+   skinparam maxMessageSize 200
+
+   participant "Browser" as BR
+   participant "PGO" as PGO
+   participant "DVA" as DVA
+   participant "Module" as MOD
+
+   group Initiële Verzameling
+   PGO -> DVA : Verzamelen gegevens
+   DVA -> BR: DigID authenticatie
+   DVA -> BR : **Zet cookie tijdens verzamelen**
+   note right of DVA
+   Cookie voor browser correlatie
+   Korte levensduur voor security
+   end note
+   DVA --> PGO : Krijgt access_token
+   end
+
+   group PGO Start Launch via DVA
+   note over PGO, DVA : OIDC Flow (geen Token Exchange)
+
+   PGO -> DVA : /authorize\n(response_type=code)\n(front channel via browser)
+
+   alt Cookie geldig (zonder langdurige toestemming)
+   DVA -> BR : Hergebruik bestaande cookie\n+ toon toestemmingsscherm
+   else Cookie verlopen/ontbreekt (met langdurige toestemming)
+   DVA -> BR : Nieuwe DigID login\n+ zet nieuw cookie\n+ toon toestemmingsscherm
+   end
+
+   BR -> DVA : Gebruiker geeft toestemming\nvoor gegevensdeling met module
+   note right of DVA
+   Expliciete toestemming per module
+   voor het delen van gegevens
+   end note
+
+   DVA --> PGO : Authorization code
+
+   PGO -> DVA : /token\n(code + client_credentials)\n(backchannel)
+   DVA --> PGO : Access token
+   end
+
+   group Launch naar Module
+   PGO -> MOD : Launch naar module
+   end
+
+   group Module Start SMART on FHIR flow
+   note over MOD, DVA : SMART on FHIR flow
+
+   MOD -> DVA : /authorize\n(response_type=code)\n(front channel)
+   DVA -> BR : Correleer browser\nmet bestaande cookie
+   note right of DVA
+   Cookie is al gezet en gecorreleerd
+   tijdens OIDC voorbereiding
+   end note
+   DVA --> MOD : Authorization code
+
+   MOD -> DVA : /token\n(backchannel)
+   DVA --> MOD : Token response\n(met access_token)
+   end
+
+   note over PGO, MOD : Module kan nu functioneren\nmet geauthenticeerde browser
+
+   @enduml

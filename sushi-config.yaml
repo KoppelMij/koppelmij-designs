@@ -63,8 +63,10 @@ pages:
     title: Home
   overview.md:
     title: Overview
-  koppelmij_option_1.md:
-    title: Option 1 - OTP
+  koppelmij_option_1a.md:          # <─ nieuw
+    title: Option 1a - OTP met Token Exchange
+  koppelmij_option_1b.md:          # <─ nieuw
+    title: Option 1b - OTP via OIDC /authorize
   koppelmij_option_2a.md:
     title: Option 2a - PGO als SMART on FHIR Resource Service
   koppelmij_option_2b.md:
@@ -102,7 +104,8 @@ menu:
   Overview:
     Overview: overview.html
   Solution Designs:
-    Option 1: koppelmij_option_1.html
+    Option 1a: koppelmij_option_1a.html   # <─ nieuw
+    Option 1b: koppelmij_option_1b.html   # <─ nieuw
     Option 2a: koppelmij_option_2a.html
     Option 2b: koppelmij_option_2b.html
   Analyses:

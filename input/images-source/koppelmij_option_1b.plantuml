@@ -1,0 +1,102 @@
+@startuml
+title DVA Proces Flow Optie 1b \n DVA Proces Flow - OIDC Launch met Cookie Correlatie en Toestemming
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+actor Browser
+control DVA
+control PGO
+control Module
+control DigID
+boundary DVA_fhir
+
+group login at PGO
+Browser -> PGO: login
+end
+
+group verzamelen
+PGO -> DVA: verzamelen
+DVA -> DigID: inloggen
+DigID -> Browser: credentials
+DigID -> Browser: NO Cookie
+Browser --> DigID
+DigID --> DVA: id_token
+DVA -> Browser: **SET Cookie**
+note right
+Cookie wordt gezet tijdens verzamelen
+voor latere browser correlatie
+Korte levensduur voor security
+end note
+DVA --> PGO: access_token
+PGO -> DVA_fhir: get FHIR tasks
+end
+
+group launch voorbereiding
+Browser -> PGO: click start module
+PGO -> PGO: create state and bind it to the PGO session
+PGO -> Browser: 302 redirect naar DVA voor OIDC
+Browser -> DVA: /authorize?response_type=code&client_id=PGO&redirect_uri=PGO_callback
+note right
+OIDC flow in plaats van Token Exchange
+DVA controleert cookie status
+end note
+
+alt Cookie bestaat en geldig (ZONDER langdurige toestemming)
+    DVA -> DVA: detect existing cookie\nfrom recent verzamelfase
+    DVA -> Browser: toon toestemmingsscherm\nvoor specifieke module
+    Browser -> DVA: gebruiker geeft toestemming
+    note right
+    Gebruiker geeft expliciete toestemming
+    voor het delen van gegevens met module
+    end note
+    DVA -> DVA: correlate browser with cookie
+    DVA -> Browser: 302 {PGO_callback}?code=x&state=y
+else Cookie ontbreekt/verlopen (MET langdurige toestemming)
+    DVA -> DigID: nieuwe DigID login
+    DigID -> Browser: credentials
+    Browser --> DigID
+    DigID --> DVA: id_token
+    DVA -> Browser: **SET nieuwe Cookie**
+    note right
+    Nieuw cookie voor toekomstige launches
+    Korte levensduur voor security
+    end note
+    DVA -> Browser: toon toestemmingsscherm\nvoor specifieke module
+    Browser -> DVA: gebruiker geeft toestemming
+    note right
+    Gebruiker geeft expliciete toestemming
+    voor het delen van gegevens met module
+    end note
+    DVA -> DVA: correlate browser with nieuwe cookie
+    DVA -> Browser: 302 {PGO_callback}?code=x&state=y
+end
+
+Browser -> PGO: GET {PGO_callback}?code=x&state=y
+PGO -> DVA: **POST /token**\ncode=x&client_credentials\n(backchannel)
+note right
+PGO wisselt authorization code in
+via backchannel voor access_token
+end note
+DVA -> DVA: validate code & generate tokens
+DVA --> PGO: access_token & id_token
+end
+
+group launch naar module met SMART on FHIR
+PGO -> Module: /launch (302 of FORM_POST_REDIRECT)
+Module -> Browser: 302 naar DVA
+Browser -> DVA: /authorize?response_type=code&client_id=module
+DVA -> DVA: correlate browser with Cookie
+note right
+Cookie is al gezet en gecorreleerd
+tijdens OIDC voorbereiding
+end note
+DVA --> Browser: 302 {redirect_uri}?code=x&state=y
+Browser --> Module: GET {redirect_uri}?code=x&state=y
+Module -> DVA: /token?code=x&client_creds
+DVA -> DVA: check credentials & create access_token
+DVA --> Module: access_token & id_token
+end
+@enduml
