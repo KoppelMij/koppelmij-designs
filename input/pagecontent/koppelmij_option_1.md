@@ -15,7 +15,7 @@ Deze optie beschrijft de werking van het DVA (Dienstverlener Aanbieder) proces w
   * Bij de /token stap wordt het access_token via de backchannel verkregen
 
 {::nomarkdown}
-{% include koppelmij_option_1b_short.svg %}
+{% include koppelmij_option_1_short.svg %}
 {:/}
 
 ## Hoofdstappen van het proces
@@ -115,5 +115,5 @@ Module krijgt uiteindelijk een access_token en id_token om te kunnen functionere
 - **Granulaire controle**: Gebruiker kan per module beslissen over gegevensdeling
 
 {::nomarkdown}
-{% include koppelmij_option_1b.svg %}
+{% include koppelmij_option_1.svg %}
 {:/}

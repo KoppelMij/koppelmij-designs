@@ -1,0 +1,110 @@
+@startuml
+title DVA Proces Flow Optie 3 \n Token Exchange Launch Token met Gebruikersidentificatie
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+actor Browser
+control PGO
+control DVA
+control Module
+control DigID
+boundary DVA_fhir
+
+group login at PGO
+Browser -> PGO: login
+PGO -> Browser: PGO sessie actief
+end
+
+group verzamelen
+PGO -> DVA: verzamelen
+DVA -> DigID: inloggen
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: id_token
+DVA --> PGO: access_token
+note right of PGO
+PGO slaat DVA access_token op
+voor Token Exchange operaties
+end note
+PGO -> DVA_fhir: get FHIR tasks
+DVA_fhir --> PGO: tasks
+end
+
+group launch token verkrijging
+Browser -> PGO: click start module
+PGO -> PGO: create state and bind it to the PGO session
+PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={DVA_access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n&audience={DVA_FHIR_URL}\n(backchannel)
+note right of DVA
+RFC 8693 Token Exchange voor launch_token
+Audience is DVA FHIR server
+end note
+DVA -> DVA: generate launch_token\nwith module context
+DVA --> PGO: **Token Exchange Response**\naccess_token (as launch_token), expires_in
+note right of DVA
+Launch_token bevat context informatie
+Korte levensduur (5-15 minuten)
+end note
+end
+
+group launch naar module
+PGO -> Browser: 302 redirect naar module\n/launch?launch={launch_token}&iss={DVA_FHIR_BASE_URL}
+Browser -> Module: GET /launch?launch=launch_token&iss=DVA_FHIR_URL
+Module -> Module: validate launch_token\nextract DVA information
+note right of Module
+Module valideert launch_token
+Audience is DVA FHIR server
+end note
+end
+
+group SMART on FHIR flow met gebruikersidentificatie
+Module -> Browser: 302 naar DVA authorization endpoint
+Browser -> DVA: /authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}
+DVA -> DVA: validate launch_token\ncorrelate with original access_token
+note right of DVA
+DVA valideert launch_token en
+correleert met originele gebruiker
+end note
+
+DVA -> Browser: start gebruikersidentificatie via DigID
+note right of DVA
+DVA start DigID verificatie
+voor gebruikersidentificatie
+end note
+
+DVA -> DigID: verificatie request
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: verificatie bevestiging
+
+DVA -> Browser: toon toestemmingsscherm\nvoor specifieke module
+Browser -> DVA: gebruiker geeft toestemming
+note right of DVA
+Expliciete toestemming voor
+gegevensdeling met module
+end note
+
+DVA -> Browser: 302 {redirect_uri}?code=x&state=y
+Browser -> Module: GET {redirect_uri}?code=x&state=y
+
+Module -> DVA: **POST /token**\ncode=x&client_credentials\n(backchannel)
+DVA -> DVA: validate authorization code\nand user identification
+DVA --> Module: access_token & id_token
+note right of DVA
+Access token voor directe
+FHIR toegang na verificatie
+end note
+end
+
+group module functioneren
+Module -> DVA_fhir: **FHIR requests**\nAuthorization: Bearer {access_token}
+DVA_fhir -> DVA_fhir: validate access_token
+DVA_fhir --> Module: FHIR response
+note right of Module
+Module communiceert direct met DVA
+Volledige audit trail beschikbaar
+end note
+end
+@enduml
