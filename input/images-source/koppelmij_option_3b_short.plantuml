@@ -1,0 +1,66 @@
+@startuml
+title DVA Proces Flow Optie 3b \n DVA-geïnitieerde Module Launch met SMART on FHIR Short
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+participant "Browser" as BR
+participant "PGO" as PGO
+participant "DVA" as DVA
+participant "Module" as MOD
+
+group PGO Login
+BR -> PGO : Login bij PGO
+PGO -> BR : PGO sessie actief
+end
+
+group Initiële Verzameling
+PGO -> DVA : Verzamelen gegevens
+DVA -> BR: DigID authenticatie
+DVA --> PGO : Krijgt access_token
+note right of DVA
+DVA zet cookie voor
+browser sessie
+end note
+end
+
+group Launch naar DVA
+BR -> PGO : Click start module
+PGO -> BR : 302 redirect naar DVA\n/launch-module?module={module_id}&context={context}
+BR -> DVA : GET /launch-module
+DVA -> DVA : Valideer sessie (cookie)\nBepaal module op basis van context
+note right of DVA
+DVA controleert bestaande sessie
+Genereert launch token voor module
+end note
+end
+
+group DVA initieert Module Launch
+DVA -> BR : 302 redirect naar module\n/launch?launch={launch_token}&iss={DVA_FHIR_URL}
+BR -> MOD : GET /launch?launch=launch_token
+note right of MOD
+Module ontvangt launch van DVA
+Start SMART flow met DVA
+end note
+end
+
+group Module SMART on FHIR flow met DVA
+note over MOD, DVA : Standaard SMART on FHIR flow
+
+MOD -> BR : 302 naar DVA
+BR -> DVA : /authorize\n(launch=launch_token&response_type=code)\n(front channel)
+DVA -> DVA : Valideer launch_token\nControleer gebruikerssessie
+DVA -> BR : Toestemmingsscherm (optioneel)
+BR -> DVA : Gebruiker geeft toestemming
+DVA -> BR : 302 {redirect_uri}?code=x&state=y
+BR -> MOD : GET {redirect_uri}?code=x&state=y
+
+MOD -> DVA : /token\n(code + client_credentials)\n(backchannel)
+DVA --> MOD : Access token
+end
+
+note over MOD, DVA : Module functioneert met\ndirecte DVA FHIR toegang
+
+@enduml

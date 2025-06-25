@@ -1,0 +1,122 @@
+@startuml
+title DVA Proces Flow Optie 3b \n DVA-geïnitieerde Module Launch met SMART on FHIR
+!theme plain
+skinparam backgroundColor white
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxMessageSize 200
+
+actor Browser
+control PGO
+control DVA
+control Module
+control DigID
+boundary DVA_fhir
+
+group login at PGO
+Browser -> PGO: login
+PGO -> Browser: PGO sessie actief
+end
+
+group verzamelen
+PGO -> DVA: verzamelen
+DVA -> DigID: inloggen
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: id_token
+DVA --> PGO: access_token
+note right of DVA
+DVA zet cookie voor
+browser sessie (SSO)
+end note
+PGO -> DVA_fhir: get FHIR tasks
+DVA_fhir --> PGO: tasks
+end
+
+group launch naar DVA
+Browser -> PGO: click start module
+PGO -> PGO: create launch context
+PGO -> Browser: **302 redirect naar DVA**\n/launch-module?module={module_id}&context={launch_context}
+Browser -> DVA: GET /launch-module?module={module_id}&context={launch_context}
+DVA -> DVA: validate session (cookie)\ndetermine module based on context
+note right of DVA
+DVA controleert bestaande sessie
+via cookie uit verzamelfase
+Bepaalt welke module te starten
+end note
+
+alt geen geldige sessie
+DVA -> DigID: re-authenticate
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: id_token
+DVA -> DVA: create new session
+end
+
+DVA -> DVA: generate launch_token\nfor selected module
+note right of DVA
+Launch_token specifiek voor module
+Korte levensduur (5-15 minuten)
+Bevat context informatie
+end note
+end
+
+group DVA initieert module launch
+DVA -> Browser: **302 redirect naar module**\n/launch?launch={launch_token}&iss={DVA_FHIR_BASE_URL}
+Browser -> Module: GET /launch?launch=launch_token&iss=DVA_FHIR_URL
+Module -> Module: validate launch_token\nextract DVA information
+note right of Module
+Module ontvangt launch van DVA
+Bereidt SMART flow voor
+end note
+end
+
+group SMART on FHIR flow
+Module -> Browser: 302 naar DVA authorization endpoint
+Browser -> DVA: /authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}
+DVA -> DVA: validate launch_token\ncheck user session
+note right of DVA
+DVA valideert launch_token
+Controleert gebruikerssessie
+end note
+
+alt toestemming vereist
+DVA -> Browser: toon toestemmingsscherm
+Browser -> DVA: gebruiker geeft toestemming
+note right of DVA
+Expliciete toestemming voor
+gegevensdeling met module
+end note
+end
+
+DVA -> DVA: generate authorization code
+DVA -> Browser: 302 {redirect_uri}?code=x&state=y
+Browser -> Module: GET {redirect_uri}?code=x&state=y
+
+Module -> DVA: **POST /token**\ncode=x&client_credentials\n(backchannel)
+DVA -> DVA: validate authorization code\nand client credentials
+DVA --> Module: access_token & id_token
+note right of DVA
+Access token voor directe
+FHIR toegang tot DVA resources
+end note
+end
+
+group module functioneren
+Module -> DVA_fhir: FHIR requests met access_token
+DVA_fhir --> Module: FHIR resources
+note right of DVA
+DVA monitort en logt
+alle module interacties
+end note
+end
+
+note over DVA
+Volledige audit trail:
+- PGO launch request
+- Module selectie
+- SMART flow
+- Resource toegang
+end note
+
+@enduml

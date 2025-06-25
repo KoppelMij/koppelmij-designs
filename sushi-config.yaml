@@ -71,6 +71,8 @@ pages:
     title: Option 2b - PGO als SMART on FHIR Authorization Server met Module Token Exchange
   koppelmij_option_3a.md:
     title: Option 3a - Token Exchange Launch Token met Gebruikersidentificatie
+  koppelmij_option_3b.md:
+    title: Option 3b - DVA-geïnitieerde Module Launch met SMART on FHIR
   comparison_all.md:
     title: Alle opties
   comparison_option2_a_b.md:
@@ -109,5 +111,6 @@ menu:
     Option 2a: koppelmij_option_2a.html
     Option 2b: koppelmij_option_2b.html
     Option 3a: koppelmij_option_3a.html
+    Option 3b: koppelmij_option_3b.html
 
 
