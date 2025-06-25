@@ -1,4 +1,4 @@
-# Optie 1b: Cookie op het DVA domein met OIDC Launch
+# Optie 1: Cookie op het DVA domein met OIDC Launch
 
 **Het nieuwe inzicht is dat browser authenticatie niet gekoppeld hoeft te worden aan een gebruiker login of Identity Provider sessie.** We zetten een cookie enkel en alleen om de browser te correleren tijdens de validatie. **Deze optie gebruikt OIDC voor de launch in plaats van Token Exchange, omdat de verzamelfase bij langdurige toestemming slechts eens in de zes maanden plaatsvindt. Voor gebruikers zonder langdurige toestemming wordt het cookie van de verzamelfase hergebruikt, terwijl gebruikers met langdurige toestemming een nieuwe DigID login doorlopen met cookie-instelling.**
 
