@@ -16,7 +16,7 @@ Het PGO fungeert als SMART on FHIR authorization server en gebruikt de bestaande
 ### **Optie 2b: PGO Authorization Server met Module Token Exchange**
 Vergelijkbaar met Optie 2a, maar hier voert de module zelf Token Exchange uit met de DVA. Het PGO geeft de module een tijdelijk token waarmee de module rechtstreeks een delegation token bij de DVA kan ophalen. Dit resulteert in de zuiverste implementatie van RFC 8693 omdat er geen tussenpartij namens de module handelt.
 
-### **Optie 3: Token Exchange voor Launch Token met Gebruikersidentificatie**
+### **Optie 3a: Token Exchange voor Launch Token met Gebruikersidentificatie**
 Deze optie combineert Token Exchange (RFC 8693) voor het verkrijgen van een launch token met verplichte gebruikersheridentificatie tijdens de SMART on FHIR flow. Het PGO gebruikt de opgeslagen DVA access_token om via Token Exchange een kortdurende launch_token te verkrijgen. Tijdens de module launch moet de gebruiker zich opnieuw identificeren via DigID, wat een dubbele beveiligingslaag biedt. Deze aanpak is bijzonder geschikt voor gevoelige zorgapplicaties vanwege de expliciete gebruikersverificatie per module launch.
 
 Alle opties gebruiken moderne OAuth2 extensies zoals Token Exchange (RFC 8693) en DPoP (RFC 9449) om veilige en standards-compliant oplossingen te bieden voor cross-domain module launches in de zorgverlening.

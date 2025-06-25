@@ -36,7 +36,7 @@ end
 group launch token verkrijging
 Browser -> PGO: click start module
 PGO -> PGO: create state and bind it to the PGO session
-PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={DVA_access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n&audience={DVA_FHIR_URL}\n(backchannel)
+PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={DVA_access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n&audience={CLIENT_ID}\n(backchannel)
 note right of DVA
 RFC 8693 Token Exchange voor launch_token
 Audience is DVA FHIR server

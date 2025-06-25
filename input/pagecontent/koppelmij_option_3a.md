@@ -1,4 +1,4 @@
-# Optie 3: Token Exchange Launch Token met Gebruikersidentificatie
+# Optie 3a: Token Exchange Launch Token met Gebruikersidentificatie
 
 Het probleem wat we oplossen is het feit dat in het launch proces de browser geauthenticeerd moet worden. Indien we dit niet doen, is het stelen van de launch request (POST of GET) een onacceptabel risico.
 
@@ -23,7 +23,7 @@ Deze optie beschrijft een architectuur waarbij **het PGO eerst een launch_token 
 - **Audit trail**: Volledige logging van zowel launch_token als gebruikersidentificatie
 
 {::nomarkdown}
-{% include koppelmij_option_3_short.svg %}
+{% include koppelmij_option_3a_short.svg %}
 {:/}
 
 ## Hoofdstappen van het proces
@@ -138,5 +138,5 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - **Regulatory compliance**: Geschikt voor gereguleerde omgevingen
 
 {::nomarkdown}
-{% include koppelmij_option_3.svg %}
+{% include koppelmij_option_3a.svg %}
 {:/}
