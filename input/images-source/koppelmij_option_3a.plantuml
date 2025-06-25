@@ -41,6 +41,26 @@ note right of DVA
 RFC 8693 Token Exchange voor launch_token
 Audience is DVA FHIR server
 end note
+
+alt DVA vereist step-up authenticatie
+DVA --> PGO: **Error: step-up required**\nerror=step_up_required
+note right of DVA
+DVA kan step-up vereisen voor
+extra gebruikersidentificatie
+end note
+PGO -> Browser: 302 redirect naar DVA\n/authorize (OIDC flow)
+Browser -> DVA: /authorize voor step-up
+DVA -> DigID: step-up authenticatie
+DigID -> Browser: credentials
+Browser --> DigID
+DigID --> DVA: verificatie
+DVA -> Browser: 302 terug naar PGO met code
+Browser -> PGO: authorization code
+PGO -> DVA: /token exchange code for tokens
+DVA --> PGO: nieuwe access_token
+PGO -> DVA: **Herhaalde Token Exchange**\nmet nieuwe access_token
+end
+
 DVA -> DVA: generate launch_token\nwith module context
 DVA --> PGO: **Token Exchange Response**\naccess_token (as launch_token), expires_in
 note right of DVA

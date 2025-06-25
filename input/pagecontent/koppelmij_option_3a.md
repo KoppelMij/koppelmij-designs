@@ -89,6 +89,16 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - Resultaat: Launch_token met context en tijdelijke geldigheid
 - Launch_token format: Opaque waarde of JWT (afhankelijk van DVA implementatie)
 
+**Step-up authenticatie mogelijkheid:**
+- **DVA kan step-up vereisen**: Bij Token Exchange request kan DVA een specifieke error code retourneren die een "step-up" aangeeft
+- **Step-up mechanisme**: DVA vereist aanvullende gebruikersidentificatie of toestemming via OIDC flow
+- **Use case**: DVA wil gebruiker identificeren of toestemming verkrijgen VOORDAT launch wordt gestart
+- **Error response**: Specifieke error code die aangeeft dat PGO een step-up OIDC flow moet doorlopen
+- **PGO actie**: Start step-up OIDC flow met DVA voor gebruikersidentificatie/toestemming
+- **Na succesvolle step-up**: PGO herhaalt Token Exchange request, nu met verhoogde authenticatie
+- **Toekomstbestendig**: Step-up feature voor toekomstige scenario's, niet direct vereist
+- **Vergelijking met Optie 1**: Bij step-up lijkt het op Optie 1 flow, maar zonder cookie vereiste
+
 **Launch stap:**
 - Module endpoint: `{MODULE_URL}/launch`
 - Parameters: `launch={launch_token}&iss={DVA_FHIR_BASE_URL}`
