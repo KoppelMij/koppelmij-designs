@@ -2,6 +2,31 @@ Het probleem wat we oplossen is het feit dat in het launch proces de browser gea
 
 <img src="overview_koppelmij.svg" alt="Koppelmij overview" style="width: 100%; float: none;"/>
 
+## Niveaus van integratie
+Ontworpen voor/compatibel met vijf typen modules:
+ * Gebruiker start module zonder datadeling zonder aanleiding van de zorgverlener
+   * Aangeduid met **L (link)**
+   * Geen toestemmingen nodig omdat er geen datadeling is
+   * Hieronder vallen ook cases waarbij de module een eigen FHIR server gebruikt of
+andere interne databases
+   * Voorbeeld: informatiesite, Thuisarts
+ * Gebruiker start module zonder datadeling na taak van zorgverlener
+   * Aangeduid met **TL (task link)**
+   * Geen toestemmingen nodig omdat er geen datadeling is
+   * Voorbeeld: informatiefolder met informatie over je behandeling
+ * Gebruiker start module met datadeling zonder aanleiding/taak zorgverlener
+   * Aangeduid met **S (standalone)**
+   * Expliciete gebruikerstoestemming bij de DvA nodig voor data-toegang module
+   * Voorbeeld: zelfstandig afspraak maken bij nieuwe zorgorganisatie
+ * Gebruiker start een module die data moet delen met de PGO
+   * Aangeduid met **PS (PGO-standalone)**
+   * Geen toestemming omdat de module onderdeel is van het PGO-domein
+   * Voorbeeld: extern ingekochte uitbreiding van mogelijkheden in PGO
+ * Gebruiker start module met datadeling na taak van zorgverlener
+   * Aangeduid met **T (task)**
+   * Geen toestemming omdat de module onderdeel is van het zorgaanbiederdomein
+   * Voorbeeld: zelfstandig taak uitvoeren in de behandeling, vragenlijst, zelfrapportage
+
 
 ## Vijf architectuurbenaderingen voor veilige module launches
 
