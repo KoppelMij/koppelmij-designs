@@ -49,8 +49,9 @@ Gebruiker klikt op "start module" in PGO
 - **subject_token=DVA_access_token (uit stap 2)**
 - **requested_token_type=urn:ietf:params:oauth:token-type:access_token**
 - **audience={DVA_FHIR_URL}**
-**DVA genereert een launch_token specifiek voor de module**
-**Launch_token bevat context informatie en is tijdelijk geldig**
+- **resource={ResourceType}/{id} (één of meer FHIR resources)**
+**DVA valideert resource toegang en genereert een launch_token**
+**Launch_token bevat gevalideerde resource context en is tijdelijk geldig**
 
 ### 4. Module launch naar DVA
 **PGO stuurt gebruiker door naar module met launch_token:**
@@ -86,8 +87,10 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - Exchange endpoint: `{DVA_URL}/token`
 - Subject token: DVA access_token van PGO (uit verzamelen fase)
 - Audience: `{DVA_FHIR_URL}` (niet het PGO)
-- Resultaat: Launch_token met context en tijdelijke geldigheid
-- Launch_token format: Opaque waarde of JWT (afhankelijk van DVA implementatie)
+- Resource parameters: `resource={ResourceType}/{id}` (meerdere mogelijk)
+- Voorbeeld: `resource=Patient/123&resource=Task/456&resource=Observation/789`
+- Resultaat: Launch_token met gevalideerde resource context
+- Launch_token format: Opaque waarde of JWT met resource context
 
 **Step-up authenticatie mogelijkheid:**
 - **DVA kan step-up vereisen**: Bij Token Exchange request kan DVA een specifieke error code retourneren die een "step-up" aangeeft
@@ -146,6 +149,28 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - **Granulaire controle**: Per module verschillende identificatie-eisen
 - **Gebruikersvertrouwen**: Transparante en veilige toegang
 - **Regulatory compliance**: Geschikt voor gereguleerde omgevingen
+
+## Context meegeven in Token Exchange
+
+Voor het meegeven van de juiste context (FHIR resources) tijdens de Token Exchange is gekozen voor het gebruik van resource parameters als extra parameters:
+
+**Gekozen oplossing: Resource parameters**
+- **Implementatie**: FHIR resource identifiers worden meegegeven als extra parameters in de Token Exchange request
+- **Parameter naam**: `resource` (kan meerdere keren voorkomen voor multiple resources)
+- **Format**: `resource=<ResourceType>/<id>` (bijv. `resource=Patient/123&resource=Observation/456`)
+- **Validatie**: DVA valideert toegang tot opgegeven resources en neemt deze op in launch_token
+
+**Voordelen van deze aanpak:**
+- Expliciet en duidelijk welke resources nodig zijn
+- Eenvoudig te implementeren en te valideren
+- Flexibel: ondersteunt meerdere resources
+- Compatible met bestaande OAuth2/Token Exchange infrastructuur
+
+**Implementatie details:**
+- Token Exchange request bevat één of meer `resource` parameters
+- DVA controleert of PGO toegang heeft tot opgegeven resources
+- Launch_token bevat gevalideerde resource context
+- Module ontvangt alleen toegang tot expliciet opgegeven resources
 
 {::nomarkdown}
 {% include koppelmij_option_3a.svg %}

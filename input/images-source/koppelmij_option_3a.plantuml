@@ -36,10 +36,11 @@ end
 group launch token verkrijging
 Browser -> PGO: click start module
 PGO -> PGO: create state and bind it to the PGO session
-PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={DVA_access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n&audience={CLIENT_ID}\n(backchannel)
+PGO -> DVA: **Token Exchange Request**\n/token?grant_type=urn:ietf:params:oauth:grant-type:token-exchange\n&subject_token={DVA_access_token}\n&requested_token_type=urn:ietf:params:oauth:token-type:access_token\n&audience={DVA_FHIR_URL}\n&resource=Patient/123&resource=Task/456\n(backchannel)
 note right of DVA
 RFC 8693 Token Exchange voor launch_token
-Audience is DVA FHIR server
+Resource parameters specificeren context
+DVA valideert resource toegang
 end note
 
 alt DVA vereist step-up authenticatie
@@ -61,11 +62,12 @@ DVA --> PGO: nieuwe access_token
 PGO -> DVA: **Herhaalde Token Exchange**\nmet nieuwe access_token
 end
 
-DVA -> DVA: generate launch_token\nwith module context
+DVA -> DVA: validate resource access\ngenerate launch_token\nwith resource context
 DVA --> PGO: **Token Exchange Response**\naccess_token (as launch_token), expires_in
 note right of DVA
-Launch_token bevat context informatie
+Launch_token bevat gevalideerde resources
 Korte levensduur (5-15 minuten)
+Module krijgt alleen toegang tot opgegeven resources
 end note
 end
 
