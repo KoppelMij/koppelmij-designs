@@ -106,13 +106,14 @@ menu:
   Home: index.html
   Overview:
     Overview: overview.html
-  Solution Designs:
-    Option 1: koppelmij_option_1.html     # ← merged entry
-    Option 2a: koppelmij_option_2a.html
-    Option 2b: koppelmij_option_2b.html
-    Option 3a: koppelmij_option_3a.html
-    Option 3b: koppelmij_option_3b.html
+  Solution Design:
+    Token Exchange met Gebruikersidentificatie: koppelmij_option_3a.html
   Overwegingen:
     Keuze voor Optie 3b: overwegingen_optie_3b.html
+  Archief:
+    Option 1: koppelmij_option_1.html
+    Option 2a: koppelmij_option_2a.html
+    Option 2b: koppelmij_option_2b.html
+    Option 3b: koppelmij_option_3b.html
 
 
