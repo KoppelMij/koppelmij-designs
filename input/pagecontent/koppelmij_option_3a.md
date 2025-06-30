@@ -10,7 +10,7 @@ Deze optie beschrijft een architectuur waarbij **het PGO eerst een launch_token 
 * Voor module launch: PGO gebruikt Token Exchange om een launch_token te verkrijgen
 * PGO stuurt gebruiker naar module met launch_token en DVA als audience
 * Module start SMART on FHIR flow met DVA
-* **DVA identificeert de gebruiker opnieuw (niet alleen browser sessie)**
+* **DVA kan de gebruiker opnieuw identificeren (niet alleen browser sessie)**
 * Module krijgt access_token van DVA voor directe resource toegang
 
 **Voordelen van deze Token Exchange Launch Token aanpak:**
@@ -53,14 +53,25 @@ Gebruiker klikt op "start module" in PGO
 **DVA valideert resource toegang en genereert een launch_token**
 **Launch_token bevat gevalideerde resource context en is tijdelijk geldig**
 
-### 4. Module launch naar DVA
+### 4. Optionele step-up authenticatie (indien vereist door DVA)
+**Wanneer DVA extra verificatie nodig acht:**
+- **DVA kan step-up error retourneren** bij Token Exchange request
+- **Error response** geeft aan dat aanvullende gebruikersidentificatie vereist is
+- **PGO start step-up OIDC flow** met DVA voor gebruikersidentificatie/toestemming
+- **Gebruiker doorloopt authenticatie** bij DVA (bijvoorbeeld DigID)
+- **Na succesvolle step-up:** PGO herhaalt Token Exchange request
+- **DVA accepteert request** met verhoogde authenticatie context
+- **Use case:** Voor gevoelige modules of specifieke gegevenstoegang
+- **Toekomstbestendig:** Optionele feature voor toekomstige scenario's
+
+### 5. Module launch naar DVA
 **PGO stuurt gebruiker door naar module met launch_token:**
 - **GET `{MODULE_URL}/launch?launch={launch_token}&iss={DVA_FHIR_BASE_URL}`**
 **Module valideert launch_token en extraheert DVA informatie**
 **Audience is de DVA FHIR server, niet het PGO**
 
-### 5. SMART on FHIR Authorization Flow met Gebruikersidentificatie
-**5a. `/authorize` stap (front-channel):**
+### 6. SMART on FHIR Authorization Flow met Gebruikersidentificatie
+**6a. `/authorize` stap (front-channel):**
 - **Module redirects browser naar DVA `/authorize` endpoint met launch parameter**
 - **GET `{DVA_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}`**
 - **DVA valideert launch_token en correleert met originele access_token**
@@ -69,13 +80,13 @@ Gebruiker klikt op "start module" in PGO
 - **DVA toont toestemmingsscherm voor gegevensdeling met specifieke module**
 - **Na succesvolle identificatie en toestemming: redirect naar module met authorization code**
 
-**5b. `/token` stap (back-channel):**
+**6b. `/token` stap (back-channel):**
 - **Module doet `/token` request naar DVA met authorization code**
 - **Module authenticeert zich via client credentials**
 - **DVA valideert authorization code en gebruikersidentificatie**
 - **DVA genereert access_token voor directe FHIR toegang**
 
-### 6. Module functioneren
+### 7. Module functioneren
 **Module gebruikt access_token voor directe FHIR requests naar DVA**
 **Module communiceert rechtstreeks met DVA FHIR service**
 **Volledige audit trail van launch_token tot gebruikersidentificatie**
