@@ -41,6 +41,17 @@ Hoewel Optie 3a sterke security biedt en de DVA ruimte geeft voor optimalisaties
 - **Implementatiedruk**: De DVA moet SMART on FHIR app launch in all aspecten implementeren.
 - **Trade-off**: Security versus gebruikerservaring - DVA bepaalt de balans
 
+**Belangrijke overweging: Optie 3b sluit optie 3a uit, maar optie 3a sluit optie 3b niet uit**
+
+Een cruciaal verschil tussen beide opties betreft de flexibiliteit van de launch uitvoering:
+
+- **Optie 3b**: Dwingt "by design" af dat de launch altijd via de DVA zelf verloopt. Het PGO kan geen directe launch naar de module uitvoeren.
+- **Optie 3a**: Biedt de DVA de keuze. De DVA kan ervoor kiezen om:
+  - De launch via de DVA zelf te laten verlopen (zoals in optie 3b)
+  - Het PGO direct naar de module te laten doorverwijzen met de juiste parameters
+  
+Dit betekent dat een keuze voor optie 3b de mogelijkheden van optie 3a uitsluit, terwijl optie 3a alle mogelijkheden van optie 3b behoudt plus additionele flexibiliteit biedt aan de DVA implementatie.
+
 ## Algemeen: Waarom Optie 3b de beste keuze is
 
 Optie 3b lost de bezwaren van de andere opties op door:
