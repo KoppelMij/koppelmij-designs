@@ -29,7 +29,7 @@ end
 group Launch Token Verkrijging
 BR -> PGO : Click start module
 note over PGO, DVA : Token Exchange (RFC 8693) Flow
-PGO -> DVA : /token\n(grant_type=urn:ietf:params:oauth:grant-type:token-exchange)\n(subject_token=DVA_access_token)\n(audience={DVA_FHIR_URL})\n(resource=Patient/123&resource=Task/456)\n(backchannel)
+PGO -> DVA : /token\n(grant_type=urn:ietf:params:oauth:grant-type:token-exchange)\n(subject_token=DVA_access_token)\n(audience={DVA_FHIR_URL})\n(resource=Task/456&resource=Observation/789)\n(backchannel)
 note right of DVA
 Token Exchange voor launch_token
 Resource context via parameters

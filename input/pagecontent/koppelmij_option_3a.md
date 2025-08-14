@@ -49,7 +49,7 @@ Gebruiker klikt op "start module" in PGO
 - **subject_token=DVA_access_token (uit stap 2)**
 - **requested_token_type=urn:ietf:params:oauth:token-type:access_token**
 - **audience={DVA_FHIR_URL}**
-- **resource={ResourceType}/{id} (één of meer FHIR resources)**
+- **resource={ResourceType}/{id} (één of meer FHIR resources, exclusief Patient)**
 **DVA valideert resource toegang en genereert een launch_token**
 **Launch_token bevat gevalideerde resource context en is tijdelijk geldig**
 
@@ -99,7 +99,7 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - Subject token: DVA access_token van PGO (uit verzamelen fase)
 - Audience: `{DVA_FHIR_URL}` (niet het PGO)
 - Resource parameters: `resource={ResourceType}/{id}` (meerdere mogelijk)
-- Voorbeeld: `resource=Patient/123&resource=Task/456&resource=Observation/789`
+- Voorbeeld: `resource=Task/456&resource=Observation/789&resource=CarePlan/101`
 - Resultaat: Launch_token met gevalideerde resource context
 - Launch_token format: Opaque waarde of JWT met resource context
 
@@ -168,7 +168,7 @@ Voor het meegeven van de juiste context (FHIR resources) tijdens de Token Exchan
 **Gekozen oplossing: Resource parameters**
 - **Implementatie**: FHIR resource identifiers worden meegegeven als extra parameters in de Token Exchange request
 - **Parameter naam**: `resource` (kan meerdere keren voorkomen voor multiple resources)
-- **Format**: `resource=<ResourceType>/<id>` (bijv. `resource=Patient/123&resource=Observation/456`)
+- **Format**: `resource=<ResourceType>/<id>` (bijv. `resource=Task/456&resource=Observation/789`)
 - **Validatie**: DVA valideert toegang tot opgegeven resources en neemt deze op in launch_token
 
 **Voordelen van deze aanpak:**
