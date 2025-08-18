@@ -77,6 +77,8 @@ pages:
     title: Overwegingen voor keuze Optie 3a
   comparison_option2_a_b.md:
     title: 2a en 2b
+  oidc_mobile_sso_explanation.md:
+    title: OpenID Connect Native SSO voor Mobiele Apps 1.0
 
 
 #
@@ -110,6 +112,8 @@ menu:
     Token Exchange met Gebruikersidentificatie: koppelmij_option_3a.html
   Overwegingen:
     Keuze voor Optie 3a: overwegingen_optie_3a.html
+  Uitleg:
+    OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
     Option 1: koppelmij_option_1.html
     Option 2a: koppelmij_option_2a.html
