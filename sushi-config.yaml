@@ -75,6 +75,8 @@ pages:
     title: Option 3b - DVA-geïnitieerde Module Launch met SMART on FHIR
   overwegingen_optie_3a.md:
     title: Overwegingen voor keuze Optie 3a
+  harde_zachte_vereisten.md:
+    title: Harde en Zachte Vereisten
   comparison_option2_a_b.md:
     title: 2a en 2b
   oidc_mobile_sso_explanation.md:
@@ -112,6 +114,7 @@ menu:
     Token Exchange met Gebruikersidentificatie: koppelmij_option_3a.html
   Overwegingen:
     Keuze voor Optie 3a: overwegingen_optie_3a.html
+    Harde en Zachte Vereisten: harde_zachte_vereisten.html
   Uitleg:
     OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
