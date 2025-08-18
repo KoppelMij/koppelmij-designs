@@ -10,7 +10,51 @@ Het is belangrijk om te benadrukken dat ook de harde vereisten niet volledig in 
 
 De volgende onderdelen van de standaard worden beschouwd als harde vereisten. Deze vormen de kern van de architectuur en zijn gebaseerd op uitgebreide analyse en overwegingen:
 
-### 1. Architectuurkeuze: Optie 3a
+### 1. Koppeltaal FHIR Model
+
+**Vereiste**: Het FHIR datamodel volgt de Koppeltaal specificaties met Task als centraal element.
+
+**Basis standaarden:**
+- **nl-core**: Nederlandse kernset van FHIR profielen
+- **zib2020**: Zorginformatiebouwstenen als basis voor gestandaardiseerde gegevensuitwisseling
+- **Koppeltaal profiel**: Bouwt voort op nl-core en zib2020
+
+**Belangrijke aanpassing vereist:**
+- **Huidige situatie**: Koppeltaal profiel is "gesloten" - alle onbekende velden zijn verboden
+- **Vereiste wijziging**: Profiel moet "open" gesteld worden - alle onbekende velden worden toegestaan
+- **Reden**: Om gebruik binnen andere afsprakenstelsels zoals MedMij mogelijk te maken
+- **Impact**: Verhoogt interoperabiliteit zonder functionaliteit te verliezen
+
+**Kern componenten**:
+
+**Voor PGO integratie:**
+- **Task**: Centraal resource voor module activiteiten
+- **ActivityDefinition**: Definieert de module karakteristieken en requirements
+- **Endpoint**: Specificeert de module launch URL en technische details
+
+**Voor Module context:**
+- **Task**: Blijft het centrale punt met directe of indirecte koppelingen naar:
+  - **Patient**: Direct gekoppeld aan Task.for
+  - **Practitioner**: Direct gekoppeld aan Task.owner of Task.requester
+  - **CareTeam**: Voor complexere zorgrelaties waarbij meerdere Practitioners en RelatedPersons betrokken zijn
+  - **RelatedPerson**: Via CareTeam voor mantelzorgers en andere betrokkenen
+
+**Rationale**:
+- Koppeltaal is de de facto standaard voor module integratie in Nederland
+- Gebaseerd op nationale standaarden (nl-core en zib2020) voor maximale compatibiliteit
+- Task-gecentreerde aanpak biedt flexibiliteit voor verschillende use cases en
+- Task-gecentreerde aanpak kan als onderdeel in verschillende FHIR workflows worden toegepast.
+- Task-gebaseerde context is geschikt voor het ecosysteem
+- Gestandaardiseerde manier om context en betrokkenen te modelleren
+- Ondersteunt zowel simpele (directe koppelingen) als complexe (CareTeam) zorgrelaties
+- Openstelling van profiel maakt cross-stelsel gebruik mogelijk
+
+**Impact bij wijziging**:
+- Incompatibiliteit met bestaande Koppeltaal implementaties
+- Het managen van "twee FHIR realiteiten" door de DVA en dat zou een fundamentele herziening van het volledige ontwerp vereisen.
+- Noodzaak tot herontwerp van module integraties
+
+### 2. Architectuurkeuze: Optie 3a
 
 **Vereiste**: De implementatie volgt het architectuurpatroon van Optie 3a - Token Exchange met Gebruikersidentificatie.
 
@@ -22,7 +66,7 @@ De volgende onderdelen van de standaard worden beschouwd als harde vereisten. De
 
 **Impact bij wijziging**: Een andere architectuurkeuze zou een fundamentele herziening van het volledige ontwerp vereisen.
 
-### 2. Gekozen Standaarden
+### 3. Gekozen Standaarden
 
 **Vereiste**: De standaard is gebaseerd op:
 - SMART on FHIR voor module launches
