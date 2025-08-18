@@ -73,7 +73,12 @@ Gebruiker klikt op "start module" in PGO
 ### 6. SMART on FHIR Authorization Flow met Gebruikersidentificatie
 **6a. `/authorize` stap (front-channel):**
 - **Module redirects browser naar DVA `/authorize` endpoint met launch parameter**
-- **GET `{DVA_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}`**
+- **GET `{DVA_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}&scope=launch+fhirUser+patient/*.read`**
+- **Belangrijke scopes:**
+  - **`launch`**: Vereist voor SMART on FHIR launch flow met context
+  - **`fhirUser`**: Om de gebruikersidentiteit te krijgen als FHIR resource referentie
+  - **GEEN `openid` scope**: DVA is geen OIDC provider (geeft geen id_token uit)
+  - **Resource scopes**: Zoals `patient/*.read` voor toegang tot patient resources
 - **DVA valideert launch_token en correleert met originele access_token**
 - **DVA start gebruikersidentificatie via DigID (niet alleen browser sessie)**
 - **Gebruiker logt opnieuw in via DigID voor verificatie**
@@ -85,6 +90,14 @@ Gebruiker klikt op "start module" in PGO
 - **Module authenticeert zich via client credentials**
 - **DVA valideert authorization code en gebruikersidentificatie**
 - **DVA genereert access_token voor directe FHIR toegang**
+- **Token response bevat:**
+  - **`access_token`**: Voor toegang tot FHIR resources
+  - **`token_type`**: "Bearer"
+  - **`expires_in`**: Geldigheid van het token
+  - **`patient`**: Patient ID uit de launch context
+  - **`fhirUser`**: FHIR referentie naar de gebruiker (bijv. "Practitioner/123")
+  - **Andere context parameters**: Zoals `encounter` indien van toepassing
+  - **GEEN `id_token`**: DVA is geen OIDC provider, wel SMART on FHIR authorization server
 
 ### 7. Module functioneren
 **Module gebruikt access_token voor directe FHIR requests naar DVA**
@@ -93,6 +106,21 @@ Gebruiker klikt op "start module" in PGO
 Module kan functioneren met DVA resources via geauthenticeerde toegang
 
 ## Technische flow details
+
+### DVA als SMART on FHIR Authorization Server (niet OIDC)
+
+**Belangrijk onderscheid:**
+- **DVA is een SMART on FHIR authorization server**, niet een OpenID Connect provider
+- **Reden**: DVA verificeert de gebruiker via browser sessie en eventueel DigID, maar geeft geen id_token uit
+- **Gevolg**: Module gebruikt `fhirUser` scope in plaats van `openid` scope
+- **Voordeel**: DVA hoeft geen volledige OIDC implementatie te hebben
+- **Gebruikersidentiteit**: Wordt doorgegeven als FHIR resource referentie via `fhirUser` in token response
+
+**Waarom geen `openid` scope:**
+- `openid` scope vereist dat de server een id_token uitgeeft (JWT met gebruikersclaims)
+- DVA hoeft geen id_token te genereren omdat gebruikersidentiteit via FHIR wordt gecommuniceerd
+- De `fhirUser` scope geeft voldoende informatie voor de module om de gebruiker te identificeren
+- Dit vereenvoudigt de DVA implementatie terwijl volledige functionaliteit behouden blijft
 
 **Token Exchange voor launch_token:**
 - Exchange endpoint: `{DVA_URL}/token`
