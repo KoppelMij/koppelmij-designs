@@ -1,6 +1,6 @@
-# Overwegingen voor de keuze van Optie 3b
+# Overwegingen voor de keuze van Optie 3a
 
-Bij het evalueren van de verschillende architectuurbenaderingen voor veilige module launches zijn er verschillende belangrijke overwegingen die hebben geleid tot de keuze voor Optie 3b: DVA-geïnitieerde Module Launch met SMART on FHIR.
+Bij het evalueren van de verschillende architectuurbenaderingen voor veilige module launches zijn er verschillende belangrijke overwegingen die hebben geleid tot de keuze voor Optie 3a: Token Exchange met Gebruikersidentificatie.
 
 ## Analyse van de alternatieven
 
@@ -29,19 +29,21 @@ Bij beide Optie 2 varianten fungeert het PGO als authorization server, wat de vo
   - **Interoperabiliteit risico's**: Custom implementaties kunnen leiden tot compatibiliteitsproblemen
   - **Onderhoudskosten**: Afwijkingen van standaarden verhogen de complexiteit en onderhoudskosten
 
-### Optie 3a: Token Exchange met Gebruikersidentificatie
+### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
 
-**Belangrijkste bezwaar: Meerdere login sessies vereist**
+**Belangrijkste voordeel: Maximale flexibiliteit en controle**
 
-Hoewel Optie 3a sterke security biedt en de DVA ruimte geeft voor optimalisaties, vereist het meerdere authenticaties:
+Optie 3a biedt de beste balans tussen security, flexibiliteit en gebruikerservaring:
 
-- **Herhaalde authenticatie**: Gebruikers zouden zich, in principe, bij elke module launch opnieuw authenticeren
-- **DVA kan optimaliseren**: Deze oplossingsrichting biedt de DVA wel de ruimte om voorzieningen te treffen voor verbeterde gebruikerservaring
-- **Mogelijke optimalisaties**: DVA kan via een gedoogconstructie gebruik maken van een sessie-cookie of alternatieve manieren van authenticeren.
-- **Implementatiedruk**: De DVA moet SMART on FHIR app launch in all aspecten implementeren.
-- **Trade-off**: Security versus gebruikerservaring - DVA bepaalt de balans
+- **Flexibele authenticatie**: DVA heeft volledige controle over authenticatie-strategieën
+- **DVA kan optimaliseren**: Deze oplossingsrichting biedt de DVA de ruimte om voorzieningen te treffen voor verbeterde gebruikerservaring
+- **Mogelijke optimalisaties**: DVA kan gebruik maken van sessie-cookies of alternatieve authenticatiemethoden
+- **Standaard compliance**: Volledige SMART on FHIR implementatie zonder afwijkingen
+- **Toekomstbestendig**: DVA kan de implementatie aanpassen aan veranderende requirements
 
-**Belangrijke overweging: Optie 3b sluit optie 3a uit, maar optie 3a sluit optie 3b niet uit**
+### Optie 3b: DVA-geïnitieerde Module Launch
+
+**Belangrijke overweging: Optie 3a biedt meer flexibiliteit dan optie 3b**
 
 Een cruciaal verschil tussen beide opties betreft de flexibiliteit van de launch uitvoering:
 
@@ -54,34 +56,36 @@ Een cruciaal verschil tussen beide opties betreft de flexibiliteit van de launch
 - **Optie 3a**: De launch URL wordt flexibel bepaald via de FHIR keten: Task → ActivityDefinition → Endpoint.address. Dit maakt het mogelijk om per module of use case verschillende launch endpoints te configureren, tevens om zoals in optie 3b de launch via de DVA te laten verlopen.
 - **Optie 3b**: De launch URL is altijd gefixeerd op de DVA endpoint, waardoor alle launches verplicht via de DVA verlopen.
 
-Dit betekent dat een keuze voor optie 3b de mogelijkheden van optie 3a uitsluit, terwijl optie 3a alle mogelijkheden van optie 3b behoudt plus additionele flexibiliteit biedt aan de DVA implementatie.
+Dit betekent dat optie 3a alle mogelijkheden van optie 3b behoudt plus additionele flexibiliteit biedt aan de DVA implementatie. De keuze voor optie 3a geeft de DVA maximale vrijheid in de implementatie.
 
-## Algemeen: Waarom Optie 3b de beste keuze is
+## Algemeen: Waarom Optie 3a de beste keuze is
 
-Optie 3b lost de bezwaren van de andere opties op door:
+Optie 3a lost de bezwaren van de andere opties op en biedt unieke voordelen:
 
-### 1. **Respecteert DVA architectuur**
-- DVA wordt niet gedwongen vanuit het afsprakenstelsel sessies te beheren
-- Past binnen bestaande DVA capabilities
-- Gebruikt DVA's natuurlijke rol als data eigenaar en toestemmingshub
+### 1. **Maximale flexibiliteit voor DVA**
+- DVA kan kiezen tussen verschillende implementatiestrategieën
+- Mogelijkheid om zowel directe module launches als DVA-geleide launches te ondersteunen
+- Past binnen bestaande DVA capabilities zonder architectuurwijzigingen op te leggen
 
 ### 2. **Behoudt DVA controle over authenticatie**
 - DVA kan gebruikers direct authenticeren wanneer nodig
 - Flexibele authenticatie strategieën per module
 - Volledige audit trail onder DVA controle
 
-### 3. **Schaalbaarheid voor PGO's**
-- Eenvoudige PGO integratie (alleen redirect naar Module)
-- Geen complexe token exchange implementatie vereist
-- Lage drempel voor PGO adoptie
+### 3. **Schaalbaarheid en standaardisatie**
+- Volledige SMART on FHIR compliance
+- Flexibele URL resolutie via FHIR keten (Task → ActivityDefinition → Endpoint)
+- Herbruikbare implementatie voor module leveranciers
 
-### 4. **Gebruikerservaring**
-- Single Sign-On via DVA sessie uit verzamelfase is mogelijk
-- Consistente flow voor alle modules
+### 4. **Gebruikerservaring optimalisatie mogelijk**
+- DVA kan sessie-optimalisaties implementeren
+- Mogelijkheid voor Single Sign-On indien gewenst
+- DVA bepaalt de beste balans tussen security en gebruiksgemak
 
 ### 5. **Security en Compliance**
-- DVA behoudt volledige controle over toegang
+- DVA behoudt volledige controle over toegang en authenticatie
 - Centrale logging en monitoring
+- Mogelijkheid voor step-up authenticatie waar nodig
 
 
 
@@ -118,21 +122,21 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 - Module launch: 0x extra login (PGO sessie)
 - **Totaal: 1 login** (alleen PGO login)
 
-### Optie 3a: Token Exchange met Gebruikersidentificatie
+### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
 - DVA login tijdens verzamelen: 1x per verzamelsessie
-- DVA login tijdens ELKE module launch: 1x per launch
-- **Totaal: 2+ logins** (1x PGO + 1x DVA verzamelen + 1x per module)
+- Module launch: 0-1x per launch (DVA kan optimaliseren met sessie)
+- **Totaal: 2 logins** (1x PGO + 1x DVA, met mogelijke optimalisaties)
 
 **Gebruikers MET langdurige toestemming:**
 - PGO login: 1x per PGO sessie
 - DVA login tijdens verzamelen: 1x per 6 maanden
-- DVA login tijdens ELKE module launch: 1x per launch
-- **Totaal: 2+ logins** (1x PGO + 1x DVA verzamelen + 1x per module)
+- Module launch: 0-1x per launch (DVA kan optimaliseren)
+- **Totaal: 1-2 logins** (flexibel afhankelijk van DVA implementatie)
 
-### Optie 3b: DVA-geïnitieerde Module Launch (GEKOZEN OPTIE)
+### Optie 3b: DVA-geïnitieerde Module Launch
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
@@ -153,10 +157,10 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 |-----------------|-------------------------------|------------------------------|
 | **Optie 1**     | 2 logins/sessie               | 2 logins                     |
 | **Optie 2a/2b** | 2 logins/sessie               | 1 login                      |
-| **Optie 3a**    | 2+ logins (extra per module)  | 2+ logins (extra per module) |
+| **Optie 3a**    | 2 logins (met optimalisatie)  | 1-2 logins (flexibel)        |
 | **Optie 3b**    | 2 logins/sessie               | 1-2 logins                   |
 
-Optie 3b biedt samen met optie 2a/2b de beste gebruikerservaring qua login frequentie, maar heeft als voordeel dat de DVA controle behoudt over authenticatie.
+Optie 3a biedt met de juiste optimalisaties een vergelijkbare gebruikerservaring als optie 3b, maar met het cruciale voordeel van maximale flexibiliteit voor de DVA implementatie.
 
 ## Analyse: Module leverancier perspectief
 
@@ -176,6 +180,6 @@ Vanuit het perspectief van module leveranciers is de conformiteit aan standaarde
 - Verminderde herbruikbaarheid van code
 - Hogere onderhoudskosten door afwijkende implementatie
 
-Voor module leveranciers zijn opties 1, 3a en 3b daarom aantrekkelijk: het combineert standaard SMART on FHIR implementatie met optimale gebruikerservaring.
+Voor module leveranciers is optie 3a daarom het meest aantrekkelijk: het combineert volledige SMART on FHIR standaard compliance met de flexibiliteit voor optimale gebruikerservaring.
 
 
