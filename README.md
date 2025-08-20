@@ -36,25 +36,31 @@ Voor het lokaal bouwen van deze Implementation Guide heeft u alleen nodig:
 
 2. **Bouw de Docker image lokaal**
    ```bash
-   docker build -t koppelmij-ig-builder .
+   docker build -t gidsopenstandaarden/koppelmij-publisher:latest .
    ```
    
    Dit bouwt een lokale Docker image met alle benodigde tools voor de IG generatie.
 
 3. **Bouw de Implementation Guide met de lokale Docker image**
    ```bash
-   docker run --rm -v $(pwd):/workspace koppelmij-ig-builder
+   mkdir -p ./output
+   docker run --rm \
+     -v ./ig.ini:/app/ig.ini \
+     -v ./sushi-config.yaml:/app/sushi-config.yaml \
+     -v ./input:/app/input \
+     -v ./output:/app/output \
+     gidsopenstandaarden/koppelmij-publisher:latest
    ```
    
    Op Windows (PowerShell):
    ```powershell
-   docker run --rm -v ${PWD}:/workspace koppelmij-ig-builder
-   ```
-   
-   **Alternatief**: Gebruik de officiële FHIR IG Publisher image direct (zonder lokale build):
-   ```bash
-   docker run --rm -v $(pwd):/workspace ghcr.io/fhir/ig-publisher-base:latest \
-     -ig /workspace/ig.ini
+   mkdir output
+   docker run --rm `
+     -v ${PWD}/ig.ini:/app/ig.ini `
+     -v ${PWD}/sushi-config.yaml:/app/sushi-config.yaml `
+     -v ${PWD}/input:/app/input `
+     -v ${PWD}/output:/app/output `
+     gidsopenstandaarden/koppelmij-publisher:latest
    ```
 
 4. **Bekijk de gegenereerde IG lokaal**
@@ -65,16 +71,16 @@ Voor het lokaal bouwen van deze Implementation Guide heeft u alleen nodig:
 
 **Voor SUSHI-only processing:**
 ```bash
-docker run --rm -v $(pwd):/workspace \
+docker run --rm -v $(pwd):/app \
   mitre/sushi:latest \
-  /workspace
+  /app
 ```
 
-**Voor volledige IG build met specifieke versie:**
+**Voor directe IG Publisher gebruik (zonder lokale Dockerfile):**
 ```bash
-docker run --rm -v $(pwd):/workspace \
+docker run --rm -v $(pwd):/app \
   ghcr.io/fhir/ig-publisher-base:latest \
-  publisher -ig /workspace
+  publisher -ig /app
 ```
 
 ### Ontwikkeling workflow
