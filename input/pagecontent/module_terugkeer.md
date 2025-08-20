@@ -80,7 +80,7 @@ De `return_url` parameter wordt meegegeven als onderdeel van de FHIR context tij
 {
   "access_token": "[GEHEIM - alleen backend]",
   "patient": "123",
-  "encounter": "456",
+  "resource": "Task/789",
   "return_url": "https://pgo.example.com/patient/123/modules?task=789&status=active"
 }
 ```
@@ -94,7 +94,7 @@ De `return_url` parameter wordt meegegeven als onderdeel van de FHIR context tij
     "type": "fhir_context",
     "locations": ["https://fhir.example.org"],
     "patient": "123",
-    "encounter": "456",
+    "resource": "Task/789",
     "return_url": "https://pgo.example.com/patient/123/modules?task=789"
   }]
 }
@@ -112,7 +112,7 @@ def handle_token_response(token_response):
     # Extract veilige context informatie voor frontend
     safe_context = {
         'patient_id': token_response.get('patient'),
-        'encounter_id': token_response.get('encounter'),
+        'task_id': token_response.get('resource'),  # bijv. "Task/789"
         'return_url': token_response.get('return_url')
     }
 
