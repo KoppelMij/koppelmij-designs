@@ -77,6 +77,8 @@ pages:
     title: Overwegingen voor keuze Optie 3a
   harde_zachte_vereisten.md:
     title: Harde en Zachte Vereisten
+  module_terugkeer.md:
+    title: Terugkeren na Module Afsluiten
   comparison_option2_a_b.md:
     title: 2a en 2b
   oidc_mobile_sso_explanation.md:
@@ -115,6 +117,7 @@ menu:
   Overwegingen:
     Keuze voor Optie 3a: overwegingen_optie_3a.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
+    Module Terugkeer: module_terugkeer.html
   Uitleg:
     OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
