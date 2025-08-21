@@ -2,10 +2,15 @@
 
 Deze repository bevat de FHIR Implementation Guide voor het Koppelmij project, dat de integratie van modules in Persoonlijke Gezondheidsomgevingen (PGO's) binnen het MedMij afsprakenstelsel beschrijft.
 
-## 📚 Gepubliceerde versie
+## 📚 Gepubliceerde versies
 
 De Implementation Guide is online beschikbaar op:
-**https://koppelmij.github.io/koppelmij-designs/**
+
+- **Hoofdversie (main branch):** https://koppelmij.github.io/koppelmij-designs/
+- **Branch deployments:** https://koppelmij.github.io/koppelmij-designs/branches/
+  - Feature branches: `https://koppelmij.github.io/koppelmij-designs/branches/feature-[naam]/`
+  - Develop branch: `https://koppelmij.github.io/koppelmij-designs/branches/develop/`
+  - Release branches: `https://koppelmij.github.io/koppelmij-designs/branches/release-[versie]/`
 
 ## 🎯 Doel
 
