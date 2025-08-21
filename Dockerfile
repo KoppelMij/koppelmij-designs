@@ -1,30 +1,23 @@
-FROM openjdk:24-jdk-bookworm
-LABEL maintainer="roland@headease.nl"
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-# Install native compilation dependencies.
-RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y gcc g++ make apt-utils
+RUN dotnet tool install -g firely.terminal && apt-get update && apt install -y make jq default-jdk python3 python3-pip python3-yaml graphviz jekyll nodejs npm
 
-# Install Node from NodeSource.
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-RUN apt-get install -y nodejs
+RUN npm install -g fsh-sushi
 
-# Install Jekyll for Ubuntu/Debian: https://jekyllrb.com/docs/installation/ubuntu/
-RUN apt-get install -y ruby-full build-essential zlib1g-dev
-RUN gem install -N jekyll bundler graphviz
+RUN mkdir "/src"
+WORKDIR /src
 
-RUN mkdir /app
-WORKDIR /app
+RUN curl -L https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar -o /usr/local/publisher.jar
 
-# Install the FHIR Shorthand transfiler:
-RUN npm i -g fsh-sushi
+ENV saxonPath=/root/.ant/lib/
+RUN mkdir -p ${saxonPath}
+RUN wget https://repo1.maven.org/maven2/net/sf/saxon/Saxon-HE/11.4/Saxon-HE-11.4.jar -O ${saxonPath}/saxon-he-11.4.jar
+RUN wget https://repo1.maven.org/maven2/org/xmlresolver/xmlresolver/5.3.0/xmlresolver-5.3.0.jar -O ${saxonPath}/xmlresolver-5.3.0.jar
 
-# Download the IG publisher.
-COPY ./_updatePublisher.sh .
-RUN bash ./_updatePublisher.sh -y
-RUN chmod +x *.sh *.bat
+ENV DEBUG=1
 
-ADD ig.ini .
-ADD sushi-config.yaml .
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-CMD ["bash", "_genonce.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

@@ -17,9 +17,16 @@ releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | re
 license: GPL-3.0-or-later # https://www.hl7.org/fhir/valueset-spdx-license.html
 # jurisdiction: urn:iso:std:iso:3166#US "United States of America" # https://www.hl7.org/fhir/valueset-jurisdiction.html
 publisher:
-  name: gidsopenstandaarden
-  url: https://www.gidsopenstandaarden.org
+  name: koppelmij
+  url: https://github.com/KoppelMij/
   # email: test@example.org
+dependencies:
+  nictiz.fhir.nl.r4.zib2020:
+    version: 0.11.0-beta.1
+    uri: http://simplifier.net/packages/nictiz.fhir.nl.r4.zib2020#0.11.0-beta.1
+  nictiz.fhir.nl.r4.nl-core:
+    version: 0.11.0-beta.1
+    uri: http://simplifier.net/packages/nictiz.fhir.nl.r4.nl-core#0.11.0-beta.1
 
 # The dependencies property corresponds to IG.dependsOn. The key is the
 # package id and the value is the version (or dev/current). For advanced
