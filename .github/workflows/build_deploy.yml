@@ -90,3 +90,31 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  create-release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: fhir-package
+          path: ./build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          prerelease: false
+          name: ${{ needs.build.outputs.version }}
+          tag_name: v${{ needs.build.outputs.version }}
+          files: |
+            ./build/output/package.tgz
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
