@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0
 
+ARG PUBLISHER_VERSION=2.0.13
+
 RUN dotnet tool install -g firely.terminal && apt-get update && apt install -y make jq default-jdk python3 python3-pip python3-yaml graphviz jekyll nodejs npm
 
 RUN npm install -g fsh-sushi
@@ -7,7 +9,7 @@ RUN npm install -g fsh-sushi
 RUN mkdir "/src"
 WORKDIR /src
 
-RUN curl -L https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar -o /usr/local/publisher.jar
+RUN curl -L https://github.com/HL7/fhir-ig-publisher/releases/download/${PUBLISHER_VERSION}/publisher.jar -o /usr/local/publisher.jar
 
 ENV saxonPath=/root/.ant/lib/
 RUN mkdir -p ${saxonPath}
