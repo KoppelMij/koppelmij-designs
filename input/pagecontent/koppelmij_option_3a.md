@@ -1,5 +1,7 @@
 # Optie 3a: Token Exchange Launch Token met Gebruikersidentificatie
 
+<img src="overview_optie_3a.png" alt="Optie 3 overview" style="width: 100%; float: none;"/>
+
 Het probleem wat we oplossen is het feit dat in het launch proces de browser geauthenticeerd moet worden. Indien we dit niet doen, is het stelen van de launch request (POST of GET) een onacceptabel risico.
 
 **In deze optie gebruikt het PGO Token Exchange (RFC 8693) om een launch_token op te halen bij de DVA, waarna een launch wordt gedaan naar de module met de DVA FHIR server als audience. De module start vervolgens een SMART on FHIR flow met de DVA, waarbij de DVA de gebruiker (niet alleen de browser sessie) opnieuw identificeert voor extra zekerheid.**
