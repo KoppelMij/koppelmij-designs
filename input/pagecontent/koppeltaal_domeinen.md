@@ -16,7 +16,7 @@ Optie 1: Taken worden aangemaakt in de DVA omgeving, inclusief de achterliggende
 ### Architectuur
 Bij deze optie is de DVA volledig verantwoordelijk voor het beheer van taken. De architectuur is relatief eenvoudig met een directe koppeling tussen DVA, PGO en module. Dit is de basisimplementatie zoals voorzien in de KoppelMij standaard.
 
-![Optie 1 Architectuur](../images/koppeltaal/optie1.png)
+![Optie 1 Architectuur](koppeltaal/optie1.png)
 
 ## Optie 2: EPD als bron
 
@@ -35,7 +35,7 @@ Deze optie vereist een niet-gestandaardiseerde integratie tussen de DVA en het E
 
 ### Architectuur
 
-![Optie 2 Architectuur](../images/koppeltaal/optie2.png)
+![Optie 2 Architectuur](koppeltaal/optie2.png)
 
 ## Optie 3: Koppeltaal als bron
 
@@ -65,7 +65,7 @@ Deze optie introduceert significante complexiteit door het samenbrengen van twee
 
 ### Architectuur
 
-![Optie 3 Architectuur](../images/koppeltaal/optie3.png)
+![Optie 3 Architectuur](koppeltaal/optie3.png)
 
 ## Optie 4: DVA biedt een decentrale koppeltaalvoorziening aan
 
@@ -92,7 +92,7 @@ Optie 4: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij 
 
 ### Architectuur
 
-![Optie 4 Architectuur](../images/koppeltaal/optie4.png)
+![Optie 4 Architectuur](koppeltaal/optie4.png)
 
 ## Vergelijking van opties
 
