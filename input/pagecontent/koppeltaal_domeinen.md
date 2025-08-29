@@ -96,14 +96,14 @@ Optie 4: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij 
 
 ## Vergelijking van opties
 
-| Aspect | Optie 1 | Optie 2 | Optie 3 | Optie 4 |
-|--------|---------|---------|---------|---------|
-| **Complexiteit** | Laag | Middel | Hoog | Hoog |
-| **Standaardisatie** | Volledig | Geen | Deels | Deels |
-| **Flexibiliteit** | Beperkt | Middel | Hoog | Zeer hoog |
-| **Integratie EPD** | Geen | Custom | Via Koppeltaal | Via Koppeltaal |
-| **Onderhoudskosten** | Laag | Middel | Hoog | Zeer hoog |
-| **Gebruikerservaring** | Eenvoudig | Eenvoudig | Complex | Middel |
+| Aspect                 | Optie 1   | Optie 2   | Optie 3        | Optie 4        |
+|------------------------|-----------|-----------|----------------|----------------|
+| **Complexiteit**       | Laag      | Middel    | Hoog           | Hoog           |
+| **Standaardisatie**    | Volledig  | Geen      | Deels          | Deels          |
+| **Flexibiliteit**      | Beperkt   | Middel    | Hoog           | Zeer hoog      |
+| **Integratie EPD**     | Geen      | Custom    | Via Koppeltaal | Via Koppeltaal |
+| **Onderhoudskosten**   | Laag      | Middel    | Hoog           | Zeer hoog      |
+| **Gebruikerservaring** | Eenvoudig | Eenvoudig | Complex        | Middel         |
 
 ## Aanbevelingen
 
