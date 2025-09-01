@@ -128,18 +128,22 @@ menu:
     Koppeltaal Domeinen: koppeltaal_domeinen.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
-  Koppeltaal Profiles:
-    ActivityDefinition: StructureDefinition-KT2ActivityDefinition.html
-    AuditEvent: StructureDefinition-KT2AuditEvent.html
-    CareTeam: StructureDefinition-KT2CareTeam.html
+  KoppelMij Profiles:
+    Task: StructureDefinition-KoppelMijTask.html
+    ActivityDefinition: StructureDefinition-MedMijActivityDefinition.html
+    Endpoint: StructureDefinition-MedMijEndpoint.html
     Device: StructureDefinition-KT2Device.html
-    Endpoint: StructureDefinition-KT2Endpoint.html
-    Organization: StructureDefinition-KT2Organization.html
-    Patient: StructureDefinition-KT2Patient.html
-    Practitioner: StructureDefinition-KT2Practitioner.html
-    RelatedPerson: StructureDefinition-KT2RelatedPerson.html
-    Subscription: StructureDefinition-KT2Subscription.html
-    Task: StructureDefinition-KT2Task.html
+  KoppelMij Extensions:
+    Resource Origin: StructureDefinition-KT2ResourceOrigin.html
+    Endpoint Extension: StructureDefinition-KT2EndpointExtension.html
+    Publisher Id: StructureDefinition-KT2PublisherId.html
+    Correlation Id: StructureDefinition-KT2CorrelationId.html
+    Request Id: StructureDefinition-KT2RequestId.html
+    Trace Id: StructureDefinition-KT2TraceId.html
+    Instantiates: StructureDefinition-KT2Instantiates.html
+  KoppelMij Examples:
+    Scenario 1 - COPD Vragenlijst: Bundle-KoppelMij-Task-Questionnaire-Van-Duinen.html
+    Scenario 2 - Angststoornis Vragenlijst: Bundle-KoppelMij-Task-Questionnaire-De-Groot.html
   Uitleg:
     OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
