@@ -4,7 +4,7 @@
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 id: fhir.gidsopenstandaarden.koppelmij
-canonical: https://gidsopenstandaarden.github.io/koppelmij-implementation-guide
+canonical: http://medmij.nl/fhir
 url: https://gidsopenstandaarden.github.io/koppelmij-implementation-guide
 name: koppelmij-implementation-guide
 title: Koppelmij Implementation Guide
@@ -128,22 +128,33 @@ menu:
     Koppeltaal Domeinen: koppeltaal_domeinen.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
-  KoppelMij Profiles:
-    Task: StructureDefinition-KoppelMijTask.html
-    ActivityDefinition: StructureDefinition-MedMijActivityDefinition.html
-    Endpoint: StructureDefinition-MedMijEndpoint.html
-    Device: StructureDefinition-KT2Device.html
-  KoppelMij Extensions:
-    Resource Origin: StructureDefinition-KT2ResourceOrigin.html
-    Endpoint Extension: StructureDefinition-KT2EndpointExtension.html
-    Publisher Id: StructureDefinition-KT2PublisherId.html
-    Correlation Id: StructureDefinition-KT2CorrelationId.html
-    Request Id: StructureDefinition-KT2RequestId.html
-    Trace Id: StructureDefinition-KT2TraceId.html
-    Instantiates: StructureDefinition-KT2Instantiates.html
-  KoppelMij Examples:
-    Scenario 1 - COPD Vragenlijst: Bundle-KoppelMij-Task-Questionnaire-Van-Duinen.html
-    Scenario 2 - Angststoornis Vragenlijst: Bundle-KoppelMij-Task-Questionnaire-De-Groot.html
+  KoppelMij FHIR Resources:
+    Profile - Task: StructureDefinition-MedMij-Task.html
+    Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
+    Profile - Endpoint: StructureDefinition-MedMij-Endpoint.html
+    Profile - Device: StructureDefinition-KT2Device.html
+    Extension - Resource Origin: StructureDefinition-resource-origin.html
+    Extension - Endpoint Extension: StructureDefinition-KT2EndpointExtension.html
+    Extension - Publisher Id: StructureDefinition-KT2PublisherId.html
+    Extension - Correlation Id: StructureDefinition-correlation-id.html
+    Extension - Request Id: StructureDefinition-request-id.html
+    Extension - Trace Id: StructureDefinition-trace-id.html
+    Extension - Instantiates: StructureDefinition-instantiates.html
+    Example Scenario 1 (COPD) - Task - Van Duinen: Task-KoppelMij-Task-Questionnaire-Van-Duinen.html
+    Example Scenario 1 (COPD) - Task Update - Van Duinen: Task-KoppelMij-Task-Update-Questionnaire-Van-Duinen.html
+    Example Scenario 1 (COPD) - ActivityDefinition - COPD: ActivityDefinition-KoppelMij-ActivityDefinition-COPD-Questionnaire.html
+    Example Scenario 1 (COPD) - Endpoint - COPD: Endpoint-KoppelMij-Endpoint-Vragenlijst-COPD.html
+    Example Scenario 1 (COPD) - Patient - Van Duinen: Patient-KoppelMij-Patient-Van-Duinen.html
+    Example Scenario 1 (COPD) - PractitionerRole - De Haard: PractitionerRole-KoppelMij-PractitionerRole-De-Haard.html
+    Example Scenario 1 (COPD) - Practitioner - De Haard: Practitioner-KoppelMij-Practitioner-De-Haard.html
+    Example Scenario 1 (COPD) - Organization - Medrie: Organization-KoppelMij-Organization-Huisartsenpraktijk-Medrie.html
+    Example Scenario 2 (Angststoornis) - Task - De Groot: Task-KoppelMij-Task-Questionnaire-De-Groot.html
+    Example Scenario 2 (Angststoornis) - ActivityDefinition - Angststoornis: ActivityDefinition-KoppelMij-ActivityDefinition-Angststoornis-Questionnaire.html
+    Example Scenario 2 (Angststoornis) - Endpoint - Angststoornis: Endpoint-KoppelMij-Endpoint-Vragenlijst-Angststoornis.html
+    Example Scenario 2 (Angststoornis) - Patient - De Groot: Patient-KoppelMij-Patient-De-Groot.html
+    Example Scenario 2 (Angststoornis) - PractitionerRole - Vonk: PractitionerRole-KoppelMij-PractitionerRole-Vonk.html
+    Example Scenario 2 (Angststoornis) - Practitioner - Vonk: Practitioner-KoppelMij-Practitioner-Vonk.html
+    Example Scenario 2 (Angststoornis) - Organization - GGZ: Organization-KoppelMij-Organization-GGZ.html
   Uitleg:
     OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
