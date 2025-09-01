@@ -70,6 +70,7 @@ Usage: #example
   * value = "13fe98b3-70a0-4e39-9e6f-4a0a5c04d45c"
 * version = "1.0.0"
 * name = "COPD vragenlijst"
+* url = "https://example.com/activity1"
 * title = "Vragenlijst klachten"
 * status = #active
 * description = "Vul de vragenlijst met klachten in. Dit kost ongeveer 2 minuten"

@@ -7,11 +7,11 @@ Description: "The (FHIR) Task (resource) describes an eHealth task, that is, an 
 * insert PublisherAndContact
 * ^purpose = "KoppelMij allows a patient, from the portal or from a personal health environment (PGO), to use a module (from a third party) at the instruction of the healthcare provider (for example, to complete a questionnaire)."
 * insert Copyright
-* . 
+* .
   * ^short = "Task"
   * ^alias = "Task"
 * insert Origin
-* . 
+* .
 ^definition = "An eHealth activity assigned to a patient."
 * extension contains
     KT2_Instantiates named instantiates 0..*
@@ -19,7 +19,7 @@ Description: "The (FHIR) Task (resource) describes an eHealth task, that is, an 
   * ^definition = "Reference to the ActivityDefinition, which conforms to the MedMij ActivityDefinition profile."
   * ^comment = "Use this extension to refer to the ActivityDefinition it instantiates."
   * ^isModifier = false
-* instantiatesCanonical only Canonical(KT2_ActivityDefinition)
+* instantiatesCanonical only Canonical(MedMij-ActivityDefinition)
   * ^comment = "As of 2023-11-02 this element is no longer used in Koppeltaal 2.0. Use the extension `instantiates` instead."
 * partOf only Reference(MedMij-Task)
 * code from $koppeltaal-task-code-vs (extensible)
@@ -32,7 +32,7 @@ Description: "The (FHIR) Task (resource) describes an eHealth task, that is, an 
 * requester only Reference(http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthProfessional-PractitionerRole)
   * ^comment = """
     Each occurrence of the zib HealthProfessional is normally represented by _two_ FHIR resources: a PractitionerRole resource (instance of [nl-core-HealthProfessional-PractitionerRole](http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthProfessional-PractitionerRole)) and a Practitioner resource (instance of [nl-core-HealthProfessional-Practitioner](http://nictiz.nl/fhir/StructureDefinition/nl-core-HealthProfessional-Practitioner)). The Practitioner resource is referenced from the PractitionerRole instance. For this reason, sending systems should fill the reference to the PractitionerRole instance here, and not the Practitioner resource. Receiving systems can then retrieve the reference to the Practitioner resource from that PractitionerRole instance.
-    
+
     In rare circumstances, there is only a Practitioner instance, in which case it is that instance which will be referenced here. However, since this should be the exception, the nl-core-HealthProfessional-Practitioner profile is not explicitly mentioned as a target profile.
     """
   * ^definition = "In Koppeltaal this element contains a reference to the person requesting the eHealth Task"
@@ -69,7 +69,7 @@ Description: "ValueSet for Task.code"
 * insert ContactAndPublisher
 * include codes from system KoppeltaalTaskCode
 * include codes from system http://hl7.org/fhir/CodeSystem/task-code
-* include codes from system http://hl7.org/fhir/smart-app-launch/CodeSystem/smart-codes 
+* include codes from system http://hl7.org/fhir/smart-app-launch/CodeSystem/smart-codes
 
 CodeSystem: KoppeltaalTaskCode
 Id: koppeltaal-task-code

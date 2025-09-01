@@ -43,6 +43,7 @@ Usage: #example
   * value = "cb2ca8b6-4d5f-480b-a8fe-4c574f1e38ae"
 * version = "1.0.0"
 * name = "Angststoornis vragenlijst"
+* url = "https://example.com/activity1"
 * title = "Vragenlijst ......."
 * status = #active
 * description = "Vul deze vragenlijst voorafgaand aan de CGT-sessie in"
