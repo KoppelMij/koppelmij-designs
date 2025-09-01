@@ -39,9 +39,9 @@ build-ig:
 		echo "ERROR: Build did not create ./output/package.tgz"; \
 		exit 1; \
 	fi
-	@echo "Copying package.tgz to: ./output/koppeltaalv2-$(VERSION).tgz"
-	@cp ./output/package.tgz ./output/koppeltaalv2-$(VERSION).tgz
-	@echo "Successfully created: ./output/koppeltaalv2-$(VERSION).tgz"
+	@echo "Copying package.tgz to: ./output/koppelmij-$(VERSION).tgz"
+	@cp ./output/package.tgz ./output/koppelmij-$(VERSION).tgz
+	@echo "Successfully created: ./output/koppelmij-$(VERSION).tgz"
 
 # Show version
 .PHONY: version
