@@ -18,7 +18,7 @@ all: build
 
 # Build target (full documentation package)
 .PHONY: build
-build: install-dependencies build-ig
+build: install-dependencies convert-drawio build-ig
 
 # Install dependencies
 .PHONY: install-dependencies
@@ -48,6 +48,11 @@ build-ig:
 version:
 	@echo "Version: $(VERSION)"
 
+# Convert drawio files to PNG
+.PHONY: convert-drawio
+convert-drawio:
+	@python3 scripts/convert_drawio.py
+
 # Clean target (optional)
 .PHONY: clean
 clean:
@@ -60,6 +65,7 @@ help:
 	@echo "  build    - Run the complete FHIR build process (full documentation package)"
 	@echo "  install-dependencies  - Install FHIR dependencies"
 	@echo "  build-ig - Build Implementation Guide using FHIR publisher (full)"
+	@echo "  convert-drawio - Convert all drawio files to PNG format"
 	@echo "  version  - Show the current version from sushi-config.yaml"
 	@echo "  clean    - Clean build artifacts (not implemented)"
 	@echo "  help     - Show this help message"
