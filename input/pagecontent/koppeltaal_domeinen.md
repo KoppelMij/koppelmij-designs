@@ -94,16 +94,45 @@ Optie 4: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij 
 
 <img src="koppeltaal/optie4.png" alt="Optie 4 Architectuur" style="width: 100%; float: none;"/>
 
+## Optie 5: DVA met dubbele launch mogelijkheid
+
+Optie 5: De DVA voorziet naast een launch voor de patiënt via de PGO ook een launch voor het behandelportaal. Het behandelportaal kan gestart worden in de context van de cliënt, waarbij de behandelaar taken voor de cliënt kan aanmaken en beheren.
+
+### Workflow:
+- Zorgaanbieder start het behandelportaal via de DVA in de context van de cliënt
+- Behandelaar maakt in het behandelportaal een taak aan voor de cliënt
+- DVA slaat de taak op en maakt deze beschikbaar voor verzameling
+- PGO haalt taken op bij de DVA en toont deze aan de patiënt
+- Patiënt start de taak met een launch naar de module
+- Module haalt de taak op bij de DVA en voert updates uit
+- Zowel PGO als behandelportaal kunnen de updates zien
+
+### Voordelen
+- **Directe toegang behandelaar**: Behandelaar kan direct in de context van de cliënt werken
+- **Geïntegreerde werkstroom**: Taken worden centraal beheerd in de DVA
+- **Flexibele toegang**: Zowel patiënt (via PGO) als behandelaar (via behandelportaal) hebben toegang
+- **Eenvoudige architectuur**: Alle componenten communiceren via de DVA
+
+### Uitdagingen
+- **Dubbele launch implementatie**: DVA moet launches voor zowel PGO als behandelportaal ondersteunen
+- **Autorisatie complexiteit**: Verschillende autorisatieniveaus voor patiënt en behandelaar
+- **Context beheer**: DVA moet de juiste context doorgeven aan beide portalen
+
+### Architectuur
+
+<img src="koppeltaal/optie5.png" alt="Optie 5 Architectuur" style="width: 100%; float: none;"/>
+
 ## Vergelijking van opties
 
-| Aspect                 | Optie 1   | Optie 2   | Optie 3        | Optie 4        |
-|------------------------|-----------|-----------|----------------|----------------|
-| **Complexiteit**       | Laag      | Middel    | Hoog           | Hoog           |
-| **Standaardisatie**    | Volledig  | Geen      | Deels          | Deels          |
-| **Flexibiliteit**      | Beperkt   | Middel    | Hoog           | Zeer hoog      |
-| **Integratie EPD**     | Geen      | Custom    | Via Koppeltaal | Via Koppeltaal |
-| **Onderhoudskosten**   | Laag      | Middel    | Hoog           | Zeer hoog      |
-| **Gebruikerservaring** | Eenvoudig | Eenvoudig | Complex        | Middel         |
+| Aspect                  | Optie 1   | Optie 2   | Optie 3        | Optie 4        | Optie 5        |
+|-------------------------|-----------|-----------|----------------|----------------|----------------|
+| **Complexiteit**        | Laag      | Middel    | Hoog           | Hoog           | Middel         |
+| **Standaardisatie**     | Volledig  | Geen      | Deels          | Deels          | Volledig       |
+| **Flexibiliteit**       | Beperkt   | Middel    | Hoog           | Zeer hoog      | Hoog           |
+| **Integratie EPD**      | Geen      | Custom    | Via Koppeltaal | Via Koppeltaal | Niet nodig     |
+| **Onderhoudskosten**    | Laag      | Middel    | Hoog           | Zeer hoog      | Middel         |
+| **Gebruikerservaring**  | Eenvoudig | Eenvoudig | Complex        | Middel         | Eenvoudig      |
+| **Behandelaar toegang** | Geen      | Via EPD   | Via portaal    | Via portaal    | Direct via DVA |
 
 ## Aanbevelingen
 

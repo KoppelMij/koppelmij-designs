@@ -1,0 +1,62 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.2.3">
+  <diagram name="Page-1" id="AHYJxbk9YULL7Bk-z8VX">
+    <mxGraphModel dx="1232" dy="816" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="8134mIudAPuQFdkFbRee-2" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 5;fillColor=none;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="760" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-3" value="Zorgaanbieder" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="60" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-4" value="DVA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="260" y="170" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-5" value="PGO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" vertex="1" parent="1">
+          <mxGeometry x="440" y="170" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-6" value="Module" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFD700;strokeColor=#000000;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="440" y="320" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-7" value="taken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="379" y="195" as="sourcePoint" />
+            <mxPoint x="439" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-8" value="SMART on FHIR" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;startArrow=classic;startFill=1;" edge="1" parent="1" source="8134mIudAPuQFdkFbRee-4" target="8134mIudAPuQFdkFbRee-6">
+          <mxGeometry x="-0.1803" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-9" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8134mIudAPuQFdkFbRee-5" target="8134mIudAPuQFdkFbRee-6">
+          <mxGeometry x="-0.4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="440" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-10" value="Behandel&lt;div&gt;portaal&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="260" y="320" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-11" value="SMART on FHIR" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;startArrow=classic;startFill=1;" edge="1" parent="1" source="8134mIudAPuQFdkFbRee-4" target="8134mIudAPuQFdkFbRee-10">
+          <mxGeometry x="0.4" y="20" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="440" y="290" as="sourcePoint" />
+            <mxPoint x="560" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-12" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="8134mIudAPuQFdkFbRee-4" target="8134mIudAPuQFdkFbRee-10">
+          <mxGeometry x="-0.4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="530" y="350" as="targetPoint" />
+            <mxPoint x="530" y="250" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-13" value="Maakt taak" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;position2=1;base=20;size=30;position=0.75;" vertex="1" parent="1">
+          <mxGeometry x="150" y="260" width="120" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
