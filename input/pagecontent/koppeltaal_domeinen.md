@@ -94,29 +94,35 @@ Optie 4: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij 
 
 <img src="koppeltaal/optie4.png" alt="Optie 4 Architectuur" style="width: 100%; float: none;"/>
 
-## Optie 5: DVA met dubbele launch mogelijkheid
+## Optie 5: Geharmoniseerd autorisatiemodel met SMART on FHIR
 
-Optie 5: De DVA voorziet naast een launch voor de patiënt via de PGO ook een launch voor het behandelportaal. Het behandelportaal kan gestart worden in de context van de cliënt, waarbij de behandelaar taken voor de cliënt kan aanmaken en beheren.
+Optie 5: Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via een via SMART on FHIR app launch wordt geëffectueerd. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende systemen wordt vermeden. Alle componenten worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext.
+
+### Kernprincipe
+Het scenario van coëxistentie (zoals in optie 3) is onwenselijk omdat twee verschillende systemen en afsprakenstelsels gegevens moeten synchroniseren. Met optie 5 wordt één uniform autorisatiemodel toegepast, waardoor vanuit de module, patiënt portaal en/of behandelportaal het niet meer uitmaakt of de toegang via een Koppeltaal domein of vanuit een DVA gebeurt.
 
 ### Workflow:
-- Zorgaanbieder start het behandelportaal via de DVA in de context van de cliënt
-- Behandelaar maakt in het behandelportaal een taak aan voor de cliënt
-- DVA slaat de taak op en maakt deze beschikbaar voor verzameling
-- PGO haalt taken op bij de DVA en toont deze aan de patiënt
-- Patiënt start de taak met een launch naar de module
-- Module haalt de taak op bij de DVA en voert updates uit
-- Zowel PGO als behandelportaal kunnen de updates zien
+- DVA lanceert componenten altijd met de juiste SMART on FHIR context:
+  - **Patient context**: Voor het Patiënt Portaal
+  - **Practitioner context**: Voor het Behandelportaal
+  - **Task context**: Voor directe module toegang
+- Patiënt Portaal, Behandelportaal, en PGO kunnen alle drie modules lanceren
+- Module ontvangt altijd de juiste context via SMART on FHIR, onafhankelijk van de bron
+- Module is agnostisch voor de herkomst (Koppeltaal domein of DVA)
+- Updates worden via dezelfde gestandaardiseerde interface afgehandeld
 
 ### Voordelen
-- **Directe toegang behandelaar**: Behandelaar kan direct in de context van de cliënt werken
-- **Geïntegreerde werkstroom**: Taken worden centraal beheerd in de DVA
-- **Flexibele toegang**: Zowel patiënt (via PGO) als behandelaar (via behandelportaal) hebben toegang
-- **Eenvoudige architectuur**: Alle componenten communiceren via de DVA
+- **Geen synchronisatie problemen**: Één afsprakenstelsel voorkomt dubbele data en synchronisatie-issues
+- **Uniform autorisatiemodel**: Consistent autorisatiemodel voor alle gebruikerstypes
+- **Toekomstbestendig**: Convergeert naar één geharmoniseerd systeem
+- **Module-agnostisch**: Modules hoeven geen onderscheid te maken tussen verschillende bronnen
+- **Vereenvoudigde architectuur**: Alle communicatie via dezelfde SMART on FHIR standaard
 
-### Uitdagingen
-- **Dubbele launch implementatie**: DVA moet launches voor zowel PGO als behandelportaal ondersteunen
-- **Autorisatie complexiteit**: Verschillende autorisatieniveaus voor patiënt en behandelaar
-- **Context beheer**: DVA moet de juiste context doorgeven aan beide portalen
+### Implementatie aspecten
+- **Gefaseerde harmonisatie**: Geleidelijke convergentie van Koppeltaal naar het geharmoniseerde model
+- **Standaard-compliant**: Volledig gebaseerd op SMART on FHIR specificaties
+- **Context-aware**: Elke launch bevat de juiste gebruikerscontext
+- **Eenvoudige integratie**: Modules implementeren één interface voor alle scenario's
 
 ### Architectuur
 
@@ -124,15 +130,17 @@ Optie 5: De DVA voorziet naast een launch voor de patiënt via de PGO ook een la
 
 ## Vergelijking van opties
 
-| Aspect                  | Optie 1   | Optie 2   | Optie 3        | Optie 4        | Optie 5        |
-|-------------------------|-----------|-----------|----------------|----------------|----------------|
-| **Complexiteit**        | Laag      | Middel    | Hoog           | Hoog           | Middel         |
-| **Standaardisatie**     | Volledig  | Geen      | Deels          | Deels          | Volledig       |
-| **Flexibiliteit**       | Beperkt   | Middel    | Hoog           | Zeer hoog      | Hoog           |
-| **Integratie EPD**      | Geen      | Custom    | Via Koppeltaal | Via Koppeltaal | Niet nodig     |
-| **Onderhoudskosten**    | Laag      | Middel    | Hoog           | Zeer hoog      | Middel         |
-| **Gebruikerservaring**  | Eenvoudig | Eenvoudig | Complex        | Middel         | Eenvoudig      |
-| **Behandelaar toegang** | Geen      | Via EPD   | Via portaal    | Via portaal    | Direct via DVA |
+| Aspect                  | Optie 1   | Optie 2   | Optie 3        | Optie 4        | Optie 5                  |
+|-------------------------|-----------|-----------|----------------|----------------|--------------------------|
+| **Complexiteit**        | Laag      | Middel    | Hoog           | Hoog           | Laag-Middel              |
+| **Standaardisatie**     | Volledig  | Geen      | Deels          | Deels          | Volledig (SMART)         |
+| **Flexibiliteit**       | Beperkt   | Middel    | Hoog           | Zeer hoog      | Zeer hoog                |
+| **Integratie EPD**      | Geen      | Custom    | Via Koppeltaal | Via Koppeltaal | Via geharmoniseerd model |
+| **Onderhoudskosten**    | Laag      | Middel    | Hoog           | Zeer hoog      | Laag                     |
+| **Gebruikerservaring**  | Eenvoudig | Eenvoudig | Complex        | Middel         | Eenvoudig                |
+| **Behandelaar toegang** | Geen      | Via EPD   | Via portaal    | Via portaal    | Via context-aware launch |
+| **Synchronisatie**      | N.v.t.    | Nodig     | Complex        | Complex        | Niet nodig               |
+| **Toekomstbestendig**   | Beperkt   | Beperkt   | Tijdelijk      | Overgangsfase  | Zeer hoog                |
 
 ## Aanbevelingen
 
