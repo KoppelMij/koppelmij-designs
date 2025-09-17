@@ -21,7 +21,7 @@ def convert_with_cli(input_file, output_file):
     """Convert using drawio CLI"""
     # In Docker container, we need to use xvfb-run for headless operation
     if os.path.exists('/.dockerenv'):
-        cmd = ['xvfb-run', '-a', 'drawio', '-x', '-f', 'png', '-b', '10', '-o', output_file, input_file]
+        cmd = ['xvfb-run', '-a', 'drawio', '--no-sandbox', '-x', '-f', 'png', '-b', '10', '-o', output_file, input_file]
     else:
         cmd = ['drawio', '-x', '-f', 'png', '-b', '10', '-o', output_file, input_file]
 
