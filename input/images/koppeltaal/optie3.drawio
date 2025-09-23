@@ -30,9 +30,9 @@
         <mxCell id="h2PCSnKk_ekNYF-T4rP--3" value="Module" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFD700;strokeColor=#000000;fontSize=18;" parent="1" vertex="1">
           <mxGeometry x="539" y="310" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--4" value="&lt;b&gt;koppeltaal&lt;/b&gt;&lt;div&gt;&lt;b&gt;deelnemer&lt;/b&gt;&lt;/div&gt;" style="edgeStyle=elbowEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;startArrow=classic;startFill=0;endArrow=none;strokeWidth=3;elbow=vertical;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1">
+        <mxCell id="h2PCSnKk_ekNYF-T4rP--4" value="&lt;b&gt;koppeltaal&lt;/b&gt;&lt;div&gt;&lt;b&gt;deelnemer&lt;/b&gt;&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;startArrow=classic;startFill=0;endArrow=none;strokeWidth=3;elbow=vertical;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="h2PCSnKk_ekNYF-T4rP--14">
           <mxGeometry x="-0.0759" y="-16" relative="1" as="geometry">
-            <mxPoint x="339" y="204" as="sourcePoint" />
+            <mxPoint x="400" y="270" as="sourcePoint" />
             <mxPoint x="449" y="205" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
