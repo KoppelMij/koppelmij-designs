@@ -1,81 +1,68 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
-  <diagram name="Page-1" id="koppeltaal-optie3">
-    <mxGraphModel dx="1114" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram name="Page-1" id="AHYJxbk9YULL7Bk-z8VX">
+    <mxGraphModel dx="1199" dy="761" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="container-left" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 5;fillColor=none;strokeColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="30" y="30" width="360" height="370" as="geometry" />
+        <mxCell id="8134mIudAPuQFdkFbRee-2" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 5;fillColor=none;strokeColor=#000000;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="760" height="370" as="geometry" />
         </mxCell>
-        <mxCell id="container-right" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=5 5;fillColor=none;strokeColor=#000000;" parent="1" vertex="1">
-          <mxGeometry x="430" y="30" width="360" height="370" as="geometry" />
+        <mxCell id="8134mIudAPuQFdkFbRee-3" value="Zorgaanbieder" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=0;" parent="1" vertex="1">
+          <mxGeometry x="360" y="60" width="120" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="label-koppelmij" value="Koppeltaal" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="150" y="50" width="120" height="30" as="geometry" />
+        <mxCell id="8134mIudAPuQFdkFbRee-4" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;font style=&quot;font-size: 14px;&quot;&gt;DVA of Koppeltaal domein&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" parent="1" vertex="1">
+          <mxGeometry x="250" y="140" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="label-zorgaanbieder" value="Zorgaanbieder" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=0;" parent="1" vertex="1">
-          <mxGeometry x="550" y="50" width="120" height="30" as="geometry" />
+        <mxCell id="8134mIudAPuQFdkFbRee-5" value="PGO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" parent="1" vertex="1">
+          <mxGeometry x="470" y="140" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="taken-arrow" value="taken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;" parent="1" edge="1">
+        <mxCell id="8134mIudAPuQFdkFbRee-6" value="Module" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFD700;strokeColor=#000000;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry x="470" y="290" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-7" value="OAuth2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeColor=#000000;fontSize=12;startArrow=classic;startFill=0;endArrow=none;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="8134mIudAPuQFdkFbRee-4" target="8134mIudAPuQFdkFbRee-5" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="630" y="205" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--1" value="DVA" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" parent="1" vertex="1">
-          <mxGeometry x="449" y="180" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--2" value="PGO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B3D9FF;strokeColor=#000000;fontSize=18;arcSize=15;" parent="1" vertex="1">
-          <mxGeometry x="629" y="180" width="120" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--3" value="Module" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFD700;strokeColor=#000000;fontSize=18;" parent="1" vertex="1">
-          <mxGeometry x="539" y="310" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--4" value="&lt;b&gt;koppeltaal&lt;/b&gt;&lt;div&gt;&lt;b&gt;deelnemer&lt;/b&gt;&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;startArrow=classic;startFill=0;endArrow=none;strokeWidth=3;elbow=vertical;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" edge="1" source="h2PCSnKk_ekNYF-T4rP--14">
-          <mxGeometry x="-0.0759" y="-16" relative="1" as="geometry">
-            <mxPoint x="400" y="270" as="sourcePoint" />
-            <mxPoint x="449" y="205" as="targetPoint" />
+            <mxPoint x="259" y="165" as="sourcePoint" />
+            <mxPoint x="319" y="165" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--5" value="taken" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#000000;fontSize=12;" parent="1" source="h2PCSnKk_ekNYF-T4rP--1" target="h2PCSnKk_ekNYF-T4rP--2" edge="1">
+        <mxCell id="8134mIudAPuQFdkFbRee-8" value="SMART on FHIR&lt;div&gt;app launch&lt;/div&gt;&lt;div&gt;(Task)&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;startArrow=classic;startFill=1;" parent="1" source="8134mIudAPuQFdkFbRee-4" target="8134mIudAPuQFdkFbRee-6" edge="1">
+          <mxGeometry x="0.1798" y="11" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-9" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8134mIudAPuQFdkFbRee-5" target="8134mIudAPuQFdkFbRee-6" edge="1">
+          <mxGeometry x="-0.4" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="320" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8134mIudAPuQFdkFbRee-12" value="SMART on FHIR&lt;div&gt;app launch&lt;/div&gt;&lt;div&gt;(Patient /&amp;nbsp;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Practitioner&lt;/span&gt;&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8134mIudAPuQFdkFbRee-4" target="cy_ahVFa6HVUHWgnelpP-1" edge="1">
+          <mxGeometry y="10" relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="200" y="290" as="targetPoint" />
+            <mxPoint x="200" y="190" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cy_ahVFa6HVUHWgnelpP-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cy_ahVFa6HVUHWgnelpP-1" target="8134mIudAPuQFdkFbRee-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--6" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" parent="1" source="h2PCSnKk_ekNYF-T4rP--2" target="h2PCSnKk_ekNYF-T4rP--3" edge="1">
-          <mxGeometry x="0.1" y="10" relative="1" as="geometry">
-            <mxPoint as="offset" />
-            <mxPoint x="629" y="300" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--7" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.008;entryY=0.367;entryDx=0;entryDy=0;strokeColor=#000000;dashed=1;dashPattern=3 3;fontSize=11;entryPerimeter=0;edgeStyle=orthogonalEdgeStyle;" parent="1" source="h2PCSnKk_ekNYF-T4rP--1" target="h2PCSnKk_ekNYF-T4rP--3" edge="1">
-          <mxGeometry x="-0.1" y="5" relative="1" as="geometry">
+        <mxCell id="cy_ahVFa6HVUHWgnelpP-3" value="launch" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="cy_ahVFa6HVUHWgnelpP-2" vertex="1" connectable="0">
+          <mxGeometry x="0.0333" y="-2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--8" value="&lt;div style=&quot;line-height: 70%;&quot;&gt;&lt;font style=&quot;font-size: 10px; line-height: 70%;&quot;&gt;EPD&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px; line-height: 70%;&quot;&gt;behandel- en/of&amp;nbsp; patient portaal&lt;/font&gt;&lt;span style=&quot;caret-color: rgba(0, 0, 0, 0); color: rgba(0, 0, 0, 0); font-family: monospace; font-size: 0px; text-align: start; text-wrap-mode: nowrap; line-height: 100%;&quot;&gt;%3CmxGraphModel%3E%3Croot%3E%3CmxCell%20id%3D%220%22%2F%3E%3CmxCell%20id%3D%221%22%20parent%3D%220%22%2F%3E%3CmxCell%20id%3D%222%22%20value%3D%22EPD%22%20style%3D%22rounded%3D0%3BwhiteSpace%3Dwrap%3Bhtml%3D1%3BfillColor%3D%2390EE90%3BstrokeColor%3D%23000000%3BfontSize%3D18%3B%22%20vertex%3D%221%22%20parent%3D%221%22%3E%3CmxGeometry%20x%3D%22250%22%20y%3D%22180%22%20width%3D%22120%22%20height%3D%2250%22%20as%3D%22geometry%22%2F%3E%3C%2FmxCell%3E%3C%2Froot%3E%3C%2FmxGraphModel%3E&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;" parent="1" vertex="1">
-          <mxGeometry x="79" y="179" width="120" height="50" as="geometry" />
+        <mxCell id="cy_ahVFa6HVUHWgnelpP-1" value="&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;font style=&quot;font-size: 12px; line-height: 100%;&quot;&gt;Patient&amp;nbsp; / Behandel&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 12px; line-height: 100%;&quot;&gt;Portaal&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=18;verticalAlign=middle;" parent="1" vertex="1">
+          <mxGeometry x="250" y="290" width="120" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--9" value="Module" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFD700;strokeColor=#000000;fontSize=18;" parent="1" vertex="1">
-          <mxGeometry x="159" y="310" width="120" height="60" as="geometry" />
+        <mxCell id="8134mIudAPuQFdkFbRee-13" value="Maakt taak" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;position2=1;base=20;size=30;position=0.75;" parent="1" vertex="1">
+          <mxGeometry x="140" y="220" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--10" value="Maakt taak" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="1" vertex="1">
-          <mxGeometry x="79" y="110" width="120" height="80" as="geometry" />
+        <mxCell id="FcpIPLqm7r6Kxf1jZpRy-1" value="Harmonisatie op het autorisatiemodel en SMART on FHIR app launch wordt de defacto standaard om zowel de module applicatie als de portalen te koppelen." style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="440" width="560" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--12" value="SMART on FHIR&amp;nbsp;&lt;div&gt;(app &amp;amp; backend)&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.575;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;startArrow=classic;startFill=1;entryPerimeter=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;opacity=10;" parent="1" source="h2PCSnKk_ekNYF-T4rP--14" target="h2PCSnKk_ekNYF-T4rP--9" edge="1">
-          <mxGeometry x="-0.0737" y="10" relative="1" as="geometry">
-            <mxPoint as="offset" />
-            <mxPoint x="269" y="230" as="sourcePoint" />
-            <mxPoint x="109" y="400" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--13" value="launch" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;opacity=10;" parent="1" source="h2PCSnKk_ekNYF-T4rP--8" target="h2PCSnKk_ekNYF-T4rP--9" edge="1">
-          <mxGeometry x="-0.0069" y="-1" relative="1" as="geometry">
-            <mxPoint as="offset" />
-            <mxPoint x="649" y="390" as="targetPoint" />
-            <mxPoint x="679" y="290" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="h2PCSnKk_ekNYF-T4rP--14" value="FHIR Service" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=15;" parent="1" vertex="1">
-          <mxGeometry x="279" y="164" width="60" height="80" as="geometry" />
+        <mxCell id="f7gBogksQmtnomkRgFfb-1" value="&lt;span style=&quot;color: rgb(0, 0, 0); font-family: Helvetica; font-size: 20px; font-style: italic; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 700; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;Optie 3: Harmonisatie op autorisatie en authenticatie&lt;/span&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="750" height="70" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
