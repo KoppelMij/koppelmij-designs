@@ -108,7 +108,7 @@ Optie 2a: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij
 
 <img src="koppeltaal/optie2b.png" alt="Optie 4 Architectuur" style="width: 100%; float: none;"/>
 
-## Optie 3: Harmonisatie op autorisatie en authenticatie
+## Optie 3: Harmonisatie van autorisatie, authenticatie en standaarden
 
 Optie 3: Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via SMART on FHIR app launch wordt geëffectueerd. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende afsprakenstelsels niet vanuit het afsprakenstelsel noodzakelijk is. Indien gewenst kan coëxistentie altijd geïmplementeerd worden door bijvoorbeeld een DVA die ook in een Koppeltaal domein actief is. Alle applicaties worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext, waardoor het proces uniform wordt voor leveranciers van zowel module- als portaalapplicaties.
 
