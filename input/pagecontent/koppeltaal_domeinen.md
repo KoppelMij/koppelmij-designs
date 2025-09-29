@@ -1,10 +1,28 @@
 # Het gebruik van Koppeltaal Domeinen in de context van KoppelMij
 
-Het uitgangspunt van de KoppelMij startnotitie is dat er vanuit het perspectief van de moduleleverancier onderzocht wordt of met dezelfde standaarden en afspraken het mogelijk is modules aan te bieden vanuit een PGO binnen MedMij. Daarnaast staat er in de notitie dat het ook mogelijk moet zijn dezelfde modules via andere kanalen aan te bieden. Tevens blijkt het juridisch onderzoek / aanbevelingen dat het wenselijk is meerdere kanalen de module te kunnen ontsluiten. Vervoegelijk is ervan uitgegaan dat deze tweede ingang vanuit de achterliggende systemen van de zorgaanbieder komt.
+Het uitgangspunt van de KoppelMij startnotitie is het ontwikkelen van een standaard om Koppeltaal eHealth-interventies (modules) beschikbaar te stellen in MedMij PGO's.
+
+Als achtergrondinfo hierbij de tekst uit paragraaf 2.1 Doelen van de startnotitie:
+
+**Het doel is het beschikbaar stellen van Koppeltaal eHealth-interventies (modules) in MedMij PGO's.**
+
+Daarnaast is een lange termijndoel van de beheerders van beide afsprakenstelsels: harmonisatie van Koppeltaal en MedMij. Harmonisatie in de standaarden is nodig om de volgende redenen:
+
+• Vergroten van de regiefunctie van de patiënt middels een PGO.
+
+• Hergebruik en gedane investering van leveranciers en zorgaanbieders
+
+• De drempel wordt lager om nieuwe leveranciers te laten toetreden
+
+• Bevordering van toepassing hybride zorg met landelijke standaarden sectorbreed
+
+Dit project is een eerste stap in de harmonisatie.
+
+De huidige route voor toegang tot modules via clienten-/patient-portalen voor Zorgaanbieders moet in stand blijven. Een client/patient moet zelf kunnen kiezen of hij de taak voor een module wil starten via het clienten/patientenportaal of via de PGO. Daarnaast moet de module toegankelijk zijn, ook als de PGO tijdelijk niet beschikbaar is. Een Zorgaanbieder heeft immers zorgplicht maar geen zeggenschap over de PGO.
 
 ## Optie 0: DVA en achterliggende systemen
 
-Optie 0: Het uitgangspunt bij deze optie is dat de plaats en het systeem waar de taak wordt aangemaakt buiten het KoppelMij stelsel ligt. Het KoppelMij stelsel doet geen uitspraken over waar of hoe de taak wordt aangemaakt - dit kan in een Xis (zorginformatiesysteem), een Koppeltaal domein, of een ander achterliggend systeem zijn. De DVA ontsluit deze taken naar de PGO, ongeacht hun oorsprong. Dit is de basislijn voor de PoCs, waarbij we ervanuit gaan dat de PGO een systeem ontsluit dat in staat is taken te tonen en te lanceren.
+Het uitgangspunt bij deze optie is dat de plaats en het systeem waar de taak wordt aangemaakt buiten het KoppelMij project ligt. Het KoppelMij project doet geen uitspraken over waar of hoe de taak wordt aangemaakt - dit kan in een Xis (zorginformatiesysteem), een Koppeltaal domein, of een ander achterliggend systeem zijn. De DVA ontsluit deze taken naar de PGO, ongeacht hun oorsprong. Dit is de basislijn voor de PoCs, waarbij we ervanuit gaan dat de PGO een systeem ontsluit dat in staat is taken te tonen en te lanceren.
 
 ### Workflow:
 - Zorgaanbieder maakt in een achterliggend systeem een taak aan
@@ -14,16 +32,17 @@ Optie 0: Het uitgangspunt bij deze optie is dat de plaats en het systeem waar de
 - PGO verzamelt en ziet de updates
 
 ### Architectuur
-Bij deze optie is de DVA volledig verantwoordelijk voor het beheer van taken. De architectuur is relatief eenvoudig met een directe koppeling tussen DVA, PGO en module. Dit is de basisimplementatie zoals voorzien in de KoppelMij standaard.
+Bij deze optie is de DVA verantwoordelijk voor het ontsluiten van taken naar de PGO. De architectuur is relatief eenvoudig met een directe koppeling tussen DVA, PGO en module. Dit is de basisimplementatie zoals voorzien in de KoppelMij standaard.
 
-<img src="koppeltaal/optie0.png" alt="Optie 1 Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie0.png" alt="Optie 0 Architectuur" style="width: 100%; float: none;"/>
 
-## Optie 1: Coëxistentie Xis en Koppeltaal
+## Optie 1: Zowel Xis als Koppeltaal-FHIR service als bron van FHIR-taken
+
 In deze optie kunnen taken worden aangemaakt in zowel een Koppeltaal domein als in een extern systeem (Xis). De module moet in dit scenario omgaan met taken uit beide bronnen. Het verschil tussen optie 1a en 1b ligt in de architectuur van de FHIR bron.
 
 ## Optie 1a: Coëxistentie Xis en Koppeltaal (Xis als FHIR bron)
 
-Optie 1a: In dit model fungeert een applicatie binnen koppeltaal als FHIR bron. De DVA communiceert rechtstreeks met de applicatie voor het ophalen en updaten van taken.
+In dit model fungeert een applicatie binnen koppeltaal als FHIR bron. De DVA communiceert rechtstreeks met de applicatie voor het ophalen en updaten van taken.
 
 ### Workflow:
 - Zorgaanbieder maakt in een koppeltaal applicatie een taak aan
@@ -38,22 +57,22 @@ Deze optie vereist een niet-gestandaardiseerde integratie tussen de DVA en het E
 
 ### Architectuur
 
-<img src="koppeltaal/optie1a.png" alt="Optie 2a Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie1a.png" alt="Optie 1a Architectuur" style="width: 100%; float: none;"/>
 
 ## Optie 1b: Coëxistentie Xis en Koppeltaal (DVA als deelnemer)
 
-Optie 1b: In dit model is de FHIR resource service van Koppeltaal de  FHIR bron. De DVA wordt deelnemer in het Koppeltaal domein en communiceert met de Koppeltaal FHIR resource service voor het ophalen en updaten van taken. Dit betekent dat de DVA zich conformeert aan de Koppeltaal standaard als deelnemende applicatie. Verder is het zo dat het koppeltaal domein niet de enige bron is van de taken is, de module applicatie kan er niet van uitgaan dat koppeltaal de enige bron van de FHIR resources is.
+In dit model is de FHIR resource service van Koppeltaal de FHIR bron. De DVA wordt deelnemer in het Koppeltaal domein en communiceert met de Koppeltaal FHIR resource service voor het ophalen en updaten van taken. Dit betekent dat de DVA zich conformeert aan de Koppeltaal standaard als deelnemende applicatie. Verder is het zo dat het koppeltaal domein niet de enige bron is van de taken is, de module applicatie kan er niet van uitgaan dat koppeltaal de enige bron van de FHIR resources is.
 
 ### Architectuur
 
-<img src="koppeltaal/optie1b.png" alt="Optie 2 Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie1b.png" alt="Optie 1b Architectuur" style="width: 100%; float: none;"/>
 
 ## Optie 2: Volledige en exclusieve koppeling met een Koppeltaal domein
 > ⚠️ **Deze optie(s) voldoet niet aan de uitgangspunten van KoppelMij, omdat deze de aanwezigheid van een koppeltaaldomein _vereist_. Dit houdt in dat een Koppeltaal domein altijd aanwezig en actief moet zijn om de beschreven alternatieven te laten werken. Daarmee wordt niet gesteld dat koppelingen met koppeltaal niet in andere scenario's mogelijk zijn.**
 
 ## Optie 2a: Volledige en exclusieve koppeling met een koppeltaal domein
 
-Optie 2a: Zowel een Koppeltaal domein als een MedMij zorgaanbieding coëxisteren. In dit geval worden taken (primair) aangemaakt in het EPD en opgeslagen in de FHIR resource service van het koppeltaaldomein. In dat geval wordt de koppeling tussen de Koppeltaal FHIR service met de DVA gemaakt, en zou dit onderhevig kunnen zijn aan enige vorm van standaardisatie. De DVA zou dan de taken kunnen ophalen en updaten in de context van de PGO sessie van de gebruiker. De module kent in dit scenario twee SMART on FHIR "ingangen", de via de PGO in de context van de gebruiker en via het patiëntportaal in de context van het koppeltaaldomein.
+Zowel een Koppeltaal domein als een MedMij zorgaanbieding coëxisteren. In dit geval worden taken (primair) aangemaakt in het EPD en opgeslagen in de FHIR resource service van het koppeltaaldomein. In dat geval wordt de koppeling tussen de Koppeltaal FHIR service met de DVA gemaakt, en zou dit onderhevig kunnen zijn aan enige vorm van standaardisatie. De DVA zou dan de taken kunnen ophalen en updaten in de context van de PGO sessie van de gebruiker. De module kent in dit scenario twee SMART on FHIR "ingangen", de via de PGO in de context van de gebruiker en via het patiëntportaal in de context van het koppeltaaldomein.
 
 ### Vragen die hier opkomen zijn:
 - **Hoe gaat de moduleapplicatie om met twee verschillende databronnen en vooral twee verschillende achterliggende authorisatiemodellen:**
@@ -79,11 +98,11 @@ Deze optie introduceert significante complexiteit door het samenbrengen van twee
 
 ### Architectuur
 
-<img src="koppeltaal/optie2a.png" alt="Optie 3 Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie2a.png" alt="Optie 2a Architectuur" style="width: 100%; float: none;"/>
 
 ## Optie 2b: Volledige en exclusieve koppeling met een decentrale koppeltaal voorziening
 
-Optie 2a: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij voorziening aan. Dit maakt het mogelijk om vanuit de DVA zowel modules, EPDs en Patiëntenportalen via de koppeltaalstandaard te koppelen, als PGO's en modules via de KoppelMij standaard.
+DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij voorziening aan. Dit maakt het mogelijk om vanuit de DVA zowel modules, EPDs en Patiëntenportalen via de koppeltaalstandaard te koppelen, als PGO's en modules via de KoppelMij standaard.
 
 ### Workflow:
 - Zorgaanbieder maakt in een EPD of behandelportaal een taak aan, deze wordt in de koppeltaal FHIR service in het koppeltaaldomein zichtbaar
@@ -106,11 +125,11 @@ Optie 2a: DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij
 
 ### Architectuur
 
-<img src="koppeltaal/optie2b.png" alt="Optie 4 Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie2b.png" alt="Optie 2b Architectuur" style="width: 100%; float: none;"/>
 
 ## Optie 3: Harmonisatie van autorisatie, authenticatie en standaarden
 
-Optie 3: Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via SMART on FHIR app launch wordt geëffectueerd. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende afsprakenstelsels niet vanuit het afsprakenstelsel noodzakelijk is. Indien gewenst kan coëxistentie altijd geïmplementeerd worden door bijvoorbeeld een DVA die ook in een Koppeltaal domein actief is. Alle applicaties worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext, waardoor het proces uniform wordt voor leveranciers van zowel module- als portaalapplicaties.
+Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via SMART on FHIR app launch wordt geëffectueerd. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende afsprakenstelsels niet vanuit het afsprakenstelsel noodzakelijk is. Indien gewenst kan coëxistentie altijd geïmplementeerd worden door bijvoorbeeld een DVA die ook in een Koppeltaal domein actief is. Alle applicaties worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext, waardoor het proces uniform wordt voor leveranciers van zowel module- als portaalapplicaties.
 
 ### Kernprincipe
 Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het autorisatiemodel wordt een harmonisatie bereikt op het niveau van standaarden, waardoor optimale schaalbaarheid wordt gerealiseerd.
@@ -140,7 +159,7 @@ Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het au
 
 ### Architectuur
 
-<img src="koppeltaal/optie3.png" alt="Optie 5 Architectuur" style="width: 100%; float: none;"/>
+<img src="koppeltaal/optie3.png" alt="Optie 3 Architectuur" style="width: 100%; float: none;"/>
 
 ## Vergelijking van opties
 
@@ -171,4 +190,4 @@ Bij het kiezen tussen deze opties zijn de volgende overwegingen belangrijk:
 
 5. **Gebruikerservaring**: Complexere architecturen kunnen leiden tot verwarring bij eindgebruikers, vooral wanneer er meerdere toegangspunten zijn.
 
-De keuze hangt sterk af van de specifieke context en requirements van de implementatie. Voor een eerste implementatie is Optie 1 waarschijnlijk het meest haalbaar, terwijl Optie 4 de meeste flexibiliteit biedt voor organisaties die beide ecosystemen willen ondersteunen.
+De keuze hangt sterk af van de specifieke context en requirements van de implementatie. Voor een eerste implementatie is Optie 1 waarschijnlijk het meest haalbaar, terwijl Optie 2b de meeste flexibiliteit biedt voor organisaties die beide ecosystemen willen ondersteunen.
