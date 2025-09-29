@@ -20,9 +20,28 @@ Dit project is een eerste stap in de harmonisatie.
 
 De huidige route voor toegang tot modules via clienten-/patient-portalen voor Zorgaanbieders moet in stand blijven. Een client/patient moet zelf kunnen kiezen of hij de taak voor een module wil starten via het clienten/patientenportaal of via de PGO. Daarnaast moet de module toegankelijk zijn, ook als de PGO tijdelijk niet beschikbaar is. Een Zorgaanbieder heeft immers zorgplicht maar geen zeggenschap over de PGO.
 
+## Belangrijke begrippen en onderscheid
+
+Het is belangrijk onderscheid te maken tussen twee concepten die regelmatig door elkaar heen worden gebruikt:
+
+**Co-existentie:** Het wel of niet vereist zijn van een Koppeltaal domein om de MedMij use cases te realiseren.
+
+**Meervoudige toegang:** Het feit dat modules zowel via KoppelMij als via een andere weg toegankelijk moeten zijn.
+
+Deze zaken worden nu door elkaar heen gebruikt, maar het is van belang ze te onderscheiden. Wel is het zo dat uit Meervoudige toegang foutief Co-existentie kan worden geconcludeerd.
+
+- **Meervoudige toegang** is een functionele eis: modules moeten via meerdere kanalen bereikbaar zijn
+- **Co-existentie** is een architecturale vraag: of Koppeltaal domein aanwezig moet zijn voor MedMij functionaliteit
+
+Deze begripsverheldering is essentieel voor het juist interpreteren van de verschillende opties die in dit document worden beschreven.
+
 ## Optie 0: DVA en achterliggende systemen
 
-Het uitgangspunt bij deze optie is dat de plaats en het systeem waar de taak wordt aangemaakt buiten het KoppelMij project ligt. Het KoppelMij project doet geen uitspraken over waar of hoe de taak wordt aangemaakt - dit kan in een Xis (zorginformatiesysteem), een Koppeltaal domein, of een ander achterliggend systeem zijn. De DVA ontsluit deze taken naar de PGO, ongeacht hun oorsprong. Dit is de basislijn voor de PoCs, waarbij we ervanuit gaan dat de PGO een systeem ontsluit dat in staat is taken te tonen en te lanceren.
+Het uitgangspunt bij deze optie is dat de plaats en het systeem waar de taak wordt aangemaakt buiten de scope van de KoppelMij standaard ligt. De KoppelMij standaard doet geen uitspraken over waar of hoe de taak wordt aangemaakt - dit kan in een Xis (zorginformatiesysteem), een Koppeltaal domein, of een ander achterliggend systeem zijn. De DVA ontsluit deze taken naar de PGO, ongeacht hun oorsprong.
+
+Dit scenario is van toepassing voor alle Zorgaanbieders, zowel die wel als die geen Koppeltaal gebruiken. Het Xis kan zowel een KT-Xis als een niet-KT-Xis zijn - de KoppelMij standaard maakt hier geen onderscheid in.
+
+Dit is de basislijn voor de PoCs, waarbij we ervanuit gaan dat de PGO een systeem ontsluit dat in staat is taken te tonen en te lanceren.
 
 ### Workflow:
 - Zorgaanbieder maakt in een achterliggend systeem een taak aan
@@ -38,7 +57,7 @@ Bij deze optie is de DVA verantwoordelijk voor het ontsluiten van taken naar de 
 
 ## Optie 1: Zowel Xis als Koppeltaal-FHIR service als bron van FHIR-taken
 
-In deze optie kunnen taken worden aangemaakt in zowel een Koppeltaal domein als in een extern systeem (Xis). De module moet in dit scenario omgaan met taken uit beide bronnen. Het verschil tussen optie 1a en 1b ligt in de architectuur van de FHIR bron.
+In deze optie erkent en beschrijft de KoppelMij standaard expliciet dat taken kunnen worden aangemaakt in zowel een Koppeltaal domein als in een extern systeem (Xis). De standaard doet uitspraken over hoe deze coëxistentie werkt en hoe de module moet omgaan met taken uit beide bronnen. Het verschil tussen optie 1a en 1b ligt in de architectuur van de FHIR bron en de manier waarop de DVA integreert met het Koppeltaal ecosysteem.
 
 ## Optie 1a: Coëxistentie Xis en Koppeltaal (Xis als FHIR bron)
 
@@ -134,15 +153,36 @@ Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt
 ### Kernprincipe
 Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het autorisatiemodel wordt een harmonisatie bereikt op het niveau van standaarden, waardoor optimale schaalbaarheid wordt gerealiseerd.
 
+### Autorisatie contexten
+Het model voorziet in drie contexten van autorisatie die uiteindelijk beproefd kunnen worden:
+
+**1. Taak context (Patient-centric):**
+- Een taak van een patiënt die kan worden uitgevoerd als patiënt, maar ook als derde of behandelaar
+- Specifieke taak-gebaseerde autorisatie ongeacht wie de taak uitvoert
+
+**2. Patiënt context (Self-service):**
+- De context van een patiënt: de taken, de status en eventuele zelfhulp/zelfstarten
+- Patient-geïnitieerde toegang tot eigen gegevens en modules
+
+**3. Behandelaar context (Professional care):**
+- De context van de behandelaar: de cliënten en de zorgteams, alles wat er nodig is om behandelingen aan te bieden
+- Behandelaar-geïnitieerde toegang tot meerdere patiënten en zorgprocessen
+
+**Aanvullende overwegingen:**
+- De scope van de zorgmanager/beheerder kan nog benoemd worden
+- Voor EPD-integratie wordt aangenomen dat applicatie-level toegang het meest geschikt is
+- Of alle drie contexten binnen scope van het huidige project vallen, staat nog open voor besluitvorming
+
 ### Workflow:
-- DVA of Koppeltaaldomein start applicaties altijd met de juiste SMART on FHIR context:
-  - **Patient context**: Voor het Patiënt Portaal
-  - **Practitioner context**: Voor het Behandelportaal
-  - **Task context**: Voor directe module toegang
-- Patiënt EPD, Portaal, Behandelportaal, en PGO kunnen alle drie modules lanceren
-- Module ontvangt altijd de juiste context via SMART on FHIR, onafhankelijk van de bron
+- Alle portalen gebruiken hetzelfde SMART on FHIR launch mechanisme, maar met verschillende contexten:
+  - **Clientportaal**: Start modules met **Patient context** (toegang tot gegevens van die specifieke patiënt)
+  - **Behandelportaal**: Start modules met **Practitioner context** (toegang tot alle patiënten van die behandelaar)
+  - **PGO**: Start modules met **Patient context** (vergelijkbaar met clientportaal)
+  - **Task-gebaseerde launch**: Start modules met **Task context** (specifieke taak voor specifieke patiënt, zoals al bestaat in Koppeltaal)
+- Module ontvangt altijd de juiste context via SMART on FHIR, onafhankelijk van welk portaal de launch initieert
 - Module is agnostisch voor de herkomst (Koppeltaal domein of een KoppelMij zorgaanbieding)
 - Updates worden via dezelfde gestandaardiseerde interface afgehandeld
+- **Kernvoordeel**: Modules implementeren één SMART on FHIR interface voor alle scenario's
 
 ### Voordelen
 - **Geen synchronisatie problemen**: Één afsprakenstelsel voorkomt dubbele data en synchronisatie-issues
@@ -156,6 +196,25 @@ Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het au
 - **Standaard-compliant**: Volledig gebaseerd op SMART on FHIR specificaties
 - **Context-aware**: Elke launch bevat de juiste gebruikerscontext
 - **Eenvoudige integratie**: Modules implementeren één interface voor alle scenario's
+
+### Ontwikkelingsstappen
+**1. Autorisatiemodel ontwikkeling:**
+- Het beschrijven/vaststellen van het autorisatiemodel wordt door Koppeltaal gedaan
+- Koppeltaal neemt de lead in het definiëren van de geharmoniseerde autorisatie-aanpak
+
+**2. Transitiefase strategie:**
+- Koppeltaal gaat in de transitiefase beide modellen ondersteunen (bestaand + geharmoniseerd)
+- Het autorisatiemodel van de patiënt wordt beproefd in het KoppelMij traject
+- Parallelle ontwikkeling en testing van nieuwe aanpak
+
+**3. Proces aanpak:**
+- Eerst een visie-uitspraak hebben over de gewenste eindtoestand
+- Dan, op basis van de leveranciers die aan tafel zitten en de use cases die we met elkaar bepalen, aan de standaardisatie werken
+- Praktische implementatie gebaseerd op concrete deelnemers en scenario's
+
+**4. Technische wijzigingen:**
+- **Belangrijk**: De harmonisatie van SMART on FHIR app launch voor portalen in Koppeltaal vereist een aanpassing in de Koppeltaal standaard
+- Coördinatie tussen Koppeltaal en KoppelMij standaard-ontwikkeling is essentieel
 
 ### Architectuur
 
