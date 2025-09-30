@@ -59,7 +59,7 @@ Bij deze optie is de DVA verantwoordelijk voor het ontsluiten van taken naar de 
 
 In deze optie erkent en beschrijft de KoppelMij standaard expliciet dat taken kunnen worden aangemaakt in zowel een Koppeltaal domein als in een extern systeem (Xis). De standaard doet uitspraken over hoe deze coëxistentie werkt en hoe de module moet omgaan met taken uit beide bronnen. Het verschil tussen optie 1a en 1b ligt in de architectuur van de FHIR bron en de manier waarop de DVA integreert met het Koppeltaal ecosysteem.
 
-## Optie 1a: Coëxistentie Xis en Koppeltaal (Xis als FHIR bron)
+## Optie 1a: Zowel Xis als Koppeltaal-FHIR service als bron van FHIR-taken (Xis als FHIR bron)
 
 In dit model fungeert een applicatie binnen koppeltaal als FHIR bron. De DVA communiceert rechtstreeks met de applicatie voor het ophalen en updaten van taken.
 
@@ -78,7 +78,7 @@ Deze optie vereist een niet-gestandaardiseerde integratie tussen de DVA en het E
 
 <img src="koppeltaal/optie1a.png" alt="Optie 1a Architectuur" style="width: 100%; float: none;"/>
 
-## Optie 1b: Coëxistentie Xis en Koppeltaal (DVA als deelnemer)
+## Optie 1b: Zowel Xis als Koppeltaal-FHIR service als bron van FHIR-taken (DVA als deelnemer)
 
 In dit model is de FHIR resource service van Koppeltaal de FHIR bron. De DVA wordt deelnemer in het Koppeltaal domein en communiceert met de Koppeltaal FHIR resource service voor het ophalen en updaten van taken. Dit betekent dat de DVA zich conformeert aan de Koppeltaal standaard als deelnemende applicatie. Verder is het zo dat het koppeltaal domein niet de enige bron is van de taken is, de module applicatie kan er niet van uitgaan dat koppeltaal de enige bron van de FHIR resources is.
 
@@ -190,6 +190,24 @@ Het model voorziet in drie contexten van autorisatie die uiteindelijk beproefd k
 - **Toekomstbestendig**: Convergeert naar één geharmoniseerd systeem
 - **Module-agnostisch**: Modules hoeven geen onderscheid te maken tussen verschillende bronnen
 - **Vereenvoudigde architectuur**: Alle communicatie via dezelfde SMART on FHIR standaard
+
+### Synchronisatie van taakstatussen
+De harmonisatie op SMART on FHIR niveau maakt synchronisatie tussen portalen (clientportaal en PGO) eenvoudiger:
+
+**SMART on FHIR mechanisme:**
+- **Authenticatie**: Gebruiker achter het toetsenbord wordt geauthenticeerd (id_token)
+- **Autorisatie**: Gebruiker wordt geautoriseerd voor toegang tot FHIR service (access_token)
+- Werkt in alle afsprakenstelsels hetzelfde na harmonisatie
+
+**Synchronisatie voordelen:**
+- Vanuit perspectief van portalen en modules wordt synchronisatie **technisch eenvoudiger**
+- Achterliggende systeem (DVA of Koppeltaal) moet zorgen dat alle partijen naar **dezelfde gegevensbron** kijken
+- Uniforme FHIR profiles en autorisatiemodel vergemakkelijken gegevensdeling
+
+**FHIR Subscriptions:**
+- Portaal kan in gebruikerscontext een **subscription** nemen op FHIR queries (bijvoorbeeld taken)
+- Portaal ontvangt dan **off band** updates bij wijzigingen
+- **Belangrijke voorwaarde**: Juiste toestemmingen voor subscriptions moeten geregeld zijn
 
 ### Implementatie aspecten
 - **Gefaseerde harmonisatie**: Geleidelijke convergentie van Koppeltaal naar het geharmoniseerde model
