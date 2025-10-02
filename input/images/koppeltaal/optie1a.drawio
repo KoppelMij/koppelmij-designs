@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.16 Chrome/132.0.6834.196 Electron/34.2.0 Safari/537.36" version="26.0.16">
   <diagram name="Page-1" id="_e-w09hOYbzFDcze72WV">
-    <mxGraphModel dx="1199" dy="761" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1010" dy="736" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -108,8 +108,8 @@
         <mxCell id="BYSqtYEgL_toLtNQTXlD-8" value="Opmerking: taken in koppeltaal in de kunnen zowel vanaf de PGO als het clientportaal gestart worden. Taken die in het XIS / HIS aangemaakt worden niet. De moduleleverancier aan de linkerkant zie dus meer taken dan in koppeltaal" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="90" y="540" width="510" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="IC9dfRqDVBWA_XuxrOKh-1" value="Optie 1a: Coëxistentie&amp;nbsp;XIS en Koppeltaal" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=3;fontSize=20;" parent="1" vertex="1">
-          <mxGeometry x="10" width="440" height="30" as="geometry" />
+        <mxCell id="IC9dfRqDVBWA_XuxrOKh-1" value="Optie 1a: Zowel Xis als Koppeltaal-FHIR service als bron van FHIR-taken (Xis als FHIR bron)" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=3;fontSize=20;" parent="1" vertex="1">
+          <mxGeometry x="29" y="14" width="770" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
