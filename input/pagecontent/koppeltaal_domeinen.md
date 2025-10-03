@@ -156,17 +156,22 @@ Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het au
 ### Autorisatie contexten
 Het model voorziet in drie contexten van autorisatie die uiteindelijk beproefd kunnen worden:
 
-**1. Taak context (Patient-centric):**
-- Een taak van een patiënt die kan worden uitgevoerd als patiënt, maar ook als derde of behandelaar
+**1. Taak context (Task-centric):**
+- Een taak die kan worden uitgevoerd door een patiënt, RelatedPerson of behandelaar
 - Specifieke taak-gebaseerde autorisatie ongeacht wie de taak uitvoert
+- De toegang is beperkt tot de context van die specifieke taak
 
-**2. Patiënt context (Self-service):**
-- De context van een patiënt: de taken, de status en eventuele zelfhulp/zelfstarten
-- Patient-geïnitieerde toegang tot eigen gegevens en modules
+**2. Patiënt/RelatedPerson context (Personal access):**
+- Een Patient of RelatedPerson doet een launch naar een portaal
+- De gebruiker ziet alle resources waar zij toegang tot hebben:
+  - Patient: eigen gegevens, eigen taken, betrokken zorgverleners
+  - RelatedPerson: gegevens van de patiënt(en) waarvoor zij gemachtigd zijn
+- Dit is de persoonlijke toegangscontext voor niet-professionals
 
 **3. Behandelaar context (Professional care):**
 - De context van de behandelaar: de cliënten en de zorgteams, alles wat er nodig is om behandelingen aan te bieden
 - Behandelaar-geïnitieerde toegang tot meerdere patiënten en zorgprocessen
+- Professionele toegang met bredere rechten dan persoonlijke toegang
 
 **Aanvullende overwegingen:**
 - De scope van de zorgmanager/beheerder kan nog benoemd worden
@@ -175,11 +180,17 @@ Het model voorziet in drie contexten van autorisatie die uiteindelijk beproefd k
 
 ### Workflow:
 - Alle portalen initiëren een SMART on FHIR launch naar modules, waarbij het achterliggende systeem (Koppeltaal domein, DVA of Xis) de SMART on FHIR specificatie implementeert
-- Het achterliggende systeem voert authenticatie en autorisatie uit en bepaalt de context:
-  - **Clientportaal**: Start modules met **Patient context** (toegang tot gegevens van die specifieke patiënt)
-  - **Behandelportaal**: Start modules met **Practitioner context** (toegang tot alle patiënten van die behandelaar)
-  - **PGO**: Start modules met **Patient context** (vergelijkbaar met clientportaal)
-  - **Task-gebaseerde launch**: Start modules met **Task context** (specifieke taak voor specifieke patiënt, zoals al bestaat in Koppeltaal)
+- Het achterliggende systeem voert authenticatie en autorisatie uit en bepaalt de context op basis van:
+  1. **Type gebruiker** (Patient, RelatedPerson, Practitioner)
+  2. **Type launch** (Task-specifiek of portaal-breed)
+
+- De contexten worden als volgt toegepast:
+  - **Task launch**: Start met **Task context** - beperkte toegang tot resources gerelateerd aan die specifieke taak
+  - **Patiëntportaal door Patient**: Start met **Patient context** - toegang tot alle eigen gegevens
+  - **Portaal door RelatedPerson**: Start met **RelatedPerson context** - toegang tot geautoriseerde patiëntgegevens
+  - **Behandelportaal door Practitioner**: Start met **Practitioner context** - toegang tot meerdere patiënten
+  - **PGO door Patient**: Start met **Patient context** - vergelijkbaar met patiëntportaal
+
 - Module ontvangt altijd de juiste context via SMART on FHIR van het achterliggende systeem
 - Module is agnostisch voor de herkomst (Koppeltaal domein of een KoppelMij zorgaanbieding)
 - Updates worden via dezelfde gestandaardiseerde interface afgehandeld
