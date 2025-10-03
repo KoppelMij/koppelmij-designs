@@ -37,13 +37,6 @@
             <mxPoint x="390" y="280" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="8134mIudAPuQFdkFbRee-12" value="SMART on FHIR&lt;div&gt;app launch&lt;/div&gt;&lt;div&gt;(Patient&lt;span style=&quot;background-color: light-dark(#ffffff, var(--ge-dark-color, #121212)); color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="8134mIudAPuQFdkFbRee-4" target="cy_ahVFa6HVUHWgnelpP-1" edge="1">
-          <mxGeometry x="0.1409" y="12" relative="1" as="geometry">
-            <mxPoint as="offset" />
-            <mxPoint x="270" y="290" as="targetPoint" />
-            <mxPoint x="270" y="190" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="cy_ahVFa6HVUHWgnelpP-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="cy_ahVFa6HVUHWgnelpP-1" target="8134mIudAPuQFdkFbRee-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
@@ -79,13 +72,6 @@
         </mxCell>
         <mxCell id="8134mIudAPuQFdkFbRee-13" value="Maakt taak" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;position2=1;base=20;size=30;position=0.75;" parent="1" vertex="1">
           <mxGeometry x="80" y="230" width="120" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="VYO9Jjl8WV9sqVUqGdIa-2" value="SMART on FHIR&lt;div&gt;app launch&lt;/div&gt;&lt;div&gt;(&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;Practitioner&lt;/span&gt;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: light-dark(#ffffff, var(--ge-dark-color, #121212));&quot;&gt;)&lt;/span&gt;&lt;/div&gt;" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=2;fontSize=11;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="VYO9Jjl8WV9sqVUqGdIa-1">
-          <mxGeometry x="0.0826" y="-14" relative="1" as="geometry">
-            <mxPoint y="-1" as="offset" />
-            <mxPoint x="390" y="300" as="targetPoint" />
-            <mxPoint x="290" y="190" as="sourcePoint" />
-          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>

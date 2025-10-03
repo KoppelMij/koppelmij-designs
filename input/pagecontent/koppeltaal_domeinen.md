@@ -309,6 +309,8 @@ In deze optie ligt de nadruk op een uniforme SMART on FHIR launch waarbij:
 - Modules ontvangen altijd dezelfde SMART on FHIR launch, ongeacht het portaal of afsprakenstelsel
 - De SMART on FHIR launch is geharmoniseerd over alle implementaties
 
+<img src="koppeltaal/optie3%20light.png" alt="Optie 3 Light Architectuur" style="width: 100%; float: none;"/>
+
 ## Vergelijking van opties
 
 | Aspect                  | Optie 0          | Optie 1a       | Optie 1b       | Optie 2a       | Optie 2b       | Optie 3                  | Optie 3 Light             |
