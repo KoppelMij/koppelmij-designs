@@ -148,7 +148,7 @@ DVA biedt zowel een decentrale koppeltaalvoorziening als een KoppelMij voorzieni
 
 ## Optie 3: Harmonisatie van autorisatie, authenticatie en standaarden
 
-Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via SMART on FHIR app launch wordt geëffectueerd. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende afsprakenstelsels niet vanuit het afsprakenstelsel noodzakelijk is. Indien gewenst kan coëxistentie altijd geïmplementeerd worden door bijvoorbeeld een DVA die ook in een Koppeltaal domein actief is. Alle applicaties worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext, waardoor het proces uniform wordt voor leveranciers van zowel module- als portaalapplicaties.
+Een geharmoniseerde aanpak waarbij het autorisatiemodel per type gebruiker wordt vastgelegd en via SMART on FHIR app launch wordt geëffectueerd. Belangrijk hierbij is dat SMART on FHIR wordt gebruikt voor user-level access - toegang tot FHIR resources op basis van de ingelogde gebruiker - in tegenstelling tot SMART on FHIR backend services waar applicaties op applicatie-niveau zonder gebruikerscontext toegang krijgen. Dit model wordt op termijn geharmoniseerd met Koppeltaal, waardoor coëxistentie van twee verschillende afsprakenstelsels niet vanuit het afsprakenstelsel noodzakelijk is. Indien gewenst kan coëxistentie altijd geïmplementeerd worden door bijvoorbeeld een DVA die ook in een Koppeltaal domein actief is. Alle applicaties worden gestart met SMART on FHIR app launch in de juiste gebruikerscontext, waardoor het proces uniform wordt voor leveranciers van zowel module- als portaalapplicaties.
 
 ### Kernprincipe
 Door het harmoniseren van het FHIR model, het authenticatie mechanisme en het autorisatiemodel wordt een harmonisatie bereikt op het niveau van standaarden, waardoor optimale schaalbaarheid wordt gerealiseerd.
@@ -174,12 +174,13 @@ Het model voorziet in drie contexten van autorisatie die uiteindelijk beproefd k
 - Of alle drie contexten binnen scope van het huidige project vallen, staat nog open voor besluitvorming
 
 ### Workflow:
-- Alle portalen gebruiken hetzelfde SMART on FHIR launch mechanisme, maar met verschillende contexten:
+- Alle portalen initiëren een SMART on FHIR launch naar modules, waarbij het achterliggende systeem (Koppeltaal domein, DVA of Xis) de SMART on FHIR specificatie implementeert
+- Het achterliggende systeem voert authenticatie en autorisatie uit en bepaalt de context:
   - **Clientportaal**: Start modules met **Patient context** (toegang tot gegevens van die specifieke patiënt)
   - **Behandelportaal**: Start modules met **Practitioner context** (toegang tot alle patiënten van die behandelaar)
   - **PGO**: Start modules met **Patient context** (vergelijkbaar met clientportaal)
   - **Task-gebaseerde launch**: Start modules met **Task context** (specifieke taak voor specifieke patiënt, zoals al bestaat in Koppeltaal)
-- Module ontvangt altijd de juiste context via SMART on FHIR, onafhankelijk van welk portaal de launch initieert
+- Module ontvangt altijd de juiste context via SMART on FHIR van het achterliggende systeem
 - Module is agnostisch voor de herkomst (Koppeltaal domein of een KoppelMij zorgaanbieding)
 - Updates worden via dezelfde gestandaardiseerde interface afgehandeld
 - **Kernvoordeel**: Modules implementeren één SMART on FHIR interface voor alle scenario's
@@ -196,7 +197,9 @@ De harmonisatie op SMART on FHIR niveau maakt synchronisatie tussen portalen (cl
 
 **SMART on FHIR mechanisme:**
 - **Authenticatie**: Gebruiker achter het toetsenbord wordt geauthenticeerd (id_token)
-- **Autorisatie**: Gebruiker wordt geautoriseerd voor toegang tot FHIR service (access_token)
+- **Autorisatie**: Gebruiker wordt geautoriseerd voor toegang tot FHIR service (access_token met user-level scope)
+- **User-level access**: Toegang tot resources is altijd gekoppeld aan de ingelogde gebruiker
+- **Geen backend services**: In tegenstelling tot SMART on FHIR backend services is er altijd een gebruikerscontext
 - Werkt in alle afsprakenstelsels hetzelfde na harmonisatie
 
 **Synchronisatie voordelen:**
@@ -238,20 +241,77 @@ De harmonisatie op SMART on FHIR niveau maakt synchronisatie tussen portalen (cl
 
 <img src="koppeltaal/optie3.png" alt="Optie 3 Architectuur" style="width: 100%; float: none;"/>
 
+## Optie 3 Light: Gestandaardiseerde SMART on FHIR launch naar modules zonder wijziging portaal toegang
+
+Deze lichtgewicht variant van optie 3 focust zich uitsluitend op het standaardiseren van de launch van portalen naar modules. Portalen hoeven zelf niet via SMART on FHIR app launch opgestart te worden - zij kunnen hun bestaande toegangsmechanismen blijven gebruiken. Wat wel gestandaardiseerd wordt is hoe portalen modules starten: dit gebeurt altijd via een geharmoniseerde SMART on FHIR launch. De portalen initiëren een SMART on FHIR launch naar de module, waarbij deze launch vanuit verschillende bronnen (Koppeltaal domein, DVA of Xis) altijd identiek werkt voor de module applicatie.
+
+Deze optie kan een pragmatische tussenstap zijn naar de volledige realisatie van Optie 3, waarbij eerst de module-launch wordt geharmoniseerd voordat de complete SMART on FHIR harmonisatie voor alle componenten wordt doorgevoerd. In essentie is Optie 3 Light een uitbreiding van Optie 0, waarbij als extra scope het gestandaardiseerd starten van modules vanuit portalen via SMART on FHIR wordt toegevoegd.
+
+### Kernprincipe
+Standaardisatie van alleen het launch-mechanisme van portaal naar module:
+- **Portalen behouden bestaande toegang**: Portalen hoeven zelf niet via SMART on FHIR opgestart te worden
+- **Gestandaardiseerde module launch**: Portalen initiëren wel een SMART on FHIR launch naar modules
+- **Uniforme module interface**: Modules ontvangen altijd dezelfde SMART on FHIR launch, ongeacht het portaal
+- **Harmonisatie over afsprakenstelsels**: De SMART on FHIR launch werkt identiek in Koppeltaal en KoppelMij contexten
+- **Verantwoordelijkheid SMART on FHIR implementatie**: Hoewel portalen de launch initiëren, zijn het Koppeltaal domein, de DVA of het Xis verantwoordelijk voor het daadwerkelijk implementeren van de SMART on FHIR app launch, inclusief authenticatie en autorisatie
+
+### Launch bronnen
+De gestandaardiseerde launch kan geïnitieerd worden vanuit verschillende bronnen, waaronder:
+1. **Koppeltaal domein**: Via bestaande Koppeltaal infrastructuur
+2. **DVA**: Via KoppelMij zorgaanbiedingsdienst
+3. **Xis**: Direct vanuit zorginformatiesystemen
+
+### Workflow
+- Portaal gebruikt zijn bestaande toegangsmechanisme (geen wijziging nodig)
+- Portaal initieert een gestandaardiseerde SMART on FHIR launch naar de module
+- Het achterliggende systeem (Koppeltaal domein, DVA of Xis) verwerkt de launch en voert authenticatie/autorisatie uit
+- Module ontvangt de SMART on FHIR launch met gebruikerscontext (taak ID, patient ID, etc.)
+- Module krijgt via het achterliggende systeem toegang tot FHIR resources op basis van de verkregen autorisatie
+- Updates verlopen via de reguliere kanalen (DVA, Koppeltaal, etc.)
+- Deze SMART on FHIR launch werkt identiek vanuit elk type portaal
+
+### Voordelen
+- **Minimale impact op portalen**: Portalen behouden hun bestaande toegangsmechanismen
+- **Uniformiteit voor modules**: Modules ontvangen altijd dezelfde SMART on FHIR launch
+- **Lage implementatiedrempel**: Portalen hoeven alleen de module launch aan te passen
+- **Flexibiliteit**: Werkt met bestaande portaal infrastructuur
+- **Snellere adoptie**: Geen wijziging in hoe portalen zelf worden opgestart
+- **Geharmoniseerde standaard**: Eén SMART on FHIR launch standaard voor alle afsprakenstelsels
+
+### Nadelen
+- **Beperkte functionaliteit**: Geen volledige SMART on FHIR voordelen
+- **Minder toekomstbestendig**: Mogelijk tussenstap naar volledige harmonisatie
+- **Context beperking**: Minder rijke context-informatie beschikbaar
+
+### Implementatie aspecten
+- **SMART on FHIR launch standaard**: Definiëren van uniforme SMART on FHIR launch vanuit portalen
+- **Portaal aanpassing**: Portalen implementeren de SMART on FHIR launch naar modules op een gestandaardiseerde manier
+- **Module requirements**: Modules implementeren volledige SMART on FHIR app launch ontvangst
+- **Geen wijziging portaal toegang**: Portalen blijven hun huidige toegangsmechanismen gebruiken
+- **Backwards compatible**: Kan naast bestaande implementaties functioneren
+
+### Architectuur
+In deze optie ligt de nadruk op een uniforme SMART on FHIR launch waarbij:
+- Portalen blijven werken met hun bestaande toegangsmechanismen
+- Portalen initiëren een gestandaardiseerde SMART on FHIR launch naar modules
+- Het achterliggende systeem (Koppeltaal domein, DVA of Xis) implementeert de SMART on FHIR app launch.
+- Modules ontvangen altijd dezelfde SMART on FHIR launch, ongeacht het portaal of afsprakenstelsel
+- De SMART on FHIR launch is geharmoniseerd over alle implementaties
+
 ## Vergelijking van opties
 
-| Aspect                  | Optie 0          | Optie 1a         | Optie 1b         | Optie 2a         | Optie 2b         | Optie 3                  |
-|-------------------------|------------------|------------------|------------------|------------------|------------------|--------------------------|
-| **Complexiteit**        | Laag             | Middel           | Middel           | Hoog             | Hoog             | Laag-Middel              |
-| **Standaardisatie**     | KoppelMij        | Deels            | Deels            | Koppeltaal       | Beide            | Volledig (SMART)         |
-| **Flexibiliteit**       | Beperkt          | Middel           | Middel           | Hoog             | Zeer hoog        | Zeer hoog                |
-| **Integratie EPD**      | Buiten scope     | Via applicatie   | Via Koppeltaal   | Via Koppeltaal   | Via Koppeltaal   | Via geharmoniseerd model |
-| **Onderhoudskosten**    | Laag             | Middel           | Middel           | Hoog             | Zeer hoog        | Laag                     |
-| **Gebruikerservaring**  | Eenvoudig        | Complex          | Complex          | Complex          | Middel           | Eenvoudig                |
-| **Behandelaar toegang** | Via ext. systeem | Via beide        | Via beide        | Via portaal      | Via portaal      | Via context-aware launch |
-| **Synchronisatie**      | N.v.t.           | Nodig            | Nodig            | Complex          | Complex          | Niet nodig               |
-| **Toekomstbestendig**   | Basis            | Tijdelijk        | Tijdelijk        | Beperkt          | Overgangsfase    | Zeer hoog                |
-| **Module complexiteit** | Enkel KoppelMij  | Dubbel model     | Dubbel model     | Dubbel model     | Dubbel model     | Uniform model            |
+| Aspect                  | Optie 0          | Optie 1a       | Optie 1b       | Optie 2a       | Optie 2b       | Optie 3                  | Optie 3 Light             |
+|-------------------------|------------------|----------------|----------------|----------------|----------------|--------------------------|---------------------------|
+| **Complexiteit**        | Laag             | Middel         | Middel         | Hoog           | Hoog           | Laag-Middel              | Laag                      |
+| **Standaardisatie**     | KoppelMij        | Deels          | Deels          | Koppeltaal     | Beide          | Volledig (SMART)         | Launch alleen             |
+| **Flexibiliteit**       | Beperkt          | Middel         | Middel         | Hoog           | Zeer hoog      | Zeer hoog                | Hoog                      |
+| **Integratie EPD**      | Buiten scope     | Via applicatie | Via Koppeltaal | Via Koppeltaal | Via Koppeltaal | Via geharmoniseerd model | Via bestaande kanalen     |
+| **Onderhoudskosten**    | Laag             | Middel         | Middel         | Hoog           | Zeer hoog      | Laag                     | Zeer laag                 |
+| **Gebruikerservaring**  | Eenvoudig        | Complex        | Complex        | Complex        | Middel         | Eenvoudig                | Eenvoudig                 |
+| **Behandelaar toegang** | Via ext. systeem | Via beide      | Via beide      | Via portaal    | Via portaal    | Via context-aware launch | Via uniforme launch       |
+| **Synchronisatie**      | N.v.t.           | Nodig          | Nodig          | Complex        | Complex        | Niet nodig               | Via bestaande mechanismen |
+| **Toekomstbestendig**   | Basis            | Tijdelijk      | Tijdelijk      | Beperkt        | Overgangsfase  | Zeer hoog                | Middel                    |
+| **Module complexiteit** | Enkel KoppelMij  | Dubbel model   | Dubbel model   | Dubbel model   | Dubbel model   | Uniform model            | Uniform launch            |
 
 ## Aanbevelingen
 
