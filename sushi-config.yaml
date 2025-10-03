@@ -92,6 +92,12 @@ pages:
     title: 2a en 2b
   oidc_mobile_sso_explanation.md:
     title: OpenID Connect Native SSO voor Mobiele Apps 1.0
+  authorization-patient.md:
+    title: Autorisatie Patient
+  authorization-practitioner.md:
+    title: Autorisatie Practitioner
+  authorization-relatedperson.md:
+    title: Autorisatie RelatedPerson
 
 
 #
