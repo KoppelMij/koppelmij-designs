@@ -70,16 +70,8 @@ pages:
     title: Home
   overview.md:
     title: Overview
-  koppelmij_option_1.md:          # ← merged 1a & 1b → 1
-    title: Option 1 - OTP via OIDC /authorize
-  koppelmij_option_2a.md:
-    title: Option 2a - PGO als SMART on FHIR Resource Service
-  koppelmij_option_2b.md:
-    title: Option 2b - PGO als SMART on FHIR Authorization Server met Module Token Exchange
   koppelmij_option_3a.md:
     title: Option 3a - Token Exchange Launch Token met Gebruikersidentificatie
-  koppelmij_option_3b.md:
-    title: Option 3b - DVA-geïnitieerde Module Launch met SMART on FHIR
   overwegingen_optie_3a.md:
     title: Overwegingen voor keuze Optie 3a
   koppeltaal_domeinen.md:
@@ -88,16 +80,26 @@ pages:
     title: Harde en Zachte Vereisten
   module_terugkeer.md:
     title: Terugkeren na Module Afsluiten
+  autorisaties.md:
+    title: Autorisaties
+    authorization-patient.md:
+      title: Autorisatie Patient
+    authorization-practitioner.md:
+      title: Autorisatie Practitioner
+    authorization-relatedperson.md:
+      title: Autorisatie RelatedPerson
+  koppelmij_option_1.md:          # ← merged 1a & 1b → 1
+    title: Option 1 - OTP via OIDC /authorize
+  koppelmij_option_2a.md:
+    title: Option 2a - PGO als SMART on FHIR Resource Service
+  koppelmij_option_2b.md:
+    title: Option 2b - PGO als SMART on FHIR Authorization Server met Module Token Exchange
+  koppelmij_option_3b.md:
+    title: Option 3b - DVA-geïnitieerde Module Launch met SMART on FHIR
   comparison_option2_a_b.md:
     title: 2a en 2b
   oidc_mobile_sso_explanation.md:
     title: OpenID Connect Native SSO voor Mobiele Apps 1.0
-  authorization-patient.md:
-    title: Autorisatie Patient
-  authorization-practitioner.md:
-    title: Autorisatie Practitioner
-  authorization-relatedperson.md:
-    title: Autorisatie RelatedPerson
 
 
 #
@@ -134,6 +136,11 @@ menu:
     Koppeltaal Domeinen: koppeltaal_domeinen.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
+  Autorisaties:
+    Overzicht: autorisaties.html
+    Patient: authorization-patient.html
+    Practitioner: authorization-practitioner.html
+    RelatedPerson: authorization-relatedperson.html
   KoppelMij FHIR Resources:
     Profile - Task: StructureDefinition-MedMij-Task.html
     Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
