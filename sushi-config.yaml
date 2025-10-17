@@ -82,12 +82,6 @@ pages:
     title: Terugkeren na Module Afsluiten
   autorisaties.md:
     title: Autorisaties
-    authorization-patient.md:
-      title: Autorisatie Patient
-    authorization-practitioner.md:
-      title: Autorisatie Practitioner
-    authorization-relatedperson.md:
-      title: Autorisatie RelatedPerson
   koppelmij_option_1.md:          # ← merged 1a & 1b → 1
     title: Option 1 - OTP via OIDC /authorize
   koppelmij_option_2a.md:
@@ -136,11 +130,7 @@ menu:
     Koppeltaal Domeinen: koppeltaal_domeinen.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
-  Autorisaties:
-    Overzicht: autorisaties.html
-    Patient: authorization-patient.html
-    Practitioner: authorization-practitioner.html
-    RelatedPerson: authorization-relatedperson.html
+  Autorisaties: autorisaties.html
   KoppelMij FHIR Resources:
     Profile - Task: StructureDefinition-MedMij-Task.html
     Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
