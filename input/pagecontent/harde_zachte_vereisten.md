@@ -107,7 +107,7 @@ De volgende onderdelen staan open voor discussie, verfijning en aanpassing op ba
   }
   ```
 
-**Optie B: Via authorization_details array (Experimenteel)**
+**Optie B: Via authorization_details array ([Experimenteel](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html#response-7))**
 - Context informatie voor meerdere FHIR servers in een `authorization_details` array
 - Ondersteunt multi-server scenarios
 - Volgt RFC 9396 (OAuth 2.0 Rich Authorization Requests)
