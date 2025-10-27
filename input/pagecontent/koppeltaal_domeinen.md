@@ -326,6 +326,27 @@ In deze optie ligt de nadruk op een uniforme SMART on FHIR launch waarbij:
 | **Toekomstbestendig**   | Basis            | Tijdelijk      | Tijdelijk      | Beperkt        | Overgangsfase  | Zeer hoog                | Middel                    |
 | **Module complexiteit** | Enkel KoppelMij  | Dubbel model   | Dubbel model   | Dubbel model   | Dubbel model   | Uniform model            | Uniform launch            |
 
+## Beslissing: Optie 3 in drie stappen
+
+Er is gekozen voor **Optie 3**, waarbij de implementatie wordt opgedeeld in drie opeenvolgende stappen:
+
+### Stap 1: PGO launch (Solution design 3a)
+De eerste stap richt zich op het gestandaardiseerd starten van modules vanuit een PGO. Dit betreft het solution design zoals beschreven in Optie 3 Light, waarbij de SMART on FHIR launch naar modules wordt geharmoniseerd.
+
+**Verantwoordelijkheid**: Deze stap valt onder het **KoppelMij project**.
+
+### Stap 2: Gestandaardiseerd starten van modules vanuit een portaal
+De tweede stap breidt de gestandaardiseerde SMART on FHIR launch uit naar alle portalen, waarbij portalen (zowel behandelportalen als patiëntportalen) modules op uniforme wijze kunnen starten.
+
+**Verantwoordelijkheid**: Deze stap valt onder de verantwoordelijkheid van **Koppeltaal**.
+
+### Stap 3: Gestandaardiseerd starten van behandel- en patiëntportalen
+De derde en laatste stap voltooit de volledige harmonisatie door ook de launch van behandel- en patiëntportalen te standaardiseren volgens het SMART on FHIR model, zoals beschreven in Optie 3.
+
+**Verantwoordelijkheid**: Deze stap valt onder de verantwoordelijkheid van **Koppeltaal**.
+
+Deze gefaseerde aanpak maakt het mogelijk om stapsgewijs toe te werken naar volledige harmonisatie, waarbij elke stap concrete waarde levert en bouwt op de vorige stap.
+
 ## Aanbevelingen
 
 Bij het kiezen tussen deze opties zijn de volgende overwegingen belangrijk:
