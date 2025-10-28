@@ -76,6 +76,8 @@ pages:
     title: Overwegingen voor keuze Optie 3a
   koppeltaal_domeinen.md:
     title: Koppeltaal Domeinen in de context van KoppelMij
+  launch_harmonisatie.md:
+    title: Harmonisatie van Module Launch - HTI Token vs Token Exchange
   harde_zachte_vereisten.md:
     title: Harde en Zachte Vereisten
   module_terugkeer.md:
@@ -128,6 +130,7 @@ menu:
   Overwegingen:
     Keuze voor Optie 3a: overwegingen_optie_3a.html
     Koppeltaal Domeinen: koppeltaal_domeinen.html
+    Launch Harmonisatie: launch_harmonisatie.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
   Autorisaties: autorisaties.html
