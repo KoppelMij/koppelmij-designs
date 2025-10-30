@@ -1,12 +1,8 @@
-# Harmonisatie van Module Launch: HTI Token vs Token Exchange
-
-## Inleiding
-
 Voor de harmonisatie van het starten van modules (Stap 2 uit de gefaseerde aanpak van Optie 3) moet er een keuze gemaakt worden over hoe de launch context wordt meegegeven aan modules. Dit document analyseert de huidige situaties in Koppeltaal en KoppelMij en presenteert drie opties voor harmonisatie.
 
-## Huidige situatie
+### Huidige situatie
 
-### Perspectief van de module applicatie
+#### Perspectief van de module applicatie
 
 In alle gevallen is het perspectief van de module applicatie identiek en volledig SMART on FHIR compliant:
 
@@ -18,7 +14,7 @@ In alle gevallen is het perspectief van de module applicatie identiek en volledi
 
 Dit proces is volledig gestandaardiseerd volgens SMART on FHIR. Het verschil tussen de implementaties zit in **hoe de portalen tot een launch komen** en **hoe de context wordt meegegeven**.
 
-### Koppeltaal: HTI Token
+#### Koppeltaal: HTI Token
 
 In de Koppeltaal implementatie wordt een **HTI (Health Tools Interoperability) token** gebruikt:
 
@@ -55,7 +51,7 @@ In de Koppeltaal implementatie wordt een **HTI (Health Tools Interoperability) t
 }
 ```
 
-### KoppelMij (Solution Design 3a): Token Exchange
+#### KoppelMij (Solution Design 3a): Token Exchange
 
 In de KoppelMij implementatie (Optie 3a) wordt **Token Exchange (RFC 8693)** gebruikt:
 
@@ -94,7 +90,7 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 &resource=Observation/789
 ```
 
-## Vergelijking van beide aanpakken
+### Vergelijking van beide aanpakken
 
 | Aspect                        | HTI Token (Koppeltaal)                        | Token Exchange (KoppelMij)                           |
 |-------------------------------|-----------------------------------------------|------------------------------------------------------|
@@ -109,7 +105,7 @@ grant_type=urn:ietf:params:oauth:grant-type:token-exchange
 | **Transparantie**             | Context zichtbaar in JWT (indien gedecodeerd) | Context verborgen in server-side state               |
 | **Hergebruik**                | Token is eenmalig, context immutable          | Launch token is eenmalig, subject token herbruikbaar |
 
-## Beide oplossingen zijn aanpassingen van SMART on FHIR
+### Beide oplossingen zijn aanpassingen van SMART on FHIR
 
 Het is belangrijk te erkennen dat **beide implementaties afwijkingen zijn van de standaard SMART on FHIR specificatie**:
 
@@ -128,11 +124,11 @@ Het is belangrijk te erkennen dat **beide implementaties afwijkingen zijn van de
 - **Toevoeging**: Resource parameters in Token Exchange voor context
 - **Voordeel**: Gebruikt bestaande RFC 8693 standaard
 
-## Optie 1: Niets doen - Beide standaarden handhaven
+### Optie 1: Niets doen - Beide standaarden handhaven
 
 In deze optie blijven beide afsprakenstelsels hun eigen implementatie gebruiken zonder harmonisatie.
 
-### Beschrijving
+#### Beschrijving
 
 **Koppeltaal:**
 - Blijft HTI token gebruiken voor module launches
@@ -148,7 +144,7 @@ In deze optie blijven beide afsprakenstelsels hun eigen implementatie gebruiken 
 - Voor elke specifieke use case wordt bepaald welke aanpak gebruikt wordt
 - Cross-ecosystem integraties vereisen maatwerk oplossingen
 
-### Voordelen
+#### Voordelen
 
 - **Geen wijzigingen nodig**: Bestaande implementaties blijven ongewijzigd
 - **Onafhankelijke ontwikkeling**: Beide ecosystemen kunnen zelfstandig doorontwikkelen
@@ -156,7 +152,7 @@ In deze optie blijven beide afsprakenstelsels hun eigen implementatie gebruiken 
 - **Geen migratie**: Geen impact op bestaande leveranciers en systemen
 - **Risico-arm**: Geen risico op nieuwe bugs of implementatieproblemen
 
-### Nadelen
+#### Nadelen
 
 - **Geen harmonisatie**: Doel van Stap 2 wordt niet bereikt
 - **Dubbele complexiteit**: Module leveranciers moeten beide methodes ondersteunen
@@ -166,7 +162,7 @@ In deze optie blijven beide afsprakenstelsels hun eigen implementatie gebruiken 
 - **Interoperabiliteit**: Cross-ecosystem scenarios blijven complex
 - **Training en documentatie**: Dubbele documentatie en trainingsmateriaal nodig
 
-### Wanneer te kiezen
+#### Wanneer te kiezen
 
 Deze optie is zinvol als:
 - Harmonisatie niet haalbaar blijkt door fundamentele verschillen
@@ -174,7 +170,7 @@ Deze optie is zinvol als:
 - De kosten van harmonisatie de baten overtreffen
 - Er onvoldoende draagvlak is voor wijzigingen
 
-### Impact
+#### Impact
 
 | Stakeholder                | Impact                                    | Mitigatie                                       |
 |----------------------------|-------------------------------------------|-------------------------------------------------|
@@ -184,11 +180,11 @@ Deze optie is zinvol als:
 | **Standaardisatie beheer** | Twee standaarden te beheren               | Gecoördineerde release planning                 |
 | **Nieuwe toetreders**      | Hogere instapdrempel                      | Uitgebreide onboarding materiaal                |
 
-## Optie 2: Token Exchange harmonisatie - Koppeltaal aanpassen
+### Optie 2: Token Exchange harmonisatie - Koppeltaal aanpassen
 
 In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppeltaal zich hierop aan.
 
-### Beschrijving
+#### Beschrijving
 
 **Koppeltaal past aan naar Token Exchange:**
 - Portalen verkrijgen eerst een launch_token via Token Exchange bij Koppeltaal authorization service
@@ -203,7 +199,7 @@ In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppelta
 - Server-side state management voor context
 - Identiek SMART on FHIR launch proces
 
-### Workflow
+#### Workflow
 
 **Voor Koppeltaal (nieuw):**
 
@@ -221,7 +217,7 @@ In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppelta
 **Voor KoppelMij (ongewijzigd):**
 - Blijft werken zoals beschreven in Solution Design 3a
 
-### Voordelen
+#### Voordelen
 
 - **Volledige harmonisatie**: Één methode voor beide ecosystemen
 - **RFC 8693 compliant**: Gebruikt bestaande OAuth 2.0 extensie standaard
@@ -232,7 +228,7 @@ In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppelta
 - **Toekomstbestendig**: Gebaseerd op brede industrie standaard
 - **Validatie vooraf**: Authorization service valideert resource toegang bij Token Exchange
 
-### Nadelen
+#### Nadelen
 
 - **Koppeltaal wijzigingen**: Significante aanpassingen in Koppeltaal implementaties
 - **Stateful**: Vereist server-side state management in Koppeltaal
@@ -242,7 +238,7 @@ In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppelta
 - **Transitieperiode**: Mogelijk twee flows parallel ondersteunen tijdens migratie
 - **Infrastructuur aanpassingen**: Server-side state vereist database/cache infrastructuur
 
-### Implementatie overwegingen
+#### Implementatie overwegingen
 
 **Koppeltaal aanpassingen:**
 - **Authorization service**:
@@ -264,7 +260,7 @@ In deze optie wordt Token Exchange de geharmoniseerde standaard en past Koppelta
 - **Backwards compatibility**: Oude module versies blijven werken
 - **Phased rollout**: Stapsgewijze uitrol per zorgaanbieder
 
-### Wanneer te kiezen
+#### Wanneer te kiezen
 
 Deze optie is geschikt als:
 - Volledige harmonisatie de hoogste prioriteit heeft
@@ -273,7 +269,7 @@ Deze optie is geschikt als:
 - Er voldoende tijd en budget is voor migratie
 - Stateful implementatie acceptabel is voor authorization services
 
-### Impact
+#### Impact
 
 | Stakeholder             | Impact                                               | Mitigatie                                          |
 |-------------------------|------------------------------------------------------|----------------------------------------------------|
@@ -283,11 +279,11 @@ Deze optie is geschikt als:
 | **Module leveranciers** | Vereenvoudiging (één flow)                           | Communicatie over benefits                         |
 | **Beheer organisaties** | Migratie coördinatie                                 | Project management, duidelijke roadmap             |
 
-## Optie 3: HTI Token harmonisatie - KoppelMij aanpassen
+### Optie 3: HTI Token harmonisatie - KoppelMij aanpassen
 
 In deze optie wordt het HTI token de geharmoniseerde standaard en past KoppelMij zich hierop aan.
 
-### Beschrijving
+#### Beschrijving
 
 **KoppelMij past aan naar HTI token:**
 - PGO of DVA ondertekent een HTI token met context (Task, Patient, etc.)
@@ -302,7 +298,7 @@ In deze optie wordt het HTI token de geharmoniseerde standaard en past KoppelMij
 - Stateless authorization services
 - Identiek SMART on FHIR launch proces
 
-### Varianten
+#### Varianten
 
 Er zijn twee varianten mogelijk voor waar het HTI token wordt gegenereerd:
 
@@ -347,7 +343,7 @@ Er zijn twee varianten mogelijk voor waar het HTI token wordt gegenereerd:
 - DVA moet PGO's public keys kennen en vertrouwen
 - Complexere trust model (elk PGO heeft eigen keys)
 
-### Voordelen (algemeen)
+#### Voordelen (algemeen)
 
 - **Self-contained**: Alle context in het token, geen server-side state nodig
 - **Stateless**: Authorization services hoeven geen state te bewaren
@@ -357,7 +353,7 @@ Er zijn twee varianten mogelijk voor waar het HTI token wordt gegenereerd:
 - **Koppeltaal ongewijzigd**: Bestaande Koppeltaal implementatie blijft werken
 - **Bewezen technologie**: HTI token is al in productie bij Koppeltaal
 
-### Nadelen (algemeen)
+#### Nadelen (algemeen)
 
 - **KoppelMij wijzigingen**: DVA en/of PGO moeten JWT ondertekening implementeren
 - **Non-standard**: HTI token is geen breed geaccepteerde standaard
@@ -370,7 +366,7 @@ Er zijn twee varianten mogelijk voor waar het HTI token wordt gegenereerd:
 - **Geen vooraf validatie**:
   - Variant 3b: Resource toegang wordt pas gevalideerd bij authorize, niet bij token generatie
 
-### Implementatie overwegingen
+#### Implementatie overwegingen
 
 **Voor variant 3a (DVA genereert HTI):**
 - **DVA wijzigingen**:
@@ -418,7 +414,7 @@ Er zijn twee varianten mogelijk voor waar het HTI token wordt gegenereerd:
 }
 ```
 
-### Wanneer te kiezen
+#### Wanneer te kiezen
 
 Deze optie is geschikt als:
 - Self-contained tokens en stateless architectuur de voorkeur hebben
@@ -437,7 +433,7 @@ Deze optie is geschikt als:
 - PGO's capabel zijn voor JWT ondertekening
 - Direct launch zonder extra roundtrip gewenst is
 
-### Impact
+#### Impact
 
 | Stakeholder             | Impact Variant 3a                | Impact Variant 3b                | Mitigatie                             |
 |-------------------------|----------------------------------|----------------------------------|---------------------------------------|
@@ -447,7 +443,7 @@ Deze optie is geschikt als:
 | **Module leveranciers** | Geen wijziging                   | Geen wijziging                   | N.v.t.                                |
 | **Beheer KoppelMij**    | Standaard documentatie aanpassen | Standaard documentatie aanpassen | HTI spec documenteren                 |
 
-## Vergelijking van opties
+### Vergelijking van opties
 
 | Aspect                     | Optie 1: Niets doen | Optie 2: Token Exchange        | Optie 3a: DVA HTI            | Optie 3b: PGO HTI        |
 |----------------------------|---------------------|--------------------------------|------------------------------|--------------------------|
@@ -467,9 +463,9 @@ Deze optie is geschikt als:
 | **Toekomstbestendigheid**  | Laag                | Hoog (RFC)                     | Middel                       | Middel                   |
 | **Interoperabiliteit**     | Laag                | Hoog                           | Middel                       | Middel                   |
 
-## Aanbevelingen
+### Aanbevelingen
 
-### Technische overwegingen
+#### Technische overwegingen
 
 **Optie 1 (Niets doen):**
 - Alleen geschikt als harmonisatie niet haalbaar blijkt
@@ -494,7 +490,7 @@ Deze optie is geschikt als:
 - Trust model complexiteit bij DVA
 - Geschikt als PGO's capabel zijn voor crypto operaties
 
-### Strategische overwegingen
+#### Strategische overwegingen
 
 1. **Harmonisatie prioriteit**: Als volledige harmonisatie het belangrijkste doel is, kies Optie 2 of 3
 2. **Migratie capaciteit**: Evalueer of Koppeltaal (Optie 2) of KoppelMij (Optie 3) meer capaciteit heeft voor wijzigingen
@@ -503,7 +499,7 @@ Deze optie is geschikt als:
 5. **Time to market**: Optie 1 of 3a hebben snelste implementatie
 6. **Complexity**: Optie 3a heeft laagste totale complexiteit
 
-### Gefaseerde aanpak
+#### Gefaseerde aanpak
 
 Een hybride benadering is ook mogelijk:
 
@@ -524,7 +520,7 @@ Een hybride benadering is ook mogelijk:
 - Vereenvoudig flow door Token Exchange te verwijderen
 - Alleen als trust model goed beheerst kan worden
 
-## Conclusie
+### Conclusie
 
 De keuze tussen deze opties hangt af van:
 - **Prioriteit van harmonisatie** (Optie 1 als laag, 2/3 als hoog)
