@@ -1,4 +1,3 @@
-# Optie 3b: DVA-geïnitieerde Module Launch met SMART on FHIR
 
 Het probleem wat we oplossen is het feit dat in het launch proces de browser geauthenticeerd moet worden. Indien we dit niet doen, is het stelen van de launch request (POST of GET) een onacceptabel risico.
 
@@ -26,14 +25,14 @@ Deze optie beschrijft een architectuur waarbij **het PGO de gebruiker naar de DV
 {% include koppelmij_option_3b_short.svg %}
 {:/}
 
-## Hoofdstappen van het proces
+### Hoofdstappen van het proces
 
-### 1. Initiële PGO login
+#### 1. Initiële PGO login
 De gebruiker logt in bij zijn Persoonlijke Gezondheidsomgeving (PGO)
 PGO maakt een sessie-status aan en bindt deze aan de PGO-sessie
 Dit vormt het startpunt voor toegang tot digitale interventies
 
-### 2. Verzamelen van gegevens
+#### 2. Verzamelen van gegevens
 PGO vraagt DVA (Dienstverlener Aanbieder) om gegevens te verzamelen
 DVA laat gebruiker inloggen via DigID voor authenticatie
 Na succesvolle authenticatie krijgt DVA toegang en geeft een access_token terug aan PGO
@@ -41,7 +40,7 @@ PGO gebruikt dit token om FHIR-taken op te halen van DVA
 **PGO bewaart context informatie voor module launch**
 Opmerking: Dit is een OIDC (OpenID Connect) flow tussen PGO en DVA
 
-### 3. Launch naar DVA
+#### 3. Launch naar DVA
 Gebruiker klikt op "start module" in PGO
 **PGO redirect gebruiker naar DVA launch endpoint:**
 - **GET `{DVA_URL}/launch-module?module={module_id}&context={launch_context}`**
@@ -49,14 +48,14 @@ Gebruiker klikt op "start module" in PGO
 - **Indien geen geldige sessie: DVA start nieuwe DigID authenticatie**
 - **DVA bepaalt welke module te starten op basis van context**
 
-### 4. DVA initieert SMART on FHIR launch
+#### 4. DVA initieert SMART on FHIR launch
 **DVA genereert een launch token voor de module**
 **DVA redirect gebruiker naar module met SMART launch:**
 - **GET `{MODULE_URL}/launch?launch={launch_token}&iss={DVA_FHIR_BASE_URL}`**
 - **Launch token bevat module-specifieke context**
 - **Module ontvangt DVA als issuer voor SMART flow**
 
-### 5. SMART on FHIR Authorization Flow
+#### 5. SMART on FHIR Authorization Flow
 **5a. `/authorize` stap (front-channel):**
 - **Module redirects browser naar DVA `/authorize` endpoint**
 - **GET `{DVA_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}`**
@@ -70,13 +69,13 @@ Gebruiker klikt op "start module" in PGO
 - **DVA genereert access_token voor FHIR toegang**
 - **Module ontvangt tokens voor resource toegang**
 
-### 6. Module functioneren
+#### 6. Module functioneren
 **Module gebruikt access_token voor directe FHIR requests naar DVA**
 **DVA beheert en monitort alle module interacties**
 **Volledige audit trail van PGO launch tot module toegang**
 Module kan functioneren met DVA resources via geauthenticeerde toegang
 
-## Technische flow details
+### Technische flow details
 
 **PGO naar DVA launch:**
 - Launch endpoint: `{DVA_URL}/launch-module`

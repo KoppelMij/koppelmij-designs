@@ -1,4 +1,3 @@
-# Optie 1: Cookie op het DVA domein met OIDC Launch
 
 **Het nieuwe inzicht is dat browser authenticatie niet gekoppeld hoeft te worden aan een gebruiker login of Identity Provider sessie.** We zetten een cookie enkel en alleen om de browser te correleren tijdens de validatie. **Deze optie gebruikt OIDC voor de launch in plaats van Token Exchange, omdat de verzamelfase bij langdurige toestemming slechts eens in de zes maanden plaatsvindt. Voor gebruikers zonder langdurige toestemming wordt het cookie van de verzamelfase hergebruikt, terwijl gebruikers met langdurige toestemming een nieuwe DigID login doorlopen met cookie-instelling.**
 
@@ -18,14 +17,14 @@ Deze optie beschrijft de werking van het DVA (Dienstverlener Aanbieder) proces w
 {% include koppelmij_option_1_short.svg %}
 {:/}
 
-## Hoofdstappen van het proces
+### Hoofdstappen van het proces
 
-### 1. Initiële PGO login
+#### 1. Initiële PGO login
 De gebruiker logt in bij zijn Persoonlijke Gezondheidsomgeving (PGO)
 PGO maakt een sessie-status aan en bindt deze aan de PGO-sessie
 Dit vormt het startpunt voor toegang tot digitale interventies
 
-### 2. Verzamelen van gegevens
+#### 2. Verzamelen van gegevens
 PGO vraagt DVA (Dienstverlener Aanbieder) om gegevens te verzamelen
 DVA laat gebruiker inloggen via DigID voor authenticatie
 Na succesvolle authenticatie krijgt DVA toegang en geeft een access_token terug aan PGO
@@ -34,7 +33,7 @@ PGO gebruikt dit token om FHIR-taken op te halen van DVA
 **Opmerking: Bij langdurige toestemming vindt deze stap slechts eens per zes maanden plaats**
 Opmerking: Dit is een OIDC (OpenID Connect) flow
 
-### 3. Voorbereiding voor module launch
+#### 3. Voorbereiding voor module launch
 Gebruiker klikt op "start module" in PGO
 **PGO start een OIDC flow met DVA voor browser authenticatie**
 **Twee scenario's:**
@@ -56,14 +55,14 @@ Gebruiker klikt op "start module" in PGO
 **PGO wisselt authorization code in voor tokens via backchannel**
 **Opmerking: Dit blijft een OIDC flow in plaats van Token Exchange**
 
-### 4. Daadwerkelijke launch naar module
+#### 4. Daadwerkelijke launch naar module
 PGO stuurt gebruiker door naar de module (via 302 redirect of FORM_POST_REDIRECT)
 Module stuurt gebruiker terug naar DVA voor finale autorisatie
 **DVA correleert browser met het cookie (nieuw of hergebruikt uit stap 3)**
 DVA genereert finale toegangstokens en stuurt gebruiker terug naar module
 Module krijgt uiteindelijk een access_token en id_token om te kunnen functioneren
 
-## Technische flow details
+### Technische flow details
 
 **Verzamelfase cookie-instelling:**
 - Cookie domein: DVA domein

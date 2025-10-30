@@ -1,11 +1,7 @@
-
-
-# Vergelijking optie 2a en 2b
-
-## Gemeenschappelijke basis
+### Gemeenschappelijke basis
 Beide opties gebruiken het **PGO als SMART on FHIR authorization server** en lossen hetzelfde probleem op: veilige browser authenticatie tijdens het launch proces zonder extra login stappen voor de gebruiker.
 
-## Optie 2a: PGO Token Exchange
+### Optie 2a: PGO Token Exchange
 **Kern concept**: Het PGO voert de Token Exchange uit namens de module
 
 **Werkwijze**:
@@ -21,7 +17,7 @@ Beide opties gebruiken het **PGO als SMART on FHIR authorization server** en los
 - Eenvoudiger voor module ontwikkelaars
 - PGO heeft volledige controle over delegation proces
 
-## Optie 2b: Module Token Exchange
+### Optie 2b: Module Token Exchange
 **Kern concept**: De module voert zelf de Token Exchange uit
 
 **Werkwijze**:
@@ -38,7 +34,7 @@ Beide opties gebruiken het **PGO als SMART on FHIR authorization server** en los
 - Flexibiliteit in Token Exchange uitvoering
 - Kortere token levensduur verhoogt beveiliging
 
-## Belangrijkste verschillen
+### Belangrijkste verschillen
 
 | Aspect                     | Optie 2a                             | Optie 2b                        |
 |----------------------------|--------------------------------------|---------------------------------|
@@ -49,9 +45,9 @@ Beide opties gebruiken het **PGO als SMART on FHIR authorization server** en los
 | **Controle**               | PGO heeft controle                   | Module heeft controle           |
 | **Delegatie risico**       | PGO handelt gevoelige tokens         | Directe module-DVA communicatie |
 
-## Compliance beoordeling
+#### Compliance beoordeling
 
-### **Optie 2b is meer compliant** om de volgende redenen:
+#### **Optie 2b is meer compliant** om de volgende redenen:
 
 #### **1. RFC 8693 Token Exchange compliance**
 - **Optie 2b**: Module voert Token Exchange direct uit met DVA - dit is de bedoelde werking van RFC 8693
@@ -69,7 +65,7 @@ Beide opties gebruiken het **PGO als SMART on FHIR authorization server** en los
 - **Optie 2b**: Module krijgt alleen wat nodig is voor Token Exchange
 - **Optie 2a**: PGO krijgt volledige toegang tot module's authenticatie context
 
-## Aanbeveling
+#### Aanbeveling
 
 **Optie 2b wordt aanbevolen** vanwege:
 - ✅ Betere compliance met RFC 8693 en SMART on FHIR

@@ -1,4 +1,3 @@
-# Optie 2b: PGO als SMART on FHIR Authorization Server met Module Token Exchange
 
 Het probleem wat we oplossen is het feit dat in het launch proces de browser geauthenticeerd moet worden. Indien we dit niet doen, is het stelen van de launch request (POST of GET) een onacceptabel risico.
 
@@ -29,15 +28,15 @@ Deze optie beschrijft een architectuur waarbij **het PGO fungeert als SMART on F
 {% include koppelmij_option_2b_short.svg %}
 {:/}
 
-## Hoofdstappen van het proces
+### Hoofdstappen van het proces
 
-### 1. Initiële PGO login
+#### 1. Initiële PGO login
 De gebruiker logt in bij zijn Persoonlijke Gezondheidsomgeving (PGO)
 PGO maakt een sessie-status aan en bindt deze aan de PGO-sessie
 **PGO configureert zich als SMART on FHIR authorization server**
 Dit vormt het startpunt voor toegang tot digitale interventies
 
-### 2. Verzamelen van gegevens
+#### 2. Verzamelen van gegevens
 PGO vraagt DVA (Dienstverlener Aanbieder) om gegevens te verzamelen
 DVA laat gebruiker inloggen via DigID voor authenticatie
 Na succesvolle authenticatie krijgt DVA toegang en geeft een access_token terug aan PGO
@@ -45,13 +44,13 @@ PGO gebruikt dit token om FHIR-taken op te halen van DVA
 **PGO slaat DVA access_token op voor Token Exchange operaties**
 Opmerking: Dit is een OIDC (OpenID Connect) flow tussen PGO en DVA
 
-### 3. Module launch naar PGO
+#### 3. Module launch naar PGO
 Gebruiker klikt op "start module" in PGO
 **PGO genereert eigen launch token en stuurt gebruiker door naar module**
 **PGO doet 302 redirect naar module met launch parameter:**
 - **GET `{MODULE_URL}/launch?launch={launch_token}&iss={PGO_FHIR_BASE_URL}`**
 
-### 4. SMART on FHIR Authorization Flow
+#### 4. SMART on FHIR Authorization Flow
 **4a. `/authorize` stap (front-channel):**
 - **Module redirects browser naar PGO `/authorize` endpoint met launch parameter**
 - **GET `{PGO_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}`**
@@ -65,7 +64,7 @@ Gebruiker klikt op "start module" in PGO
 - **PGO genereert een tijdelijk token gebonden aan de PGO access_token voor DVA**
 - **PGO geeft module het tijdelijke token en DVA Token Exchange endpoint informatie**
 
-### 5. Module Token Exchange met DVA
+#### 5. Module Token Exchange met DVA
 **Module voert Token Exchange uit met DVA:**
 - **Module doet Token Exchange request naar DVA met tijdelijk token**
 - **grant_type=urn:ietf:params:oauth:grant-type:token-exchange**
@@ -75,14 +74,14 @@ Gebruiker klikt op "start module" in PGO
 - **DVA valideert tijdelijk token en extraheert cnf claim voor DPoP binding**
 - **DVA genereert DPoP delegation token met module als actor context**
 
-### 6. Module functioneren
+#### 6. Module functioneren
 **Module gebruikt DPoP access_token voor directe FHIR requests naar DVA**
 **Module communiceert rechtstreeks met DVA FHIR service**
 **Browser blijft geauthenticeerd via originele PGO sessie**
 **Module moet DPoP proof meesturen bij elk direct DVA API request**
 Module kan functioneren met DVA resources via directe DVA interactie
 
-## Technische flow details
+### Technische flow details
 
 **Launch stap:**
 - Module endpoint: `{MODULE_URL}/launch`

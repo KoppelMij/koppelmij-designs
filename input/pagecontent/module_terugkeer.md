@@ -1,25 +1,24 @@
-# Terugkeren na Afsluiten Module
 
-## Inleiding
+### Inleiding
 
 Bij het lanceren van modules vanuit een PGO is het essentieel om een goede gebruikerservaring te bieden bij het afsluiten van de module. De gebruiker moet op een intuïtieve manier terug kunnen keren naar de PGO context waar de module vandaan werd gestart. Dit document beschrijft de verschillende opties voor module integratie en de bijbehorende terugkeer mechanismen.
 
-## Module Integratie Opties
+### Module Integratie Opties
 
 Modules kunnen op drie verschillende manieren worden geïntegreerd in de PGO gebruikersinterface:
 
-### 1. Iframe Integratie
+#### 1. Iframe Integratie
 De module wordt geladen binnen een iframe in de PGO interface.
 
-### 2. Zelfde Window
+#### 2. Zelfde Window
 De module vervangt de huidige PGO pagina in hetzelfde browser window.
 
-### 3. Nieuw Tabblad
+#### 3. Nieuw Tabblad
 De module opent in een nieuw browser tabblad of window.
 
-## Terugkeer Mechanismen per Integratie Type
+### Terugkeer Mechanismen per Integratie Type
 
-### 1. Iframe Integratie
+#### 1. Iframe Integratie
 
 **Kenmerken:**
 - Module draait binnen de PGO context
@@ -62,7 +61,7 @@ window.addEventListener('message', (event) => {
 - Mogelijke compatibiliteitsproblemen
 - Security overwegingen (sandbox attributen)
 
-### 2. Zelfde Window met return_url
+#### 2. Zelfde Window met return_url
 
 **Kenmerken:**
 - Module vervangt volledig de PGO interface
@@ -75,7 +74,7 @@ De token response met het access_token wordt ALLEEN verwerkt door de module back
 **Terugkeer mechanisme:**
 De `return_url` parameter wordt meegegeven als onderdeel van de FHIR context tijdens de module launch. De module backend verwerkt deze informatie en maakt deze beschikbaar voor de frontend zonder het access_token te exposeren:
 
-#### Optie A: Direct in token response (backend-only)
+##### Optie A: Direct in token response (backend-only)
 ```json
 {
   "access_token": "[GEHEIM - alleen backend]",
@@ -86,7 +85,7 @@ De `return_url` parameter wordt meegegeven als onderdeel van de FHIR context tij
 ```
 **Let op**: Het `access_token` wordt NOOIT naar de frontend/browser gestuurd!
 
-#### Optie B: Via authorization_details (experimenteel, backend-only)
+##### Optie B: Via authorization_details (experimenteel, backend-only)
 ```json
 {
   "access_token": "[GEHEIM - alleen backend]",
@@ -191,7 +190,7 @@ function generateReturnUrl(taskId, patientId) {
 - Gebruiker kan navigatie onderbreken
 - Sessie management complexiteit
 
-### 3. Nieuw Tabblad
+#### 3. Nieuw Tabblad
 
 **Kenmerken:**
 - Module opent in separaat browser tabblad
@@ -261,9 +260,9 @@ function notifyAndClose() {
 - Gebruiker kan tabbladen kwijtraken
 - Complexere communicatie tussen windows
 
-## Security Overwegingen
+### Security Overwegingen
 
-### Return URL Validatie
+#### Return URL Validatie
 
 De DVA moet return_url's valideren om open redirect kwetsbaarheden te voorkomen:
 
@@ -296,7 +295,7 @@ function validateReturnUrl(returnUrl, allowedDomains) {
 }
 ```
 
-### CORS en Origin Policies
+#### CORS en Origin Policies
 
 Voor iframe en cross-window communicatie:
 
@@ -316,9 +315,9 @@ window.addEventListener('message', (event) => {
 });
 ```
 
-## Aanbevelingen
+### Aanbevelingen
 
-### Keuze Matrix
+#### Keuze Matrix
 
 | Scenario                            | Aanbevolen Integratie | Terugkeer Mechanisme              |
 |-------------------------------------|-----------------------|-----------------------------------|
@@ -327,7 +326,7 @@ window.addEventListener('message', (event) => {
 | Module naast PGO workflow           | Nieuw tabblad         | BroadcastChannel of window.opener |
 | Gevoelige data, strikte security    | Zelfde window         | return_url met sessie validatie   |
 
-### Best Practices
+#### Best Practices
 
 1. **Altijd een fallback bieden**
    - Als return_url ontbreekt, toon instructies aan gebruiker
@@ -345,9 +344,9 @@ window.addEventListener('message', (event) => {
    - Toon duidelijke navigatie indicatoren
    - Waarschuw bij verlaten van module zonder opslaan
 
-## Implementatie Richtlijnen
+### Implementatie Richtlijnen
 
-### Voor PGO Ontwikkelaars
+#### Voor PGO Ontwikkelaars
 
 1. **Bepaal integratie strategie** op basis van:
    - Module complexiteit
@@ -365,7 +364,7 @@ window.addEventListener('message', (event) => {
    - Sessie timeout
    - Network fouten
 
-### Voor Module Ontwikkelaars
+#### Voor Module Ontwikkelaars
 
 1. **Ondersteun meerdere terugkeer mechanismen**:
    - Check voor return_url in context
@@ -377,7 +376,7 @@ window.addEventListener('message', (event) => {
    - Include relevante data in return navigatie
    - Handel errors gracefully af
 
-## Conclusie
+### Conclusie
 
 De keuze voor een terugkeer mechanisme hangt af van de specifieke integratie methode en use case requirements. Door return_url op te nemen in de FHIR context bieden we een gestandaardiseerde oplossing voor het "zelfde window" scenario, terwijl andere integratie types hun eigen optimale terugkeer strategieën hebben.
 

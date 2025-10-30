@@ -1,10 +1,9 @@
-# Overwegingen voor de keuze van Optie 3a
 
 Bij het evalueren van de verschillende architectuurbenaderingen voor veilige module launches zijn er verschillende belangrijke overwegingen die hebben geleid tot de keuze voor Optie 3a: Token Exchange met Gebruikersidentificatie.
 
-## Analyse van de alternatieven
+### Analyse van de alternatieven
 
-### Optie 1: DVA als Authorization Server met Cookie-gebaseerde Browser Correlatie
+#### Optie 1: DVA als Authorization Server met Cookie-gebaseerde Browser Correlatie
 
 **Belangrijkste bezwaar: Sessies bij de DVA vereisen is geen reële optie**
 
@@ -14,7 +13,7 @@ De fundamentele uitdaging met Optie 1 is dat de DVA architectuur niet is ontworp
 - **Cookie complexiteit**: Het implementeren van cookie-gebaseerde browser correlatie vereist sessie-infrastructuur die misschien niet past bij de DVA architectuur
 - **Implementatielast**: DVA's zouden complexe sessie management moeten implementeren voor een functionaliteit die buiten hun kernverantwoordelijkheid valt
 
-### Optie 2a/2b: PGO als Authorization Server
+#### Optie 2a/2b: PGO als Authorization Server
 
 **Belangrijkste bezwaar: DVA heeft geen mogelijkheid de gebruiker te identificeren**
 
@@ -29,7 +28,7 @@ Bij beide Optie 2 varianten fungeert het PGO als authorization server, wat de vo
   - **Interoperabiliteit risico's**: Custom implementaties kunnen leiden tot compatibiliteitsproblemen
   - **Onderhoudskosten**: Afwijkingen van standaarden verhogen de complexiteit en onderhoudskosten
 
-### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
+#### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
 
 **Belangrijkste voordeel: Maximale flexibiliteit en controle**
 
@@ -41,7 +40,7 @@ Optie 3a biedt de beste balans tussen security, flexibiliteit en gebruikerservar
 - **Standaard compliance**: Volledige SMART on FHIR implementatie zonder afwijkingen
 - **Toekomstbestendig**: DVA kan de implementatie aanpassen aan veranderende requirements
 
-### Optie 3b: DVA-geïnitieerde Module Launch
+#### Optie 3b: DVA-geïnitieerde Module Launch
 
 **Belangrijke overweging: Optie 3a biedt meer flexibiliteit dan optie 3b**
 
@@ -58,42 +57,42 @@ Een cruciaal verschil tussen beide opties betreft de flexibiliteit van de launch
 
 Dit betekent dat optie 3a alle mogelijkheden van optie 3b behoudt plus additionele flexibiliteit biedt aan de DVA implementatie. De keuze voor optie 3a geeft de DVA maximale vrijheid in de implementatie.
 
-## Algemeen: Waarom Optie 3a de beste keuze is
+### Algemeen: Waarom Optie 3a de beste keuze is
 
 Optie 3a lost de bezwaren van de andere opties op en biedt unieke voordelen:
 
-### 1. **Maximale flexibiliteit voor DVA**
+#### 1. **Maximale flexibiliteit voor DVA**
 - DVA kan kiezen tussen verschillende implementatiestrategieën
 - Mogelijkheid om zowel directe module launches als DVA-geleide launches te ondersteunen
 - Past binnen bestaande DVA capabilities zonder architectuurwijzigingen op te leggen
 
-### 2. **Behoudt DVA controle over authenticatie**
+#### 2. **Behoudt DVA controle over authenticatie**
 - DVA kan gebruikers direct authenticeren wanneer nodig
 - Flexibele authenticatie strategieën per module
 - Volledige audit trail onder DVA controle
 
-### 3. **Schaalbaarheid en standaardisatie**
+#### 3. **Schaalbaarheid en standaardisatie**
 - Volledige SMART on FHIR compliance
 - Flexibele URL resolutie via FHIR keten (Task → ActivityDefinition → Endpoint)
 - Herbruikbare implementatie voor module leveranciers
 
-### 4. **Gebruikerservaring optimalisatie mogelijk**
+#### 4. **Gebruikerservaring optimalisatie mogelijk**
 - DVA kan sessie-optimalisaties implementeren
 - Mogelijkheid voor Single Sign-On indien gewenst
 - DVA bepaalt de beste balans tussen security en gebruiksgemak
 
-### 5. **Security en Compliance**
+#### 5. **Security en Compliance**
 - DVA behoudt volledige controle over toegang en authenticatie
 - Centrale logging en monitoring
 - Mogelijkheid voor step-up authenticatie waar nodig
 
 
 
-## Analyse: Login frequentie
+### Analyse: Login frequentie
 
 Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten inloggen. Hier is een exact overzicht per optie:
 
-### Optie 1: DVA als Authorization Server met Cookie-gebaseerde Browser Correlatie
+#### Optie 1: DVA als Authorization Server met Cookie-gebaseerde Browser Correlatie
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
@@ -108,7 +107,7 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 - Volgende module launches: 0x (cookie hergebruik)
 - **Totaal: 2 logins** (1x PGO + 1x DVA bij eerste module)
 
-### Optie 2a/2b: PGO als Authorization Server
+#### Optie 2a/2b: PGO als Authorization Server
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
@@ -122,7 +121,7 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 - Module launch: 0x extra login (PGO sessie)
 - **Totaal: 1 login** (alleen PGO login)
 
-### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
+#### Optie 3a: Token Exchange met Gebruikersidentificatie (GEKOZEN OPTIE)
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
@@ -136,7 +135,7 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 - Module launch: 0-1x per launch (DVA kan optimaliseren)
 - **Totaal: 1-2 logins** (flexibel afhankelijk van DVA implementatie)
 
-### Optie 3b: DVA-geïnitieerde Module Launch
+#### Optie 3b: DVA-geïnitieerde Module Launch
 
 **Gebruikers ZONDER langdurige toestemming:**
 - PGO login: 1x per PGO sessie
@@ -151,7 +150,7 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 - Module launch na sessie timeout: 1x DVA login
 - **Totaal: 1-2 logins** (1x PGO + sporadisch DVA bij sessie timeout)
 
-### Samenvatting login frequentie
+#### Samenvatting login frequentie
 
 | Optie           | Zonder langdurige toestemming | Met langdurige toestemming   |
 |-----------------|-------------------------------|------------------------------|
@@ -162,11 +161,11 @@ Een belangrijk aspect van de gebruikerservaring is hoe vaak gebruikers moeten in
 
 Optie 3a biedt met de juiste optimalisaties een vergelijkbare gebruikerservaring als optie 3b, maar met het cruciale voordeel van maximale flexibiliteit voor de DVA implementatie.
 
-## Analyse: Module leverancier perspectief
+### Analyse: Module leverancier perspectief
 
 Vanuit het perspectief van module leveranciers is de conformiteit aan standaarden cruciaal:
 
-### Standaard conformiteit per optie
+#### Standaard conformiteit per optie
 
 **Optie 1, 3a en 3b**: Volledige SMART on FHIR standaard compliance
 - Module implementeert standaard SMART launch flow

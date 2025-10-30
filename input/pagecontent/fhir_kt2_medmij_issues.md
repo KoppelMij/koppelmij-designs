@@ -1,14 +1,13 @@
-# Diff lijst
 
-## Task
-###  task.code
+### Task
+####  task.code
 SMART on FHIR codeset
 extensible
-### task.requestor
+#### task.requestor
 Is now set to Practitioner, becomes PractitionerRole.
-### task.identifier
+#### task.identifier
 Niet meer verplicht 0..1
 
 
-## Endpoint
-### Connection type open
+### Endpoint
+#### Connection type open

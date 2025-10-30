@@ -1,16 +1,15 @@
-# Harde en Zachte Vereisten in de Standaard
 
-## Inleiding
+### Inleiding
 
 Bij het ontwikkelen en beproeven van deze standaard met leveranciers maken we een onderscheid tussen harde en zachte vereisten. Dit document beschrijft welke onderdelen van de standaard als vaststaand worden beschouwd en welke onderdelen open staan voor discussie, verfijning of aanpassing op basis van praktijkervaringen.
 
 Het is belangrijk om te benadrukken dat ook de harde vereisten niet volledig in steen gebeiteld zijn. Indien tijdens de beproeving blijkt dat fundamentele aanpassingen noodzakelijk zijn, kunnen ook deze ter discussie worden gesteld. Echter, wijzigingen aan harde vereisten betekenen vaak dat we "terug naar de tekentafel" moeten, omdat hier al uitgebreide overwegingen en ontwerpbeslissingen aan ten grondslag liggen.
 
-## Harde Vereisten
+### Harde Vereisten
 
 De volgende onderdelen van de standaard worden beschouwd als harde vereisten. Deze vormen de kern van de architectuur en zijn gebaseerd op uitgebreide analyse en overwegingen:
 
-### 1. Koppeltaal FHIR Model
+#### 1. Koppeltaal FHIR Model
 
 **Vereiste**: Het FHIR datamodel volgt de Koppeltaal specificaties met Task als centraal element.
 
@@ -54,7 +53,7 @@ De volgende onderdelen van de standaard worden beschouwd als harde vereisten. De
 - Het managen van "twee FHIR realiteiten" door de DVA en dat zou een fundamentele herziening van het volledige ontwerp vereisen.
 - Noodzaak tot herontwerp van module integraties
 
-### 2. Architectuurkeuze: Optie 3a
+#### 2. Architectuurkeuze: Optie 3a
 
 **Vereiste**: De implementatie volgt het architectuurpatroon van Optie 3a - Token Exchange met Gebruikersidentificatie.
 
@@ -66,7 +65,7 @@ De volgende onderdelen van de standaard worden beschouwd als harde vereisten. De
 
 **Impact bij wijziging**: Een andere architectuurkeuze zou een fundamentele herziening van het volledige ontwerp vereisen.
 
-### 3. Gekozen Standaarden
+#### 3. Gekozen Standaarden
 
 **Vereiste**: De standaard is gebaseerd op:
 - SMART on FHIR voor module launches
@@ -84,11 +83,11 @@ De volgende onderdelen van de standaard worden beschouwd als harde vereisten. De
 - Langere ontwikkeltijd
 - Verminderde herbruikbaarheid van bestaande componenten
 
-## Zachte Vereisten
+### Zachte Vereisten
 
 De volgende onderdelen staan open voor discussie, verfijning en aanpassing op basis van praktijkervaringen en input van leveranciers:
 
-### 1. FHIR Context in Token Response
+#### 1. FHIR Context in Token Response
 
 **Open vraag**: Hoe wordt de FHIR context het beste meegegeven in de token response van SMART on FHIR?
 
@@ -137,13 +136,13 @@ De volgende onderdelen staan open voor discussie, verfijning en aanpassing op ba
 - [SMART App Launch IG - Token Response](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html#response-5)
 - [Experimental: Authorization Details for Multiple Servers](https://build.fhir.org/ig/HL7/smart-app-launch/app-launch.html#experimental-authorization-details-for-multiple-servers-exp)
 
-### 2. Client Identificatie van Moduleapplicaties
+#### 2. Client Identificatie van Moduleapplicaties
 
 **Open vraag**: Hoe identificeren en vertrouwen we moduleapplicaties optimaal?
 
 Deze vraag heeft twee belangrijke aspecten:
 
-#### Aspect 1: Scope van vertrouwensmodel
+##### Aspect 1: Scope van vertrouwensmodel
 
 **Afweging**: Waar leggen we de verantwoordelijkheid voor het vertrouwen van modules?
 
@@ -164,7 +163,7 @@ Deze vraag heeft twee belangrijke aspecten:
 - Behoefte aan ecosystem-brede uniformiteit?
 - Welke rol moet het afsprakenstelsel hierin spelen?
 
-#### Aspect 2: Technische implementatie van client authenticatie
+##### Aspect 2: Technische implementatie van client authenticatie
 
 **Voorgestelde aanpak**: RFC 7523 - JWT Profile for OAuth 2.0 Client Authentication
 
@@ -195,7 +194,7 @@ Deze vraag heeft twee belangrijke aspecten:
 - Hoe wordt sleutelrotatie het beste ondersteund?
 - Balans tussen veiligheid en implementatiecomplexiteit?
 
-### 3. Sessie Management
+#### 3. Sessie Management
 
 **Open vraag**: Hoe kunnen we optimaal omgaan met sessie management tussen DVA, PGO en modules?
 
@@ -205,7 +204,7 @@ Deze vraag heeft twee belangrijke aspecten:
 - Single logout implementatie
 - Sessie hervatting na onderbreking
 
-### 4. Error Handling en Recovery
+#### 4. Error Handling en Recovery
 
 **Open vraag**: Is de bestaande MedMij error handling specificatie voldoende voor module launches?
 

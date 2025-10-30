@@ -1,4 +1,3 @@
-# Optie 3a: Token Exchange Launch Token met Gebruikersidentificatie
 
 <img src="overview_optie_3a.png" alt="Optie 3 overview" style="width: 100%; float: none;"/>
 
@@ -28,14 +27,14 @@ Deze optie beschrijft een architectuur waarbij **het PGO eerst een launch_token 
 {% include koppelmij_option_3a_short.svg %}
 {:/}
 
-## Hoofdstappen van het proces
+### Hoofdstappen van het proces
 
-### 1. Initiële PGO login
+#### 1. Initiële PGO login
 De gebruiker logt in bij zijn Persoonlijke Gezondheidsomgeving (PGO)
 PGO maakt een sessie-status aan en bindt deze aan de PGO-sessie
 Dit vormt het startpunt voor toegang tot digitale interventies
 
-### 2. Verzamelen van gegevens
+#### 2. Verzamelen van gegevens
 PGO vraagt DVA (Dienstverlener Aanbieder) om gegevens te verzamelen
 DVA laat gebruiker inloggen via DigID voor authenticatie
 Na succesvolle authenticatie krijgt DVA toegang en geeft een access_token terug aan PGO
@@ -43,7 +42,7 @@ PGO gebruikt dit token om FHIR-taken op te halen van DVA
 **PGO slaat DVA access_token op voor Token Exchange operaties**
 Opmerking: Dit is een OIDC (OpenID Connect) flow tussen PGO en DVA
 
-### 3. Launch token verkrijging via Token Exchange
+#### 3. Launch token verkrijging via Token Exchange
 Gebruiker klikt op "start module" in PGO
 **PGO voert Token Exchange uit met DVA om een launch_token te verkrijgen**
 **PGO stuurt Token Exchange request naar DVA:**
@@ -55,7 +54,7 @@ Gebruiker klikt op "start module" in PGO
 **DVA valideert resource toegang en genereert een launch_token**
 **Launch_token bevat gevalideerde resource context en is tijdelijk geldig**
 
-### 4. Optionele step-up authenticatie (indien vereist door DVA)
+#### 4. Optionele step-up authenticatie (indien vereist door DVA)
 **Wanneer DVA extra verificatie nodig acht:**
 - **DVA kan step-up error retourneren** bij Token Exchange request
 - **Error response** geeft aan dat aanvullende gebruikersidentificatie vereist is
@@ -66,13 +65,13 @@ Gebruiker klikt op "start module" in PGO
 - **Use case:** Voor gevoelige modules of specifieke gegevenstoegang
 - **Toekomstbestendig:** Optionele feature voor toekomstige scenario's
 
-### 5. Module launch naar DVA
+#### 5. Module launch naar DVA
 **PGO stuurt gebruiker door naar module met launch_token:**
 - **GET `{MODULE_URL}/launch?launch={launch_token}&iss={DVA_FHIR_BASE_URL}`**
 **Module valideert launch_token en extraheert DVA informatie**
 **Audience is de DVA FHIR server, niet het PGO**
 
-### 6. SMART on FHIR Authorization Flow met Gebruikersidentificatie
+#### 6. SMART on FHIR Authorization Flow met Gebruikersidentificatie
 **6a. `/authorize` stap (front-channel):**
 - **Module redirects browser naar DVA `/authorize` endpoint met launch parameter**
 - **GET `{DVA_URL}/authorize?response_type=code&client_id={module_id}&redirect_uri={module_redirect}&launch={launch_token}&state={module_state}&scope=launch+fhirUser+patient/*.read`**
@@ -101,15 +100,15 @@ Gebruiker klikt op "start module" in PGO
   - **Andere context parameters**: Zoals `encounter` indien van toepassing
   - **GEEN `id_token`**: DVA is geen OIDC provider, wel SMART on FHIR authorization server
 
-### 7. Module functioneren
+#### 7. Module functioneren
 **Module gebruikt access_token voor directe FHIR requests naar DVA**
 **Module communiceert rechtstreeks met DVA FHIR service**
 **Volledige audit trail van launch_token tot gebruikersidentificatie**
 Module kan functioneren met DVA resources via geauthenticeerde toegang
 
-## Technische flow details
+### Technische flow details
 
-### DVA als SMART on FHIR Authorization Server (niet OIDC)
+#### DVA als SMART on FHIR Authorization Server (niet OIDC)
 
 **Belangrijk onderscheid:**
 - **DVA is een SMART on FHIR authorization server**, niet een OpenID Connect provider
@@ -191,7 +190,7 @@ Module kan functioneren met DVA resources via geauthenticeerde toegang
 - **Gebruikersvertrouwen**: Transparante en veilige toegang
 - **Regulatory compliance**: Geschikt voor gereguleerde omgevingen
 
-## Context meegeven in Token Exchange
+### Context meegeven in Token Exchange
 
 Voor het meegeven van de juiste context (FHIR resources) tijdens de Token Exchange is gekozen voor het gebruik van resource parameters als extra parameters:
 

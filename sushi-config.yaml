@@ -75,13 +75,13 @@ pages:
   overwegingen_optie_3a.md:
     title: Overwegingen voor keuze Optie 3a
   koppeltaal_domeinen.md:
-    title: Koppeltaal Domeinen in de context van KoppelMij
+    title: Het gebruik van Koppeltaal Domeinen in de context van KoppelMij
   launch_harmonisatie.md:
     title: Harmonisatie van Module Launch - HTI Token vs Token Exchange
   dva_openid_scope.md:
     title: DVA als Identity Provider - De openid scope vraagstuk
   harde_zachte_vereisten.md:
-    title: Harde en Zachte Vereisten
+    title: Harde en Zachte Vereisten in de Standaard
   module_terugkeer.md:
     title: Terugkeren na Module Afsluiten
   autorisaties.md:
