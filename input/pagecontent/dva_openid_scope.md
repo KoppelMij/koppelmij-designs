@@ -1,4 +1,4 @@
-Dit document analyseert een fundamentele spanning in de architectuur van KoppelMij: de rol van de DVA als authorization server versus identity provider, en de implicaties voor het gebruik van de `openid` scope in SMART on FHIR launches naar modules.
+Dit document analyseert een fundamentele spanning in de architectuur van KoppelMij: de rol van de DVA als authorization server versus identity provider, en de implicaties voor het gebruik van de `openid fhirUser` scope in SMART on FHIR launches naar modules.
 
 Het vraagstuk ontstaat door de eis uit de startnotitie dat modules **via meerdere wegen toegankelijk moeten zijn** (meervoudige toegang), en de daaruit volgende noodzaak voor consistente gebruikersidentificatie over deze verschillende toegangswegen.
 
@@ -22,26 +22,18 @@ In OAuth 2.0 en OpenID Connect is er een belangrijk onderscheid:
 
 #### SMART on FHIR scopes voor gebruikersidentiteit
 
-SMART on FHIR biedt twee mechanismen voor gebruikersidentificatie:
+SMART on FHIR gebruikt `openid fhirUser` voor gebruikersidentificatie:
 
-**1. `openid` scope (OpenID Connect):**
+**`openid fhirUser` scope:**
 - Maakt de authorization server een Identity Provider
 - Vereist dat server een `id_token` uitgeeft
 - Id_token bevat claims zoals `sub` (subject identifier), `name`, `email`, etc.
 - Id_token is een ondertekend JWT dat de identiteit bevestigt
-- Gebruik: Wanneer app de identiteit van de gebruiker moet kennen en verifiëren
-
-**2. `fhirUser` scope (SMART on FHIR):**
-- Geeft FHIR resource referentie van de gebruiker
-- Komt terug in token response als `fhirUser` parameter
+- Geeft daarnaast FHIR resource referentie van de gebruiker in token response
 - Bijvoorbeeld: `"fhirUser": "Patient/123"` of `"fhirUser": "Practitioner/456"`
-- Geen id_token, alleen resource referentie
-- Gebruik: Wanneer app wil weten welke FHIR resource de gebruiker representeert
+- Gebruik: Wanneer app de identiteit van de gebruiker moet kennen én wil weten welke FHIR resource de gebruiker representeert
 
-**Combinatie `openid fhirUser`:**
-- Combineert beide: id_token (met `sub` claim) + FHIR resource referentie
-- Authorization server is zowel Identity Provider als FHIR authorization server
-- Gebruik: Wanneer sterke gebruikersidentificatie nodig is én FHIR context
+**Belangrijk:** In SMART on FHIR v2 is `fhirUser` een sub-scope van `openid`. De `fhirUser` scope kan niet los worden gebruikt zonder `openid`. De combinatie `openid fhirUser` is daarom altijd vereist wanneer gebruikersidentiteit nodig is.
 
 ### Situatie 1: PGO <> DVA (Verzamelen van taken)
 
@@ -136,9 +128,9 @@ scope=launch openid fhirUser patient/*.read
 }
 ```
 
-#### Waarom Koppeltaal kiest voor `openid` scope
+#### Waarom Koppeltaal kiest voor `openid fhirUser` scope
 
-Uit de Koppeltaal specificatie (TOP-KT-007) blijkt een duidelijke rationale voor het gebruik van `openid` scope:
+Uit de Koppeltaal specificatie (TOP-KT-007) blijkt een duidelijke rationale voor het gebruik van `openid fhirUser` scope:
 
 **1. Unsolicited authentication risico:**
 > "HTI is daarom, zonder extra identificatie van de gebruiker, onvoldoende beveiligd om toegang te verlenen tot persoonlijke en/of medische gegevens."
@@ -201,53 +193,63 @@ Uit de startnotitie:
 
 #### De spanning
 
-**Als DVA geen `openid` scope gebruikt (zoals bij PGO verzamelen):**
-- Module krijgt alleen `access_token` en `fhirUser` referentie
-- Geen id_token met `sub` claim
-- **Module kan niet vaststellen dat de gebruiker voldoende geauthenticeerd is**, howel niets uitsluit dat dit wel het geval is.
+**Zonder gebruikersauthenticatie (zoals bij PGO verzamelen):**
+- Geen `openid fhirUser` scope
+- Module krijgt alleen `access_token` voor resource toegang
+- Geen `id_token` en geen `fhirUser` in response
+- Geen gebruikersidentificatie beschikbaar
+- **Module kan niet vaststellen welke gebruiker de launch uitvoert**
 - Module heeft geen cryptografisch bewijs van gebruikersidentiteit
 
-**Als DVA wel `openid` scope gebruikt (zoals Koppeltaal):**
-- Module krijgt id_token met `sub` claim
+**Met gebruikersauthenticatie (`openid fhirUser` scope zoals Koppeltaal):**
+- Module vraagt `openid fhirUser` scope aan
+- Module krijgt `id_token` met `sub` claim
+- Module krijgt `fhirUser` referentie in token response
 - Module heeft cryptografisch bewijs van gebruikersidentiteit
 - Module kan vaststellen dat gebruiker voldoende geauthenticeerd is
 - **Maar: DVA moet dan Identity Provider zijn**
-- Dit is inconsistent met DVA rol in PGO verzamelen
+- Dit is een andere rol dan bij PGO verzamelen
 
-#### Analyse: Waarom `openid` nodig is voor modules
+#### Analyse: Waarom `openid fhirUser` nodig is voor modules
 
 **Het primaire probleem:**
 Module applicaties verwerken persoonlijke gezondheidsgegevens. Deze gegevens kunnen al bestaan van eerdere sessies (bijvoorbeeld via een portaal). Wanneer de module nu gestart wordt vanuit een PGO, moet de module **zeker weten dat de persoon achter het toetsenbord voldoende geauthenticeerd is** om toegang te krijgen tot die bestaande zorggegevens.
 
-**Scenario zonder `openid` (onvoldoende authenticatie):**
-1. Gebruiker start module via portaal (bijv. Koppeltaal)
-   - Module ontvangt: `sub=user-12345` in id_token (cryptografisch bewijs)
-   - Module slaat zorggegevens op voor deze gebruiker
+**Scenario zonder gebruikersauthenticatie (onvoldoende voor meervoudige toegang):**
+1. Gebruiker start module via portaal (bijv. Koppeltaal met `openid fhirUser`)
+   - Module vraagt: `scope=launch openid fhirUser patient/*.read`
+   - Module ontvangt: `id_token` met `sub=user-12345` + `fhirUser=Patient/123`
+   - Module slaat zorggegevens op voor deze gebruiker (geïdentificeerd door `sub`)
    - Module weet: gebruiker is sterk geauthenticeerd (SSO via IdP)
-2. Dezelfde gebruiker start module via PGO (KoppelMij zonder `openid`)
-   - Module ontvangt: alleen `fhirUser=Patient/123` (slechts een referentie)
-   - **Geen id_token = geen cryptografisch bewijs van authenticatie**
-   - Module weet niet of gebruiker echt geauthenticeerd is
+2. Dezelfde gebruiker start module via PGO (KoppelMij zonder gebruikersauthenticatie)
+   - Module vraagt: `scope=launch patient/*.read` (geen `openid fhirUser`)
+   - Module ontvangt: alleen `access_token`, geen `id_token`, geen `fhirUser`
+   - **Geen gebruikersidentificatie beschikbaar**
+   - Module weet niet wie de gebruiker is
    - Launch kan gestolen/onderschept zijn (unsolicited authentication risico)
-   - **Probleem**: Module kan geen toegang geven tot bestaande zorggegevens zonder authenticatiebewijs
+   - **Probleem**: Module kan niet vaststellen dat dit dezelfde gebruiker is
+   - **Probleem**: Module kan geen toegang geven tot bestaande zorggegevens zonder te weten wie de gebruiker is
 
-**Scenario met `openid` (voldoende authenticatie):**
-1. Gebruiker start module via portaal (Koppeltaal)
-   - Module ontvangt: `sub=user-12345` in id_token
+**Scenario met gebruikersauthenticatie (voldoende voor meervoudige toegang):**
+1. Gebruiker start module via portaal (Koppeltaal met `openid fhirUser`)
+   - Module vraagt: `scope=launch openid fhirUser patient/*.read`
+   - Module ontvangt: `id_token` met `sub=user-12345` + `fhirUser=Patient/123`
    - Module slaat zorggegevens op voor deze gebruiker
    - Module weet: gebruiker is sterk geauthenticeerd
-2. Dezelfde gebruiker start module via PGO (KoppelMij met `openid`)
-   - Module ontvangt: `sub=user-12345` in id_token van DVA
+2. Dezelfde gebruiker start module via PGO (KoppelMij met `openid fhirUser`)
+   - Module vraagt: `scope=launch openid fhirUser patient/*.read`
+   - Module ontvangt: `id_token` met `sub=user-12345` + `fhirUser=Patient/123` van DVA
    - **Id_token is cryptografisch bewijs van authenticatie**
+   - **Gebruiker wordt herkend via `sub` claim**
    - DVA heeft gebruiker geauthenticeerd via SSO (bijv. DigiD)
    - Module kan veilig toegang geven tot bestaande zorggegevens
-   - **Oplossing**: Sterke authenticatie gewaarborgd
+   - **Oplossing**: Dezelfde gebruiker herkend over beide toegangswegen
 
 **Parallel met Koppeltaal's "unsolicited authentication" probleem:**
 Precies zoals Koppeltaal concludeerde:
 > "HTI is daarom, zonder extra identificatie van de gebruiker, onvoldoende beveiligd om toegang te verlenen tot persoonlijke en/of medische gegevens."
 
-Voor KoppelMij geldt hetzelfde: zonder id_token (en dus zonder authenticatiebewijs) is de launch onvoldoende beveiligd om toegang te geven tot persoonlijke en/of medische gegevens.
+Voor KoppelMij geldt hetzelfde: zonder gebruikersauthenticatie (en dus zonder `openid fhirUser` scope, zonder `id_token`, en zonder `fhirUser` referentie) is de launch onvoldoende beveiligd om toegang te geven tot persoonlijke en/of medische gegevens, en kan de module de gebruiker niet herkennen over verschillende toegangswegen.
 
 #### De vereiste: DVA als Identity Provider
 
@@ -282,10 +284,11 @@ In beide gevallen is de `sub` claim in het id_token de enige manier waarop de mo
 
 De DVA heeft verschillende rollen afhankelijk van de context:
 
-| Context | Rol DVA | `openid` scope | `id_token` |
+| Context | Rol DVA | `openid fhirUser` scope | `id_token` + `fhirUser` |
 |---------|---------|----------------|------------|
 | **PGO verzamelt taken** | Authorization Server | Nee | Nee |
-| **Module launch** | Authorization Server + Identity Provider | Ja | Ja |
+| **Module launch met gebruikersauthenticatie** | Authorization Server + Identity Provider | Ja | Ja |
+| **Module launch zonder gebruikersauthenticatie** | Authorization Server | Nee | Nee |
 
 #### Vereisten voor DVA
 
@@ -358,7 +361,7 @@ In het document `koppelmij_option_3a.md` staat op regel 115-125:
 > **Belangrijk onderscheid:**
 > - DVA is een SMART on FHIR authorization server, niet een OpenID Connect provider
 > - Reden: DVA verificeert de gebruiker via browser sessie en eventueel DigID, maar geeft geen id_token uit
-> - Gevolg: Module gebruikt `fhirUser` scope in plaats van `openid` scope
+> - Gevolg: Module ontvangt geen `id_token` en dus geen `sub` claim voor gebruikersidentificatie
 
 **Deze analyse toont aan dat deze keuze heroverwogen moet worden:**
 
@@ -415,7 +418,7 @@ De redenering in Optie 3a was:
 
 **DVA geeft geen id_token, maar `sub` in access_token:**
 - Access_token is JWT met `sub` claim
-- Module gebruikt `fhirUser` scope (geen `openid`)
+- Module gebruikt `openid fhirUser` scope maar DVA geeft geen id_token uit
 - Module kan `sub` uit access_token JWT halen
 - Vereenvoudigde aanpak
 
@@ -464,7 +467,7 @@ De redenering in Optie 3a was:
 - `sub` is pseudoniem (niet BSN) voor privacy
 
 **Migratiepad:**
-- Update Optie 3a documentatie om `openid` scope te vereisen
+- Update Optie 3a documentatie om `openid fhirUser` scope met `id_token` te vereisen
 - DVA implementeert id_token uitgave
 - Module leveranciers updaten scope requests (indien nodig)
 
@@ -488,7 +491,7 @@ Sectie "DVA als SMART on FHIR Authorization Server (niet OIDC)" moet worden herz
 
 **Oud:**
 > DVA is een SMART on FHIR authorization server, niet een OpenID Connect provider
-> Module gebruikt `fhirUser` scope in plaats van `openid` scope
+> Module ontvangt geen `id_token` en dus geen `sub` claim voor gebruikersidentificatie
 
 **Nieuw:**
 > DVA is zowel een SMART on FHIR authorization server als een OpenID Connect provider
@@ -499,13 +502,15 @@ Sectie "DVA als SMART on FHIR Authorization Server (niet OIDC)" moet worden herz
 
 **Oud (regel 78-82):**
 ```
-scope=launch+fhirUser+patient/*.read
+scope=launch+openid+fhirUser+patient/*.read
 ```
+(zonder id_token in response)
 
 **Nieuw:**
 ```
 scope=launch+openid+fhirUser+patient/*.read
 ```
+(met id_token in response)
 
 #### Token response aanpassen
 
@@ -521,56 +526,37 @@ scope=launch+openid+fhirUser+patient/*.read
 }
 ```
 
-### Conclusie
+### Beslissing
 
-De vereiste van **meervoudige toegang** tot modules (via PGO én via portalen) heeft een fundamentele implicatie:
+Er is besloten dat de keuze voor het gebruik van `openid fhirUser` scope (en daarmee het uitgeven van een `id_token`) **afhangt van de bilaterale afspraak tussen de moduleleverancier en de zorgaanbieder**.
 
-> **De DVA moet een Identity Provider zijn in de context van module launches.**
+**Kernpunten van de beslissing:**
 
-**Eenvoudig gesteld:** Omdat de module ook via andere manieren te benaderen is, moet de module een geautoriseerde gebruiker hebben in de context van een PGO (KoppelMij).
-
-Dit is in contrast met de DVA rol bij het verzamelen van taken, waar DVA alleen een authorization server is. Deze dubbele rol is noodzakelijk om:
-1. Consistente gebruikersidentificatie over verschillende toegangswegen te garanderen
-2. Modules in staat te stellen dezelfde gebruiker te herkennen
-3. Continuïteit van zorg te waarborgen
-
-#### Parallel met Koppeltaal
-
-Deze conclusie komt exact overeen met de rationale van Koppeltaal (TOP-KT-007):
-
-**Koppeltaal's bevinding:**
-> "HTI is daarom, zonder extra identificatie van de gebruiker, onvoldoende beveiligd om toegang te verlenen tot persoonlijke en/of medische gegevens."
-
-**KoppelMij's bevinding:**
-> Token Exchange alleen (zonder id_token) is onvoldoende om dezelfde gebruiker te herkennen over verschillende toegangswegen.
-
-**Koppeltaal's oplossing:**
-- HTI token voor context + SMART on FHIR met `openid fhirUser` voor gebruikersidentificatie
-- Authorization service is Identity Provider die id_token uitgeeft
-- Id_token met `sub` claim voor consistente gebruikersidentificatie
-
-**KoppelMij's vereiste oplossing:**
-- Token Exchange voor context + SMART on FHIR met `openid fhirUser` voor gebruikersidentificatie
-- DVA is Identity Provider die id_token uitgeeft
-- Id_token met `sub` claim voor consistente gebruikersidentificatie
-
-**Belangrijkste les van Koppeltaal:**
-> "Omdat in koppeltaal vooralsnog de gebruiker altijd onderdeel is van de launch, is de scope altijd `launch openid fhirUser`."
-
-Dit geldt evenzeer voor KoppelMij: modules verwerken persoons- en/of medische gegevens, dus gebruikersidentificatie via id_token is essentieel.
-
-#### Aanbeveling
-
-**De aanbeveling is om Optie A te volgen**: DVA implementeert volledige OpenID Connect provider functionaliteit, en modules gebruiken `openid fhirUser` scope bij launches. Dit is de meest standaard-conforme en toekomstbestendige oplossing.
+1. **Bilaterale afspraak**: De moduleleverancier en zorgaanbieder bepalen samen welke scope wordt gebruikt
+2. **Verwachte praktijk**: In de meeste scenario's zal `openid fhirUser` worden gebruikt, omdat modules doorgaans via meerdere wegen toegankelijk zijn en gebruikersidentificatie noodzakelijk is
+3. **Buiten het afsprakenstelsel**: De specifieke keuze welke scope wordt gebruikt valt bewust buiten het KoppelMij afsprakenstelsel
+4. **Binnen het afsprakenstelsel**: Het feit dat beide opties (wel of geen `id_token`) zijn toegestaan, valt wel binnen het stelsel
 
 **Rationale:**
-1. **Consistent met Koppeltaal**: Dezelfde benadering die Koppeltaal heeft gekozen na security analyse
-2. **Meervoudige toegang**: Enige manier om gebruiker te herkennen over PGO en portaal launches
-3. **Standaard compliance**: Volledig OpenID Connect, geen custom extensies
-4. **Module perspectief**: Modules kunnen uniforme flow gebruiken voor Koppeltaal én KoppelMij
-5. **Security**: Id_token biedt cryptografische garantie van gebruikersidentiteit
 
-De keuze in Optie 3a om geen `openid` scope te gebruiken moet worden heroverwogen op basis van deze analyse.
+Deze beslissing erkent dat:
+- Niet alle modules meervoudige toegang vereisen
+- De noodzaak voor `id_token` afhangt van de specifieke use case en architectuur
+- Moduleleveranciers en zorgaanbieders het beste kunnen bepalen wat voor hun situatie nodig is
+- Het KoppelMij afsprakenstelsel flexibiliteit moet bieden zonder onnodige verplichtingen
+
+**Praktische implicatie:**
+
+- DVA **moet** in staat zijn om `id_token` en `fhirUser` uit te geven wanneer `openid fhirUser` scope wordt aangevraagd
+- DVA **mag** ook launches ondersteunen zonder gebruikersauthenticatie (geen `openid fhirUser` scope, geen `id_token`, geen `fhirUser`) wanneer dit bilateraal is afgesproken
+- Modules moeten hun requirements duidelijk communiceren naar zorgaanbieders
+- **Let op**: Het is technisch onmogelijk om `fhirUser` te krijgen zonder `openid` scope en `id_token` - dit zijn altijd gekoppeld in SMART on FHIR v2
+
+### Conclusie
+
+De analyse in dit document toont aan dat voor modules met **meervoudige toegang** (via PGO én via portalen) het gebruik van `openid fhirUser` scope met `id_token` noodzakelijk is voor consistente gebruikersidentificatie. Dit komt overeen met de rationale van Koppeltaal (TOP-KT-007).
+
+De beslissing om de specifieke scope-keuze als bilaterale afspraak te positioneren biedt flexibiliteit, terwijl de verwachting is dat in de praktijk `openid fhirUser` de standaard zal zijn voor de meeste implementaties.
 
 #### Referenties
 
