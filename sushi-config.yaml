@@ -72,6 +72,9 @@ pages:
     title: Overview
   koppelmij_option_3a.md:
     title: Option 3a - Token Exchange Launch Token met Gebruikersidentificatie
+    extension:
+      - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+        valueCode: trial-use
   overwegingen_optie_3a.md:
     title: Overwegingen voor keuze Optie 3a
   koppeltaal_domeinen.md:
