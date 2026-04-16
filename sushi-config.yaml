@@ -101,6 +101,12 @@ pages:
     title: 2a en 2b
   oidc_mobile_sso_explanation.md:
     title: OpenID Connect Native SSO voor Mobiele Apps 1.0
+  technical-walkthrough-pgo-launch-voorbereiden.md:
+    title: Technical Walkthrough — Voorbereiden van een launch als PGO
+  technical-walkthrough-pgo-launch-uitvoeren.md:
+    title: Technical Walkthrough — Uitvoeren van een launch als PGO
+  technical-walkthrough-module-launch-ontvangen.md:
+    title: Technical Walkthrough — Ontvangen van een launch als module
 
 
 #
@@ -140,6 +146,10 @@ menu:
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
   Autorisaties: autorisaties.html
+  Technical Walkthroughs:
+    Voorbereiden launch als PGO: technical-walkthrough-pgo-launch-voorbereiden.html
+    Uitvoeren launch als PGO: technical-walkthrough-pgo-launch-uitvoeren.html
+    Ontvangen launch als module: technical-walkthrough-module-launch-ontvangen.html
   KoppelMij FHIR Resources:
     Profile - Task: StructureDefinition-MedMij-Task.html
     Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
