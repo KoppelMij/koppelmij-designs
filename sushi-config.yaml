@@ -27,6 +27,7 @@ dependencies:
   nictiz.fhir.nl.r4.nl-core:
     version: 0.12.0-beta.4
     uri: http://simplifier.net/packages/nictiz.fhir.nl.r4.nl-core#0.12.0-beta.4
+  koppeltaalv2.00: 0.15.0-beta.9
 
 # The dependencies property corresponds to IG.dependsOn. The key is the
 # package id and the value is the version (or dev/current). For advanced
@@ -107,6 +108,10 @@ pages:
     title: Technical Walkthrough — Uitvoeren van een launch als PGO
   technical-walkthrough-module-launch-ontvangen.md:
     title: Technical Walkthrough — Ontvangen van een launch als module
+  technical-walkthrough-module-task-status-wijzigen.md:
+    title: Technical Walkthrough — Wijzigen Task-status als module
+  technical-walkthrough-module-terugkeer.md:
+    title: Technical Walkthrough — Terugkeren naar PGO vanuit module
 
 
 #
@@ -150,6 +155,8 @@ menu:
     Voorbereiden launch als PGO: technical-walkthrough-pgo-launch-voorbereiden.html
     Uitvoeren launch als PGO: technical-walkthrough-pgo-launch-uitvoeren.html
     Ontvangen launch als module: technical-walkthrough-module-launch-ontvangen.html
+    Wijzigen Task-status als module: technical-walkthrough-module-task-status-wijzigen.html
+    Terugkeren naar PGO vanuit module: technical-walkthrough-module-terugkeer.html
   KoppelMij FHIR Resources:
     Profile - Task: StructureDefinition-MedMij-Task.html
     Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
