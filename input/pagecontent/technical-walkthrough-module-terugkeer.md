@@ -1,101 +1,126 @@
-Deze walkthrough beschrijft hoe een module de gebruiker na afloop terugbrengt naar de PGO. Het PGO levert een `return_url` mee in de launch-context; afhankelijk van het integratiepatroon (iframe, zelfde window, nieuw tabblad) gebruikt de module die URL of een andere cross-window-communicatiemethode. Zie voor de onderliggende afwegingen en security-overwegingen ook [Terugkeren na Module Afsluiten](module_terugkeer.html).
+Deze walkthrough beschrijft hoe een module de gebruiker na afloop terugbrengt naar de PGO. De module voert drie verplichte stappen uit in vaste volgorde: (1) Task-status bijwerken, (2) token revoken, (3) browser redirecten naar de `return_url`. De flow vindt altijd plaats in hetzelfde browser-window via een HTTP 302 redirect.
 
 ### Overzicht
 
-1. **Lees de `return_url`** uit de launch-context (ontvangen in de Token Exchange response in [3.6](technical-walkthrough-module-launch-ontvangen.html)).
-2. **Bied een UI-element** ("Terug naar PGO") aan de gebruiker.
-3. **Voer de terugkeer uit** volgens het gekozen integratiepatroon.
+1. **Werk de Task-status bij** via `PUT /Task/{id}` — dit MOET vóór de redirect plaatsvinden zodat het PGO na terugkeer de actuele status kan ophalen.
+2. **Revoke het access_token** conform RFC 7009 — het token is niet meer nodig na de status-update.
+3. **Redirect de browser** via HTTP 302 naar de `return_url` uit de launch-context — optioneel met `error`-parameter bij afbreken of fout.
+
+Stap 1 en 3 zijn sequentieel (Task-update vóór redirect); stap 2 en 3 mogen parallel plaatsvinden.
 
 ### Voorwaarden
 
-- De module heeft de `return_url` uit de Token Exchange response opgeslagen **server-side** (de backend, niet de browser — het access_token mag de browser niet verlaten).
-- De module weet of zij draait in iframe, zelfde window, of nieuw tabblad (typisch afgeleid uit een parameter in de launch-URL of detectie van `window.parent`/`window.opener`).
+- De module heeft de `return_url` uit de launch-context opgeslagen (ontvangen in de Token Exchange response in [3.6](technical-walkthrough-module-launch-ontvangen.html)).
+- Het access_token is nog geldig (nodig voor de Task-status-update in stap 1).
+- De module kent het `Task.id` uit de launch-context.
 
-### Stap 1 — return_url ophalen
+### Stap 1 — Task-status bijwerken
 
-Tijdens Stap 4 van walkthrough #3 retourneert de DVA samen met het access_token ook de launch-context. Afhankelijk van de DVA kan `return_url` als top-level veld of binnen `authorization_details` meekomen.
+Voordat de module de gebruiker terugstuurt, MOET de module de `Task.status` bijwerken naar de juiste waarde die de uitkomst van het modulegebruik weerspiegelt (bijv. `completed`, `failed`, `cancelled`, `in-progress`). Zie [Wijzigen Task-status als module](technical-walkthrough-module-task-status-wijzigen.html) voor de technische details.
 
-#### Example (token response met return_url)
+Dit is essentieel omdat het PGO na de redirect een `GET /Task/{id}` uitvoert om de actuele status op te halen. Zonder voorafgaande update ziet het PGO een verouderde status.
 
-```JSON
-{
-    "access_token": "{access_token}",
-    "token_type": "Bearer",
-    "expires_in": 3600,
-    "scope": "launch openid fhirUser patient/*.read patient/Task.write",
-    "patient": "Patient/789",
-    "fhirUser": "Patient/789",
-    "return_url": "https://pgo.example.nl/patient/789/modules?task=456"
+### Stap 2 — Token revocation (RFC 7009)
+
+Na de Task-status-update MOET de module het access_token laten intrekken via het revocation endpoint van de DVA. De DVA MOET request revocation ondersteunen en bijbehorende access_tokens en refresh_tokens vernietigen.
+
+#### Parameters
+
+* `revocationEndpoint`, uit de SMART configuration (of `{DVA_AUTH_URL}/revoke`).
+* `token`, het access_token dat gerevoked moet worden.
+* `clientId` / `clientSecret`, module client credentials.
+
+```typescript
+async function revokeToken(
+    revocationEndpoint: string,
+    token: string,
+    clientId: string,
+    clientSecret: string,
+) {
+    const basic = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+    const body = new URLSearchParams({
+        token: token,
+        token_type_hint: "access_token",
+    });
+    await fetch(revocationEndpoint, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${basic}`,
+        },
+        body: body.toString(),
+    });
+    // RFC 7009: server antwoordt altijd 200 OK, ook als token al verlopen was.
 }
 ```
 
-De backend slaat `return_url` op in de sessie en exposeert uitsluitend de `return_url` (geen access_token) aan de frontend via bijvoorbeeld `GET /api/module/context`.
+Stap 2 mag parallel met stap 3 plaatsvinden — de token-revocation hoeft de redirect niet te blokkeren.
 
-### Stap 2 — Variant A: zelfde window
+### Stap 3 — Redirect naar PGO
 
-De module navigeert de browser direct naar `return_url`. Optioneel worden status en timestamp als query parameters meegestuurd.
+De module stuurt een HTTP 302 redirect naar de `return_url`. Het PGO kan de `return_url` verrijken met query-parameters zoals `task_id`, zodat het PGO bij terugkomst direct de juiste taak kan tonen.
+
+#### Normale terugkeer
+
+```http
+HTTP/1.1 302 Found
+Location: https://pgo.example.nl/launch_callback?task_id=abc
+```
+
+#### Terugkeer na afbreken of fout
+
+Bij annulering of fout voegt de module een `error`-parameter toe:
+
+```http
+HTTP/1.1 302 Found
+Location: https://pgo.example.nl/launch_callback?task_id=abc&error=temporarily_unavailable
+```
+
+#### TypeScript voorbeeld
 
 ```typescript
-function closeToReturnUrl(returnUrl: string, status: "completed" | "failed" | "cancelled") {
+function redirectToPgo(
+    returnUrl: string,
+    error?: string,
+) {
     const url = new URL(returnUrl);
-    url.searchParams.set("module_status", status);
-    url.searchParams.set("timestamp", new Date().toISOString());
+    if (error) {
+        url.searchParams.set("error", error);
+    }
+    // Express: res.redirect(302, url.toString());
     window.location.href = url.toString();
 }
 ```
 
-### Stap 2 — Variant B: iframe
+#### Wat het PGO doet na terugkeer
 
-De module draait binnen een iframe in de PGO. Gebruik [`postMessage`](https://developer.mozilla.org/docs/Web/API/Window/postMessage) om het PGO-window te notificeren; de PGO verwijdert/sluit de iframe.
+* Ontvangt de gebruiker op de `return_url`, eventueel met `task_id` als query-parameter.
+* Haalt (optioneel direct) de taak opnieuw op via `GET /Task/{id}` om de bijgewerkte status te tonen.
+* Toont de bijgewerkte status en eventuele foutcodes of metadata.
 
-```typescript
-function closeFromIframe(status: "completed" | "failed" | "cancelled", taskId: string) {
-    const pgoOrigin = "https://pgo.example.nl"; // concrete origin, geen "*"
-    window.parent.postMessage(
-        { type: "module-close", status, taskId, timestamp: new Date().toISOString() },
-        pgoOrigin,
-    );
-}
-```
+#### Mobiele apps
 
-PGO-kant (ter illustratie):
+De `return_url` werkt ook voor mobiele apps: voor iOS via **Universal Links** en voor Android via **App Links**. Dit is de verantwoordelijkheid van de app-bouwers.
 
-```typescript
-window.addEventListener("message", (event) => {
-    const trustedOrigins = ["https://module.example.nl"];
-    if (!trustedOrigins.includes(event.origin)) return;
-    if (event.data?.type !== "module-close") return;
-    // Sluit iframe en update UI
-    closeModuleIframe();
-    updateTaskStatus(event.data.taskId, event.data.status);
-});
-```
+### Sessie-management
 
-### Stap 2 — Variant C: nieuw tabblad
+De sessie tussen persoon en aanbiedermodule heeft een beperkte geldigheidsduur met een sliding window:
 
-De module is in een nieuw tabblad geopend. Gebruik [`BroadcastChannel`](https://developer.mozilla.org/docs/Web/API/BroadcastChannel) of `window.opener.postMessage` om het PGO-tabblad te notificeren, sluit daarna het eigen tabblad.
+* **Access_token geldigheid**: 900 seconden (15 minuten).
+* **Sliding window**: de module MAG het access_token vernieuwen via een refresh_token (RFC 6749 §6) tussen 10 en 15 minuten vóór expiry, telkens met 15 minuten verlenging.
+* **Maximale sessieduur**: 10.800 seconden (3 uur).
+* **Grace period**: DVA hanteert 120 seconden grace vóór automatische vernietiging, zodat de module tijd heeft om het token te ontvangen en opnieuw aan te vragen.
+* **DVA verplichtingen**:
+  - MOET access_token en refresh_token na maximale duur + 120 s automatisch vernietigen.
+  - MOET verzoeken om nieuw access_token + refresh_token inwilligen zolang de maximale duur nog niet bereikt is.
+  - MOET de `expires_in` van het access_token binnen de resterende geldigheid van het sliding window laten vallen.
 
-```typescript
-function closeFromNewTab(status: "completed" | "failed" | "cancelled", taskId: string) {
-    const channel = new BroadcastChannel("module-communication");
-    channel.postMessage({ type: "module-closed", status, taskId });
-    channel.close();
-    window.close();
-}
-```
-
-Fallback als `window.close()` geblokkeerd wordt (niet door script geopend tabblad): toon een instructie aan de gebruiker dat hij het tabblad handmatig kan sluiten en dat de PGO al geüpdatet is.
-
-### Security
-
-- **Valideer `return_url` aan PGO-zijde** — whitelist van toegestane hostnames/paths om open-redirect te voorkomen.
-- **Gebruik concrete origins** in `postMessage` (geen `"*"`), en valideer `event.origin` aan de ontvangende kant.
-- **Exposeer het access_token niet aan de browser** — backend slaat het veilig op, de frontend ontvangt alleen `return_url` en launch-context via een eigen endpoint.
+De sessie eindigt wanneer:
+1. De geldigheidsduur is bereikt.
+2. De persoon de sessie beëindigt.
 
 ### Discussie
 
-Openstaand: locatie van `return_url` in het SMART-antwoord. Als top-level veld is praktisch maar niet in SMART v2 standaard gedefinieerd; `authorization_details` is SMART-conform maar complexer. Afstemmen tussen DVA-leveranciers.
+Openstaand: locatie van `return_url` in de SMART-context. Het Confluence-document vermeldt dat de `return_url` meekomt in de launch-context (stap 3.6). De exacte positie in de token response (top-level veld vs. `authorization_details`) is nog af te stemmen.
 
-Openstaand: verplichting ondersteuning per patroon. Moeten modules alle drie de patronen ondersteunen, of is per module één patroon bilateraal afgesproken met de zorgaanbieder?
-
-Openstaand: graceful handling van "gebruiker drukt browser-back of sluit tabblad". Moet de module bij laatste kans via `beforeunload` nog een status naar de PGO sturen, of is de PGO verantwoordelijk voor detectie van niet-teruggekomen sessies?
+Openstaand: welke `error`-waarden zijn gestandaardiseerd? Het voorbeeld gebruikt `temporarily_unavailable`; een volledige lijst van foutcodes is nog niet vastgelegd.

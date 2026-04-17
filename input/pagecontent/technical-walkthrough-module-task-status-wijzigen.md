@@ -2,8 +2,8 @@ Deze walkthrough beschrijft hoe een module de status van de `Task` waarvoor zij 
 
 ### Overzicht
 
-1. **Lees de huidige `Task`** (voor ETag en voor de volledige resource bij PUT).
-2. **Werk `Task.status` bij** naar de nieuwe waarde via `PUT` of `PATCH`, met `If-Match` voor optimistic locking.
+1. **Lees de huidige `Task`** (voor ETag en voor de volledige resource).
+2. **Werk `Task.status` bij** via `PUT`, met `If-Match` voor optimistic locking.
 3. **Optioneel**: schrijf bij completion ook `Task.output` (referenties naar resultaten zoals een `QuestionnaireResponse`).
 
 ### Voorwaarden
@@ -60,43 +60,20 @@ ETag: W/"3"
 }
 ```
 
-### Stap 2 — Werk Task.status bij
+### Stap 2 — Werk Task.status bij via PUT
 
-Gebruik `PUT` om de hele resource te vervangen, of `PATCH` voor een gerichte wijziging. `PATCH` is licht en minder foutgevoelig bij concurrent schrijvers; `PUT` is eenvoudig maar overschrijft de hele resource.
+De module wijzigt `Task.status` op de volledige resource en schrijft die terug via `PUT`. De `If-Match` header met de ETag uit Stap 1 beschermt tegen conflicten bij gelijktijdige schrijvers.
 
 De toegestane waardes voor `Task.status` zijn gedefinieerd in de [FHIR Task valueset](http://hl7.org/fhir/R4/valueset-task-status.html). Typische life cycle voor een module:
 
 `requested` → `received` → `accepted` → `in-progress` → `completed` (of `failed`, `cancelled`).
 
-#### Variant A — PATCH (JSON Patch)
+#### Parameters
 
-```typescript
-async function patchTaskStatus(
-    iss: string,
-    taskId: string,
-    newStatus: string,
-    etag: string,
-    accessToken: string,
-) {
-    const patch = [{ op: "replace", path: "/status", value: newStatus }];
-    const resp = await fetch(`${iss}/Task/${taskId}`, {
-        method: "PATCH",
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json-patch+json",
-            "If-Match": etag,
-            Accept: "application/fhir+json",
-        },
-        body: JSON.stringify(patch),
-    });
-    if (!resp.ok) {
-        throw new Error(`PATCH /Task/${taskId} failed: ${resp.status}`);
-    }
-    return resp.json();
-}
-```
-
-#### Variant B — PUT (volledige resource)
+* `iss`, de DVA FHIR base URL.
+* `task`, de volledige Task-resource uit Stap 1, met het aangepaste `status`-veld.
+* `etag`, de ETag uit Stap 1.
+* `accessToken`, Bearer access_token.
 
 ```typescript
 async function putTask(
@@ -153,7 +130,7 @@ De `QuestionnaireResponse` zelf wordt typisch eerst via `POST /QuestionnaireResp
 
 ### Discussie
 
-Openstaand: `PUT` vs. `PATCH` als afgesproken methode. `PATCH` is efficiënter voor kleine wijzigingen maar vereist JSON Patch of FHIRPath Patch ondersteuning aan DVA-zijde; `PUT` werkt met elke FHIR server maar overschrijft de hele resource.
+Openstaand: `PUT` vs. `PATCH`. In deze walkthrough wordt `PUT` gebruikt conform de [MedMij-R4-KoppelMij Technical Design](https://simplifier.net/guide/medmij-r4-provider-module-ig/) prozabeschrijving. De overzichtstabel in datzelfde document noemt echter `PATCH [base]/Task/[id]`. Deze tegenstrijdigheid in de bron moet worden opgelost; tot die tijd gaan we uit van `PUT` als de standaard schrijfmethode voor Task-statuswijzigingen.
 
 Openstaand: welke status-transities zijn door de DVA afgedwongen? FHIR Task staat meer overgangen toe dan in een module-context zinvol is. Voorstel: DVA valideert de life cycle `requested` → `accepted` → `in-progress` → `completed`/`failed`/`cancelled` en weigert andere.
 
