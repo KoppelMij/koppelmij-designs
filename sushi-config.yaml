@@ -71,6 +71,8 @@ pages:
     title: Home
   overview.md:
     title: Overview
+  gegevensdienst.md:
+    title: Gegevensdienst — FHIR Data Service
   koppelmij_option_3a.md:
     title: Option 3a - Token Exchange Launch Token met Gebruikersidentificatie
     extension:
@@ -143,6 +145,7 @@ menu:
     Overview: overview.html
   Solution Design:
     Token Exchange met Gebruikersidentificatie: koppelmij_option_3a.html
+    Gegevensdienst: gegevensdienst.html
   Overwegingen:
     Keuze voor Optie 3a: overwegingen_optie_3a.html
     Koppeltaal Domeinen: koppeltaal_domeinen.html
