@@ -53,6 +53,7 @@ De gegevensdienst legt vast *wat* er uitgewisseld wordt, niet *hoe* de data tot 
 | `Endpoint` | Technisch launch-adres van de module |
 | `Patient` | De cliënt voor wie de taken bedoeld zijn |
 | `Practitioner` / `PractitionerRole` | De behandelaar die de opdracht heeft geïnitieerd |
+| `Organization` | De zorgaanbieder-organisatie (via `PractitionerRole.organization`) |
 
 ### Resource-relaties
 
