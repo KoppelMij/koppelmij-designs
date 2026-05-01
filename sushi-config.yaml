@@ -72,7 +72,7 @@ pages:
   overview.md:
     title: Overview
   gegevensdienst.md:
-    title: Gegevensdienst — FHIR Data Service
+    title: Gegevensdienst Verzamelen Aanbiedertaken
   koppelmij_option_3a.md:
     title: Option 3a - Token Exchange Launch Token met Gebruikersidentificatie
     extension:
