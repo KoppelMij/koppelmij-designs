@@ -1,0 +1,46 @@
+@startuml gegevensdienst-task-focus
+
+skinparam object {
+  BackgroundColor #f5f5f5
+  BorderColor #333333
+}
+
+object "ServiceRequest B\n(groepering)" as SRgroup {
+  ""Behandelprogramma COPD""
+}
+
+object "ServiceRequest B.1\n(instructie)" as SRinstr1 {
+  ""Wekelijks vragenlijst\nKwaliteit van Leven""
+}
+
+object "ServiceRequest B.2\n(instructie)" as SRinstr2 {
+  ""Dagelijks bloeddruk meten""
+}
+
+object "Task B1.1" as T1 {
+  status = completed
+}
+object "Task B1.2" as T2 {
+  status = requested
+}
+object "Task B2.1" as T3 {
+  status = in-progress
+}
+object "Task B2.2" as T4 {
+  status = requested
+}
+
+T1 -up-> SRgroup : basedOn
+T2 -up-> SRgroup : basedOn
+T3 -up-> SRgroup : basedOn
+T4 -up-> SRgroup : basedOn
+
+T1 -up-> SRinstr1 : focus
+T2 -up-> SRinstr1 : focus
+T3 -up-> SRinstr2 : focus
+T4 -up-> SRinstr2 : focus
+
+SRinstr1 -up-> SRgroup
+SRinstr2 -up-> SRgroup
+
+@enduml

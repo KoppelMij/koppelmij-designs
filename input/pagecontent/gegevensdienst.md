@@ -57,7 +57,7 @@ De gegevensdienst legt vast *wat* er uitgewisseld wordt, niet *hoe* de data tot 
 ### Resource-relaties
 
 {::nomarkdown}
-{% include memo-sr-resource-relaties.svg %}
+{% include gegevensdienst-resource-relaties.svg %}
 {:/}
 
 De kern van het model:
@@ -77,6 +77,10 @@ Een Task verwijst naar twee *verschillende* ServiceRequest-instances:
 Dit onderscheid is nodig omdat een individuele taak ("vul vandaag de vragenlijst in", "doe nu een meting") een eigen lifecycle heeft (`requested → in-progress → completed`), maar gebonden kan zijn aan een bredere en/of herhalende instructie. De `basedOn` ServiceRequest groepeert alle taken van een interventie; de `focus` ServiceRequest legt de specifieke opdracht vast die tot deze taak heeft geleid.
 
 Beide zijn altijd verschillende resource-instances: de groeperings-SR opereert op interventieniveau, de instructie-SR op opdrachtniveau.
+
+{::nomarkdown}
+{% include gegevensdienst-task-focus.svg %}
+{:/}
 
 ### Gegevensafspraak PGO - DVA
 
@@ -122,13 +126,13 @@ De gegevensdienst is ontworpen in samenhang met Koppeltaal. Een belangrijk harmo
 Dit is een **workflow-beslissing** die buiten de gegevensdienst zelf valt — de DVA bevat het resultaat (de Tasks en ServiceRequests), ongeacht welk patroon tot hun creatie heeft geleid. Het PGO en de module hoeven het onderscheid niet te kennen; zij werken altijd met dezelfde FHIR-resources.
 
 {::nomarkdown}
-{% include memo-sr-koppelmij-flow.svg %}
+{% include gegevensdienst-koppelmij-flow.svg %}
 {:/}
 
 Ter vergelijking de huidige Koppeltaal-flow:
 
 {::nomarkdown}
-{% include memo-sr-koppeltaal-flow.svg %}
+{% include gegevensdienst-koppeltaal-flow.svg %}
 {:/}
 
 Zie de [Memo: ServiceRequest als orkestratiemiddel](https://vzvznl.github.io/Koppeltaal-2.0-FHIR/memo-servicerequest-koppelmij.html) voor de volledige analyse en de [SMART Task-based Launch overwegingen](smart_task_launch.html) voor vergelijking met het experimentele SMART Task-based Launch mechanisme.
