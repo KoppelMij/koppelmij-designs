@@ -1,3 +1,13 @@
+### Changelog
+
+| Versie | Datum      | Wijziging                                |
+|--------|------------|------------------------------------------|
+| 0.0.1  | 2026-04-30 | Initiële versie                          |
+| 0.0.2  | 2026-05-01 | Verwijzing naar SMART Task-based Launch toegevoegd |
+| 0.0.3  | 2026-05-01 | Twee rollen van ServiceRequest (basedOn vs focus) uitgewerkt |
+
+---
+
 ### Inleiding
 
 In KoppelMij fungeert het PGO als het centrale overzicht voor de cliënt. De cliënt wil **in één oogopslag alle taken van verschillende zorgaanbieders zien** — zonder eerst in afzonderlijke modules te moeten kijken. Dit vereist dat individuele taken binnen een module zichtbaar en launchbaar zijn vanuit het PGO.
