@@ -139,6 +139,8 @@ Het gekozen patroon sluit aan op de [FHIR Workflow](https://www.hl7.org/fhir/wor
 
 De HL7 [Clinical Order Workflow (COW) IG](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/workflow-patterns.html) beschrijft patronen voor het coördineren van orders. In onze context gaan we ervan uit dat de toewijzing reeds is overeengekomen: de module-aanbieder is bekend. We sluiten aan bij het COW-patroon in zoverre dat we starten met een overeengekomen ServiceRequest met `Task.basedOn` als verbinding naar de taken.
 
+Daarnaast introduceert de [SMART App Launch v2.2.0](https://build.fhir.org/ig/HL7/smart-app-launch/task-launch.html) een experimenteel mechanisme voor *Task-based Launch*, waarbij de Task zelf de applicatie-URL en launch-context bevat. Dit raakt aan ons patroon (Task als drager van launch-intent), maar verschilt in autorisatiemodel en orkestratie. Zie [SMART Task-based Launch en KoppelMij](smart_task_launch.html) voor een analyse.
+
 ### Open vragen
 
 #### Wie wordt de requester van de taken?
