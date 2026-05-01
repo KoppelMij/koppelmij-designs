@@ -5,6 +5,7 @@
 | 0.0.1  | 2026-04-30 | Initiële versie                          |
 | 0.0.2  | 2026-05-01 | Verwijzing naar SMART Task-based Launch toegevoegd |
 | 0.0.3  | 2026-05-01 | Twee rollen van ServiceRequest (basedOn vs focus) uitgewerkt |
+| 0.0.4  | 2026-05-01 | Scope herdefinieerd: focus op gegevensafspraken PGO-DVA en Module-DVA; workflow/orkestratie buiten scope |
 
 ---
 
@@ -12,21 +13,46 @@
 
 In KoppelMij fungeert het PGO als het centrale overzicht voor de cliënt. De cliënt wil **in één oogopslag alle taken van verschillende zorgaanbieders zien** — zonder eerst in afzonderlijke modules te moeten kijken. Dit vereist dat individuele taken binnen een module zichtbaar en launchbaar zijn vanuit het PGO.
 
-Deze pagina beschrijft de FHIR-gegevensdienst die dit mogelijk maakt: welke resources betrokken zijn, hoe ze zich tot elkaar verhouden, en welke interactiepatronen worden gebruikt door het PGO, de module-aanbieder en het ECD.
+Deze pagina beschrijft de **FHIR-gegevensdienst Verzamelen Aanbiedertaken**: welke FHIR-resources beschikbaar zijn bij de DVA, en wat de gegevensafspraken zijn tussen de betrokken partijen. De gegevensdienst is de eerste MedMij-gegevensdienst die *uitvoerbare* (launchbare) data bevat.
 
-De gegevensdienst bouwt voort op de bestaande Koppeltaal-werkwijze en breidt deze uit met het concept van een **ServiceRequest als overkoepelende opdracht**, waarbinnen de module individuele taken voor de cliënt aanmaakt.
+### Scope
+
+De gegevensdienst definieert twee gegevensafspraken:
+
+1. **PGO - DVA**: welke data het PGO ophaalt bij de DVA (taken, opdrachten, moduledefinities, endpoints).
+2. **Module - DVA**: welke data de module leest en schrijft **in de context van een SMART on FHIR launch** (taakcontext, statusupdates).
+
+{::nomarkdown}
+{% include gegevensdienst-scope.svg %}
+{:/}
+
+#### Buiten scope van deze gegevensdienst
+
+De gegevensdienst legt vast *wat* er uitgewisseld wordt, niet *hoe* de data tot stand komt. De volgende onderwerpen vallen buiten scope:
+
+- **Catalogusbeheer van ActivityDefinitions** — hoe de zorgaanbieder (niet noodzakelijk de DVA) de catalogus van moduledefinities opbouwt en uitwisselt met module-aanbieders.
+- **FHIR Workflow / Zorgplanning** — hoe in een zorginformatiesysteem (XIS/ECD) het proces verloopt waarmee een behandelaar tot een Task of ServiceRequest komt.
+- **Subscription-mechanisme** — hoe de module-aanbieder genotificeerd wordt over nieuwe ServiceRequests (orkestratie tussen module en CKT/zorgaanbieder).
+- **`ActivityDefinition.kind` als discriminator** — de keuze tussen `Task`- en `ServiceRequest`-flow is een workflow-beslissing, geen onderdeel van de gegevensuitwisseling. Zie [Harmonisatie met Koppeltaal](#harmonisatie-met-koppeltaal-informatief) voor context.
+
+### Betrokken partijen
+
+| Partij | Rol |
+|--------|-----|
+| **PGO** | Toont taken uit DVA's van zorgaanbieders aan de cliënt. PGO's zijn "lege hulsen" die met deze gegevensdienst voor het eerst uitvoerbare (launchbare) data ontvangen. |
+| **DVA** | Dienstverlener Aanbieder — ontsluit data namens de zorgaanbieder. De DVA biedt de FHIR-server waarop PGO en module hun gegevensafspraken uitvoeren. |
+| **Module-aanbieder** | Biedt (online) behandelingen of andere diensten aan via de DVA van de zorgaanbieder. De module leest en schrijft taakdata in de context van een SMART on FHIR launch. |
 
 ### FHIR Resources
 
-| Resource | Rol |
-|----------|-----|
-| `ActivityDefinition` | Sjabloon van de module; `kind` bepaalt het type flow (`Task` of `ServiceRequest`) |
-| `ServiceRequest` | Overkoepelende opdracht van behandelaar aan module |
-| `Task` | Individuele taak voor de cliënt, gebonden aan de ServiceRequest |
+| Resource | Rol in de gegevensdienst |
+|----------|--------------------------|
+| `Task` | Individuele taak voor de cliënt — het centrale object dat het PGO toont en de module bijwerkt |
+| `ServiceRequest` | Overkoepelende opdracht of concrete instructie waaraan taken gebonden zijn |
+| `ActivityDefinition` | Sjabloon van de module; beschrijft wat gelauncht kan worden en via welk endpoint |
 | `Endpoint` | Technisch launch-adres van de module |
-| `Patient` | De cliënt |
-| `Practitioner` / `PractitionerRole` | De behandelaar |
-| `Subscription` | Mechanisme waarmee de module nieuwe ServiceRequests detecteert |
+| `Patient` | De cliënt voor wie de taken bedoeld zijn |
+| `Practitioner` / `PractitionerRole` | De behandelaar die de opdracht heeft geïnitieerd |
 
 ### Resource-relaties
 
@@ -36,7 +62,8 @@ De gegevensdienst bouwt voort op de bestaande Koppeltaal-werkwijze en breidt dez
 
 De kern van het model:
 - De **ActivityDefinition** verwijst via de extensie `endpoint` naar het **Endpoint** met het launch-adres.
-- Elke **Task** heeft twee referentiepaden naar ServiceRequest, elk met een eigen semantiek (zie hieronder).
+- De **Task** verwijst via de extensie `instantiates` naar de **ActivityDefinition** die beschrijft welke module gelauncht wordt.
+- Elke **Task** heeft twee referentiepaden naar ServiceRequest, elk met een eigen semantiek:
 
 #### Twee rollen van ServiceRequest
 
@@ -51,44 +78,7 @@ Dit onderscheid is nodig omdat een individuele taak ("vul vandaag de vragenlijst
 
 Beide zijn altijd verschillende resource-instances: de groeperings-SR opereert op interventieniveau, de instructie-SR op opdrachtniveau.
 
-### Twee operationele patronen
-
-Het veld `ActivityDefinition.kind` bepaalt welk patroon van toepassing is. Beide patronen kunnen naast elkaar bestaan — een module-aanbieder kan zowel ActivityDefinitions van type `Task` als van type `ServiceRequest` aanbieden.
-
-#### Patroon 1: `AD.kind = Task` (Koppeltaal-werkwijze)
-
-De huidige Koppeltaal-werkwijze. De module is een ondeelbaar geheel:
-
-1. De behandelaar wijst module Y toe aan de cliënt.
-2. Er ontstaat één Task in de Koppeltaalvoorziening.
-3. De cliënt opent de module en werkt alles af.
-4. De module rapporteert het resultaat terug.
-
-De behandelaar heeft geen zicht op wat er *binnen* de module gebeurt. De module is een black box.
-
-#### Patroon 2: `AD.kind = ServiceRequest` (KoppelMij-werkwijze)
-
-De KoppelMij-uitbreiding. De module is een samenwerkingspartner die taken aandraagt:
-
-1. De behandelaar vraagt een interventie aan voor de cliënt (bijv. *"Start behandelprogramma B"*).
-2. Er ontstaat een **ServiceRequest** in de Centrale Koppeltaal (CKT) voorziening.
-3. De module-aanbieder detecteert deze ServiceRequest (via Subscription) en **vult deze aan met individuele taken** (B1, B2, B3, ...) voor de cliënt.
-4. De behandelaar kan ook **handmatig extra taken toevoegen** binnen dezelfde ServiceRequest.
-5. De cliënt ziet in het PGO alle taken en kan ze individueel launchen.
-
-{::nomarkdown}
-{% include memo-sr-koppelmij-flow.svg %}
-{:/}
-
-Het wezenlijke verschil: de module is niet langer een black box, maar draagt individuele taken aan binnen een door de behandelaar geïnitieerde opdracht. Het PGO kan deze taken centraal tonen.
-
-#### Ter vergelijking: huidige Koppeltaal-flow
-
-{::nomarkdown}
-{% include memo-sr-koppeltaal-flow.svg %}
-{:/}
-
-### Verzamelen door het PGO
+### Gegevensafspraak PGO - DVA
 
 Het PGO haalt taken op via de DVA FHIR-server. De zoekvraag is:
 
@@ -98,70 +88,50 @@ GET /Task?patient={patient-id}&status=requested,accepted,in-progress,completed
 
 Het PGO groepeert de ontvangen taken op basis van `Task.basedOn` (verwijzing naar ServiceRequest) en `Task.groupIdentifier` (label voor weergave). Zo kan het PGO per interventie een overzicht tonen van individuele taken, met status per taak.
 
-Voor het launchen van een individuele taak volgt het PGO de stappen beschreven in de [Technical Walkthroughs](technical-walkthrough-pgo-launch-voorbereiden.html).
+Het PGO resolvet het launch-adres via de keten `Task → ActivityDefinition → Endpoint.address` (zie [Technical Walkthrough: Uitvoeren launch als PGO](technical-walkthrough-pgo-launch-uitvoeren.html)).
 
-### Subscription-mechanisme
+### Gegevensafspraak Module - DVA (SMART on FHIR context)
 
-De module-aanbieder moet genotificeerd worden over nieuwe ServiceRequests die betrekking hebben op haar ActivityDefinition(s). Dit kan via een FHIR Subscription op basis van de `instantiates` extensie:
+De module ontvangt bij de SMART on FHIR launch de taakcontext (patient, task-id, fhirUser) en communiceert via het access_token met de DVA FHIR-server.
 
-```json
-{
-  "resourceType": "Subscription",
-  "status": "active",
-  "reason": "Notificatie bij nieuwe ServiceRequests voor module X",
-  "criteria": "ServiceRequest?instantiates=ActivityDefinition/module-x",
-  "channel": {
-    "type": "rest-hook",
-    "endpoint": "https://module-x.example.com/notifications/servicerequest",
-    "payload": "application/fhir+json"
-  }
-}
-```
+**Lezen:**
+- `GET /Task/{id}` — opvragen van de taak waarvoor de module is gelauncht, inclusief de referenties naar `basedOn` en `focus` ServiceRequests.
 
-Dit vereist een SearchParameter voor de `instantiates` extensie op ServiceRequest, analoog aan de bestaande [`task-instantiates`](http://koppeltaal.nl/fhir/SearchParameter/task-instantiates) SearchParameter.
+**Schrijven:**
+- `PUT /Task/{id}` — bijwerken van `Task.status` en optioneel `Task.output` (zie [Technical Walkthrough: Wijzigen Task-status](technical-walkthrough-module-task-status-wijzigen.html)).
+
+De volledige SMART on FHIR launch-flow (van launch-voorbereiding tot terugkeer naar PGO) is beschreven in de [Technical Walkthroughs](technical-walkthrough-pgo-launch-voorbereiden.html).
 
 ### Link naar ActivityDefinition: extensie `instantiates`
 
 In Koppeltaal wordt op de Task een custom extensie [`instantiates`](http://vzvz.nl/fhir/StructureDefinition/instantiates) gebruikt om te verwijzen naar de ActivityDefinition. Het voorstel is om dezelfde extensie **symmetrisch op de ServiceRequest** toe te passen:
 
-- Wordt de verwijzing van ServiceRequest naar ActivityDefinition op dezelfde manier geïmplementeerd als bij Task.
-- Kan een vergelijkbare SearchParameter worden gedefinieerd voor ServiceRequest.
-- Wordt het zoek- en Subscription-criterium gebaseerd op een bewezen mechanisme.
+- De verwijzing van ServiceRequest naar ActivityDefinition wordt op dezelfde manier geïmplementeerd als bij Task.
+- Een vergelijkbare SearchParameter kan worden gedefinieerd voor ServiceRequest.
+- Het zoek- en Subscription-criterium wordt gebaseerd op een bewezen mechanisme.
 
-### Impact per rol
+### Harmonisatie met Koppeltaal (informatief)
 
-#### Module-aanbieder
+De gegevensdienst is ontworpen in samenhang met Koppeltaal. Een belangrijk harmonisatiepunt is het gebruik van `ActivityDefinition.kind` als discriminator voor het type workflow:
 
-- Bij `AD.kind = Task`: geen verandering. De module ontvangt taken zoals nu.
-- Bij `AD.kind = ServiceRequest`:
-  - Publiceer een ActivityDefinition met `kind = ServiceRequest`.
-  - Abonneer op nieuwe ServiceRequests (via Subscription).
-  - Maak bij ontvangst van een ServiceRequest zelf taken aan binnen de CKT.
+| `AD.kind` | Betekenis | Flow |
+|-----------|-----------|------|
+| `Task` (of leeg) | Module werkt op taakniveau | Huidige Koppeltaal-werkwijze: één taak per toewijzing, module als black box. |
+| `ServiceRequest` | Module werkt op opdrachtniveau | KoppelMij-werkwijze: module maakt individuele taken aan binnen een ServiceRequest. |
 
-#### ECD-aanbieder
+Dit is een **workflow-beslissing** die buiten de gegevensdienst zelf valt — de DVA bevat het resultaat (de Tasks en ServiceRequests), ongeacht welk patroon tot hun creatie heeft geleid. Het PGO en de module hoeven het onderscheid niet te kennen; zij werken altijd met dezelfde FHIR-resources.
 
-- Bij `AD.kind = ServiceRequest`: maak een ServiceRequest aan in plaats van (of naast) een Task.
-- Koppel de ServiceRequest aan de ActivityDefinition via de `instantiates` extensie.
-- Beheer meerdere actieve ServiceRequests per cliënt.
+{::nomarkdown}
+{% include memo-sr-koppelmij-flow.svg %}
+{:/}
 
-#### PGO-aanbieder
+Ter vergelijking de huidige Koppeltaal-flow:
 
-- Groepeer taken onder hun ServiceRequest — van een platte takenlijst naar een gestructureerd overzicht.
+{::nomarkdown}
+{% include memo-sr-koppeltaal-flow.svg %}
+{:/}
 
-#### Patiëntportaal-aanbieder
-
-- Vergelijkbare impact als PGO: taken groeperen onder de ServiceRequest, met een gestructureerd overzicht in de UI.
-
-### Aansluiting op FHIR Workflow
-
-Het gekozen patroon sluit aan op de [FHIR Workflow](https://www.hl7.org/fhir/workflow.html) specificatie:
-
-- **ServiceRequest** beschrijft de *intentie* of *opdracht*: wat er moet gebeuren.
-- **Task** beschrijft de *concrete uitvoering*, inclusief status (`requested`, `accepted`, `in-progress`, `completed`).
-
-De HL7 [Clinical Order Workflow (COW) IG](https://build.fhir.org/ig/HL7/fhir-cow-ig/en/workflow-patterns.html) beschrijft patronen voor het coördineren van orders. In onze context gaan we ervan uit dat de toewijzing reeds is overeengekomen: de module-aanbieder is bekend. We sluiten aan bij het COW-patroon in zoverre dat we starten met een overeengekomen ServiceRequest met `Task.basedOn` als verbinding naar de taken.
-
-Daarnaast introduceert de [SMART App Launch v2.2.0](https://build.fhir.org/ig/HL7/smart-app-launch/task-launch.html) een experimenteel mechanisme voor *Task-based Launch*, waarbij de Task zelf de applicatie-URL en launch-context bevat. Dit raakt aan ons patroon (Task als drager van launch-intent), maar verschilt in autorisatiemodel en orkestratie. Zie [SMART Task-based Launch en KoppelMij](smart_task_launch.html) voor een analyse.
+Zie de [Memo: ServiceRequest als orkestratiemiddel](https://vzvznl.github.io/Koppeltaal-2.0-FHIR/memo-servicerequest-koppelmij.html) voor de volledige analyse en de [SMART Task-based Launch overwegingen](smart_task_launch.html) voor vergelijking met het experimentele SMART Task-based Launch mechanisme.
 
 ### Open vragen
 
@@ -174,7 +144,7 @@ Wanneer de module taken aanmaakt binnen een ServiceRequest:
 
 #### Kan een ServiceRequest taken van meerdere module-aanbieders bevatten?
 
-Het huidige voorstel gaat uit van één module-aanbieder per ServiceRequest. Een samengestelde opdracht (meerdere modules) verhoogt de complexiteit aanzienlijk (Subscription, autorisatie, afsluiting) en vereist nadere uitwerking.
+Het huidige voorstel gaat uit van één module-aanbieder per ServiceRequest. Een samengestelde opdracht (meerdere modules) verhoogt de complexiteit aanzienlijk en vereist nadere uitwerking.
 
 #### Lifecycle-relatie ServiceRequest en Tasks
 

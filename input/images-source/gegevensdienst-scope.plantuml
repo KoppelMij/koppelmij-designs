@@ -1,0 +1,43 @@
+@startuml gegevensdienst-scope
+
+skinparam rectangle {
+  BackgroundColor #f5f5f5
+  BorderColor #333333
+}
+
+skinparam node {
+  BackgroundColor #ddeeff
+  BorderColor #336699
+}
+
+skinparam cloud {
+  BackgroundColor #eeeeee
+  BorderColor #999999
+  FontColor #999999
+}
+
+node "PGO" as PGO
+node "DVA\n(FHIR Server)" as DVA
+node "Module" as Module
+
+rectangle "Gegevensafspraak\nPGO - DVA" as GA1 #dff0d8 {
+}
+
+rectangle "Gegevensafspraak\nModule - DVA\n(SMART on FHIR context)" as GA2 #d9edf7 {
+}
+
+cloud "XIS / ECD\n(buiten scope)" as XIS
+cloud "Catalogusbeheer AD\n(buiten scope)" as CAT
+cloud "FHIR Workflow /\nZorgplanning\n(buiten scope)" as WF
+
+PGO -right-> GA1 : "GET Task, SR,\nAD, Endpoint"
+GA1 -right-> DVA
+
+DVA -right-> GA2
+GA2 -right-> Module : "PUT Task (status),\nGET context"
+
+XIS .down.> DVA : ""
+CAT .down.> DVA : ""
+WF .down.> DVA : ""
+
+@enduml
