@@ -86,6 +86,8 @@ pages:
     title: Harmonisatie van Module Launch - HTI Token vs Token Exchange
   dva_openid_scope.md:
     title: DVA als Identity Provider - De openid scope vraagstuk
+  smart_task_launch.md:
+    title: SMART Task-based Launch en KoppelMij
   harde_zachte_vereisten.md:
     title: Harde en Zachte Vereisten in de Standaard
   module_terugkeer.md:
@@ -151,6 +153,7 @@ menu:
     Koppeltaal Domeinen: koppeltaal_domeinen.html
     Launch Harmonisatie: launch_harmonisatie.html
     DVA OpenID Scope: dva_openid_scope.html
+    SMART Task-based Launch: smart_task_launch.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
   Autorisaties: autorisaties.html
