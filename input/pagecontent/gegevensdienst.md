@@ -25,9 +25,21 @@ De gegevensdienst bouwt voort op de bestaande Koppeltaal-werkwijze en breidt dez
 {:/}
 
 De kern van het model:
-- De **ServiceRequest** verwijst via de extensie `instantiates` naar de **ActivityDefinition** die beschrijft welke module wordt aangevraagd.
-- Elke **Task** verwijst via `basedOn` naar de **ServiceRequest** waarbinnen hij valt.
 - De **ActivityDefinition** verwijst via de extensie `endpoint` naar het **Endpoint** met het launch-adres.
+- Elke **Task** heeft twee referentiepaden naar ServiceRequest, elk met een eigen semantiek (zie hieronder).
+
+#### Twee rollen van ServiceRequest
+
+Een Task verwijst naar twee *verschillende* ServiceRequest-instances:
+
+| Referentie | Rol | Voorbeeld |
+|------------|-----|-----------|
+| `Task.basedOn` | **Groepering** — de overkoepelende interventie waarbinnen de taak valt. Alle taken van dezelfde interventie delen dezelfde `basedOn` ServiceRequest. | *"Behandelprogramma COPD"* |
+| `Task.focus` | **Instructie** — de concrete, eventueel herhalende opdracht voor de patiënt waaraan deze taak invulling geeft. | *"Wekelijks vragenlijst Kwaliteit van Leven invullen"* of *"Dagelijks bloeddruk meten"* |
+
+Dit onderscheid is nodig omdat een individuele taak ("vul vandaag de vragenlijst in", "doe nu een meting") een eigen lifecycle heeft (`requested → in-progress → completed`), maar gebonden kan zijn aan een bredere en/of herhalende instructie. De `basedOn` ServiceRequest groepeert alle taken van een interventie; de `focus` ServiceRequest legt de specifieke opdracht vast die tot deze taak heeft geleid.
+
+Beide zijn altijd verschillende resource-instances: de groeperings-SR opereert op interventieniveau, de instructie-SR op opdrachtniveau.
 
 ### Twee operationele patronen
 
