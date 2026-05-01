@@ -6,6 +6,7 @@
 | 0.0.2  | 2026-05-01 | Verwijzing naar SMART Task-based Launch toegevoegd |
 | 0.0.3  | 2026-05-01 | Twee rollen van ServiceRequest (basedOn vs focus) uitgewerkt |
 | 0.0.4  | 2026-05-01 | Scope herdefinieerd: focus op gegevensafspraken PGO-DVA en Module-DVA; workflow/orkestratie buiten scope |
+| 0.0.5  | 2026-05-01 | Aligned met Jelmer's Technical Design: PATCH ipv PUT, owner ipv patient, ServiceRequest.code.text als groepslabel, Organization toegevoegd |
 
 ---
 
