@@ -2,9 +2,8 @@ Deze walkthrough beschrijft hoe een module de status van de `Task` waarvoor zij 
 
 ### Overzicht
 
-1. **Lees de huidige `Task`** (voor ETag en voor de volledige resource).
-2. **Werk `Task.status` bij** via `PUT`, met `If-Match` voor optimistic locking.
-3. **Optioneel**: schrijf bij completion ook `Task.output` (referenties naar resultaten zoals een `QuestionnaireResponse`).
+1. **Werk `Task.status` bij** via `PATCH` (FHIRPath Patch) — een partiële update die alleen het status-veld wijzigt.
+2. **Optioneel**: schrijf bij completion ook `Task.output` (referenties naar resultaten zoals een `QuestionnaireResponse`).
 
 ### Voorwaarden
 
@@ -12,57 +11,9 @@ Deze walkthrough beschrijft hoe een module de status van de `Task` waarvoor zij 
 - Scope `patient/Task.write` (of enger) is toegekend.
 - De module kent het `Task.id` uit de launch-context (`patient` en eventueel een resource-referentie uit Token Exchange response).
 
-### Stap 1 — Lees de huidige Task
+### Stap 1 — Werk Task.status bij via PATCH
 
-Voor optimistic locking en om de volledige resource te hebben voor een `PUT`, haal je de Task eerst op.
-
-#### Parameters
-
-* `iss`, de DVA FHIR base URL.
-* `taskId`, het id uit de launch-context.
-* `accessToken`, Bearer access_token.
-
-```typescript
-async function getTask(iss: string, taskId: string, accessToken: string) {
-    const resp = await fetch(`${iss}/Task/${taskId}`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            Accept: "application/fhir+json",
-        },
-    });
-    if (!resp.ok) {
-        throw new Error(`GET /Task/${taskId} failed: ${resp.status}`);
-    }
-    const etag = resp.headers.get("ETag");
-    const task = await resp.json();
-    return { task, etag };
-}
-```
-
-#### Response value
-
-* De FHIR `Task`-resource en de `ETag` header (nodig voor `If-Match` in Stap 2).
-
-##### Example
-
-```http
-HTTP/1.1 200 OK
-Content-Type: application/fhir+json
-ETag: W/"3"
-
-{
-    "resourceType": "Task",
-    "id": "456",
-    "status": "requested",
-    "intent": "order",
-    "for": { "reference": "Patient/789" },
-    "instantiatesCanonical": "ActivityDefinition/copd-questionnaire"
-}
-```
-
-### Stap 2 — Werk Task.status bij via PUT
-
-De module wijzigt `Task.status` op de volledige resource en schrijft die terug via `PUT`. De `If-Match` header met de ETag uit Stap 1 beschermt tegen conflicten bij gelijktijdige schrijvers.
+De module wijzigt `Task.status` via een `PATCH`-request met een [FHIRPath Patch](https://hl7.org/fhir/R4/fhirpatch.html) payload. Dit stuurt alleen de wijziging, niet de volledige resource — dit voorkomt dat andere velden onbedoeld overschreven worden bij gelijktijdige schrijvers.
 
 De toegestane waardes voor `Task.status` zijn gedefinieerd in de [FHIR Task valueset](http://hl7.org/fhir/R4/valueset-task-status.html). Typische life cycle voor een module:
 
@@ -71,66 +22,117 @@ De toegestane waardes voor `Task.status` zijn gedefinieerd in de [FHIR Task valu
 #### Parameters
 
 * `iss`, de DVA FHIR base URL.
-* `task`, de volledige Task-resource uit Stap 1, met het aangepaste `status`-veld.
-* `etag`, de ETag uit Stap 1.
+* `taskId`, het id uit de launch-context.
+* `newStatus`, de nieuwe status-waarde.
 * `accessToken`, Bearer access_token.
 
 ```typescript
-async function putTask(
+async function patchTaskStatus(
     iss: string,
-    task: any,
-    etag: string,
+    taskId: string,
+    newStatus: string,
     accessToken: string,
 ) {
-    const resp = await fetch(`${iss}/Task/${task.id}`, {
-        method: "PUT",
+    const patch = {
+        resourceType: "Parameters",
+        parameter: [
+            {
+                name: "operation",
+                part: [
+                    { name: "type", valueCode: "replace" },
+                    { name: "path", valueString: "Task.status" },
+                    { name: "value", valueCode: newStatus },
+                ],
+            },
+        ],
+    };
+    const resp = await fetch(`${iss}/Task/${taskId}`, {
+        method: "PATCH",
         headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/fhir+json",
-            "If-Match": etag,
             Accept: "application/fhir+json",
         },
-        body: JSON.stringify(task),
+        body: JSON.stringify(patch),
     });
     if (!resp.ok) {
-        throw new Error(`PUT /Task/${task.id} failed: ${resp.status}`);
+        throw new Error(`PATCH /Task/${taskId} failed: ${resp.status}`);
     }
     return resp.json();
 }
 
 // Gebruik:
-// const { task, etag } = await getTask(iss, "456", accessToken);
-// task.status = "in-progress";
-// await putTask(iss, task, etag, accessToken);
+// await patchTaskStatus(iss, "456", "in-progress", accessToken);
+// await patchTaskStatus(iss, "456", "completed", accessToken);
+```
+
+#### Request body (FHIRPath Patch)
+
+```json
+{
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "operation",
+            "part": [
+                { "name": "type", "valueCode": "replace" },
+                { "name": "path", "valueString": "Task.status" },
+                { "name": "value", "valueCode": "completed" }
+            ]
+        }
+    ]
+}
 ```
 
 #### Response value
 
-* `200 OK` (of `201 Created` bij first write) met de bijgewerkte resource en nieuwe `ETag`.
-* `409 Conflict` als de `If-Match` niet matcht — lees de resource opnieuw en probeer nogmaals.
+* `200 OK` met de bijgewerkte resource.
 * `422 Unprocessable Entity` bij een niet-toegestane status-transitie (door DVA business rules).
 
-### Stap 3 — Optioneel: Task.output schrijven bij completion
+### Stap 2 — Optioneel: Task.output schrijven bij completion
 
-Bij afronden van een vragenlijst of meting kan de module het resultaat als aparte FHIR resource plaatsen (bv. `QuestionnaireResponse`) en de referentie daarnaar toevoegen aan `Task.output` in dezelfde of een opvolgende update.
+Bij afronden van een vragenlijst of meting kan de module het resultaat als aparte FHIR resource plaatsen (bv. `QuestionnaireResponse`) en de referentie daarnaar toevoegen aan `Task.output`. Hiervoor kan een tweede PATCH-operatie worden gebruikt, of een gecombineerde PATCH die zowel `status` als `output` in één request wijzigt:
 
-```typescript
-// Voorbeeld: volledige Task met output bij completion
-task.status = "completed";
-task.output = [
-    {
-        type: { text: "questionnaire-response" },
-        valueReference: { reference: "QuestionnaireResponse/abc-123" },
-    },
-];
-await putTask(iss, task, etag, accessToken);
+```json
+{
+    "resourceType": "Parameters",
+    "parameter": [
+        {
+            "name": "operation",
+            "part": [
+                { "name": "type", "valueCode": "replace" },
+                { "name": "path", "valueString": "Task.status" },
+                { "name": "value", "valueCode": "completed" }
+            ]
+        },
+        {
+            "name": "operation",
+            "part": [
+                { "name": "type", "valueCode": "add" },
+                { "name": "path", "valueString": "Task" },
+                { "name": "name", "valueString": "output" },
+                {
+                    "name": "value",
+                    "part": [
+                        {
+                            "name": "type",
+                            "valueCodeableConcept": { "text": "questionnaire-response" }
+                        },
+                        {
+                            "name": "valueReference",
+                            "valueReference": { "reference": "QuestionnaireResponse/abc-123" }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
 ```
 
 De `QuestionnaireResponse` zelf wordt typisch eerst via `POST /QuestionnaireResponse` aangemaakt; de referentie daaruit gaat dan naar `Task.output`.
 
 ### Discussie
-
-Openstaand: `PUT` vs. `PATCH`. In deze walkthrough wordt `PUT` gebruikt conform de [MedMij-R4-KoppelMij Technical Design](https://simplifier.net/guide/medmij-r4-provider-module-ig/) prozabeschrijving. De overzichtstabel in datzelfde document noemt echter `PATCH [base]/Task/[id]`. Deze tegenstrijdigheid in de bron moet worden opgelost; tot die tijd gaan we uit van `PUT` als de standaard schrijfmethode voor Task-statuswijzigingen.
 
 Openstaand: welke status-transities zijn door de DVA afgedwongen? FHIR Task staat meer overgangen toe dan in een module-context zinvol is. Voorstel: DVA valideert de life cycle `requested` → `accepted` → `in-progress` → `completed`/`failed`/`cancelled` en weigert andere.
 

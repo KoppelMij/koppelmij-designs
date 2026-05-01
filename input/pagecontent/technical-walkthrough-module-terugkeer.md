@@ -2,7 +2,7 @@ Deze walkthrough beschrijft hoe een module de gebruiker na afloop terugbrengt na
 
 ### Overzicht
 
-1. **Werk de Task-status bij** via `PUT /Task/{id}` — dit MOET vóór de redirect plaatsvinden zodat het PGO na terugkeer de actuele status kan ophalen.
+1. **Werk de Task-status bij** via `PATCH /Task/{id}` — dit MOET vóór de redirect plaatsvinden zodat het PGO na terugkeer de actuele status kan ophalen.
 2. **Revoke het access_token** conform RFC 7009 — het token is niet meer nodig na de status-update.
 3. **Redirect de browser** via HTTP 302 naar de `return_url` uit de launch-context — optioneel met `error`-parameter bij afbreken of fout.
 

@@ -87,10 +87,10 @@ Beide zijn altijd verschillende resource-instances: de groeperings-SR opereert o
 Het PGO haalt taken op via de DVA FHIR-server. De zoekvraag is:
 
 ```
-GET /Task?patient={patient-id}&status=requested,accepted,in-progress,completed
+GET /Task?owner=Patient/{patient-id}
 ```
 
-Het PGO groepeert de ontvangen taken op basis van `Task.basedOn` (verwijzing naar ServiceRequest) en `Task.groupIdentifier` (label voor weergave). Zo kan het PGO per interventie een overzicht tonen van individuele taken, met status per taak.
+Het PGO groepeert de ontvangen taken op basis van `Task.basedOn` (verwijzing naar de groeperings-ServiceRequest). De display-naam van de groep komt uit `ServiceRequest.code.text` van de betreffende DigitalGroupPlan. Zo kan het PGO per interventie een overzicht tonen van individuele taken, met status per taak.
 
 Het PGO resolvet het launch-adres via de keten `Task → ActivityDefinition → Endpoint.address` (zie [Technical Walkthrough: Uitvoeren launch als PGO](technical-walkthrough-pgo-launch-uitvoeren.html)).
 
@@ -102,7 +102,7 @@ De module ontvangt bij de SMART on FHIR launch de taakcontext (patient, task-id,
 - `GET /Task/{id}` — opvragen van de taak waarvoor de module is gelauncht, inclusief de referenties naar `basedOn` en `focus` ServiceRequests.
 
 **Schrijven:**
-- `PUT /Task/{id}` — bijwerken van `Task.status` en optioneel `Task.output` (zie [Technical Walkthrough: Wijzigen Task-status](technical-walkthrough-module-task-status-wijzigen.html)).
+- `PATCH /Task/{id}` — bijwerken van `Task.status` via FHIRPath Patch (zie [Technical Walkthrough: Wijzigen Task-status](technical-walkthrough-module-task-status-wijzigen.html)).
 
 De volledige SMART on FHIR launch-flow (van launch-voorbereiding tot terugkeer naar PGO) is beschreven in de [Technical Walkthroughs](technical-walkthrough-pgo-launch-voorbereiden.html).
 
