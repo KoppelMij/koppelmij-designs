@@ -163,33 +163,22 @@ menu:
     Ontvangen launch als module: technical-walkthrough-module-launch-ontvangen.html
     Wijzigen Task-status als module: technical-walkthrough-module-task-status-wijzigen.html
     Terugkeren naar PGO vanuit module: technical-walkthrough-module-terugkeer.html
-  KoppelMij FHIR Resources:
-    Profile - Task: StructureDefinition-MedMij-Task.html
-    Profile - ActivityDefinition: StructureDefinition-MedMij-ActivityDefinition.html
-    Profile - Endpoint: StructureDefinition-MedMij-Endpoint.html
-    Profile - Device: StructureDefinition-KT2Device.html
-    Extension - Resource Origin: StructureDefinition-resource-origin.html
-    Extension - Endpoint Extension: StructureDefinition-KT2EndpointExtension.html
-    Extension - Publisher Id: StructureDefinition-KT2PublisherId.html
-    Extension - Correlation Id: StructureDefinition-correlation-id.html
-    Extension - Request Id: StructureDefinition-request-id.html
-    Extension - Trace Id: StructureDefinition-trace-id.html
-    Extension - Instantiates: StructureDefinition-instantiates.html
-    Example Scenario 1 (COPD) - Task - Van Duinen: Task-KoppelMij-Task-Questionnaire-Van-Duinen.html
-    Example Scenario 1 (COPD) - Task Update - Van Duinen: Task-KoppelMij-Task-Update-Questionnaire-Van-Duinen.html
-    Example Scenario 1 (COPD) - ActivityDefinition - COPD: ActivityDefinition-KoppelMij-ActivityDefinition-COPD-Questionnaire.html
-    Example Scenario 1 (COPD) - Endpoint - COPD: Endpoint-KoppelMij-Endpoint-Vragenlijst-COPD.html
-    Example Scenario 1 (COPD) - Patient - Van Duinen: Patient-KoppelMij-Patient-Van-Duinen.html
-    Example Scenario 1 (COPD) - PractitionerRole - De Haard: PractitionerRole-KoppelMij-PractitionerRole-De-Haard.html
-    Example Scenario 1 (COPD) - Practitioner - De Haard: Practitioner-KoppelMij-Practitioner-De-Haard.html
-    Example Scenario 1 (COPD) - Organization - Medrie: Organization-KoppelMij-Organization-Huisartsenpraktijk-Medrie.html
-    Example Scenario 2 (Angststoornis) - Task - De Groot: Task-KoppelMij-Task-Questionnaire-De-Groot.html
-    Example Scenario 2 (Angststoornis) - ActivityDefinition - Angststoornis: ActivityDefinition-KoppelMij-ActivityDefinition-Angststoornis-Questionnaire.html
-    Example Scenario 2 (Angststoornis) - Endpoint - Angststoornis: Endpoint-KoppelMij-Endpoint-Vragenlijst-Angststoornis.html
-    Example Scenario 2 (Angststoornis) - Patient - De Groot: Patient-KoppelMij-Patient-De-Groot.html
-    Example Scenario 2 (Angststoornis) - PractitionerRole - Vonk: PractitionerRole-KoppelMij-PractitionerRole-Vonk.html
-    Example Scenario 2 (Angststoornis) - Practitioner - Vonk: Practitioner-KoppelMij-Practitioner-Vonk.html
-    Example Scenario 2 (Angststoornis) - Organization - GGZ: Organization-KoppelMij-Organization-GGZ.html
+  FHIR Profielen:
+    Task: StructureDefinition-pt-Task.html
+    ActivityDefinition: StructureDefinition-pt-ActivityDefinition.html
+    ServiceRequest: StructureDefinition-pt-ServiceRequest.html
+    Endpoint: StructureDefinition-pt-Endpoint.html
+    Extension - ClientID: StructureDefinition-pt-ClientID.html
+  Logische Modellen:
+    Task: StructureDefinition-pt-lm-Task.html
+    ActivityDefinition: StructureDefinition-pt-lm-ActivityDefinition.html
+    ServiceRequest: StructureDefinition-pt-lm-ServiceRequest.html
+    Endpoint: StructureDefinition-pt-lm-Endpoint.html
+    Patient: StructureDefinition-pt-lm-Patient.html
+  Voorbeelden:
+    Scenario 1 - Glucosemeting (Van Duinen): Task-ProviderTasks-MainTask-Meetopdracht-Glucosemeting.html
+    Scenario 2 - Bloeddrukmeting (De Groot): Task-ProviderTasks-MainTask-Meetopdracht-Bloeddrukmeting.html
+    Scenario 3 - Saturatiemeting (Van Dijk): Task-ProviderTasks-MainTask-Meetopdracht-Saturatiemeting.html
   Uitleg:
     OpenID Connect Native SSO voor Mobiele Apps 1.0: oidc_mobile_sso_explanation.html
   Archief:
