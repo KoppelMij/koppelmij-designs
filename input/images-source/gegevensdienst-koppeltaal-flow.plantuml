@@ -1,4 +1,4 @@
-@startuml memo-sr-koppeltaal-flow
+@startuml gegevensdienst-koppeltaal-flow
 
 participant "Behandelaar\n(EPD)" as EPD
 participant "Koppeltaal-\nvoorziening" as KT

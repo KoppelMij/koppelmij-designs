@@ -1,4 +1,4 @@
-@startuml memo-sr-resource-relaties
+@startuml gegevensdienst-memo-sr-resource-relaties
 
 skinparam object {
   BackgroundColor #f5f5f5

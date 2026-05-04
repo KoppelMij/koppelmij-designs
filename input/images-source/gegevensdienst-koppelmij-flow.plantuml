@@ -1,4 +1,4 @@
-@startuml memo-sr-koppelmij-flow
+@startuml gegevensdienst-koppelmij-flow
 
 participant "Behandelaar\n(EPD)" as EPD
 participant "Centrale Koppeltaal\n(CKT) voorziening" as CKT
