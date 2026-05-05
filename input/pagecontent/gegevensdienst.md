@@ -169,4 +169,5 @@ De relatie tussen de Task-lifecycles en de ServiceRequest-lifecycle moet eenduid
 - [FHIR ActivityDefinition](https://www.hl7.org/fhir/activitydefinition.html)
 - [FHIR ServiceRequest](https://www.hl7.org/fhir/servicerequest.html)
 - [FHIR Task](https://www.hl7.org/fhir/task.html)
+- [MedMij R4 Provider Module IG - Technical Design](https://simplifier.net/guide/medmij-r4-provider-module-ig/Home/Technical-design.md?version=current)
 - [Memo: ServiceRequest als orkestratiemiddel in KoppelMij](https://vzvznl.github.io/Koppeltaal-2.0-FHIR/memo-servicerequest-koppelmij.html)
