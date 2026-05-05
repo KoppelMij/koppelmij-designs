@@ -92,8 +92,6 @@ pages:
     title: Harde en Zachte Vereisten in de Standaard
   module_terugkeer.md:
     title: Terugkeren na Module Afsluiten
-  autorisaties.md:
-    title: Autorisaties
   koppelmij_option_1.md:          # ← merged 1a & 1b → 1
     title: Option 1 - OTP via OIDC /authorize
   koppelmij_option_2a.md:
@@ -156,7 +154,6 @@ menu:
     SMART Task-based Launch: smart_task_launch.html
     Harde en Zachte Vereisten: harde_zachte_vereisten.html
     Module Terugkeer: module_terugkeer.html
-  Autorisaties: autorisaties.html
   Technical Walkthroughs:
     Voorbereiden launch als PGO: technical-walkthrough-pgo-launch-voorbereiden.html
     Uitvoeren launch als PGO: technical-walkthrough-pgo-launch-uitvoeren.html
