@@ -7,6 +7,7 @@
 | 0.0.3  | 2026-05-01 | Twee rollen van ServiceRequest (basedOn vs focus) uitgewerkt |
 | 0.0.4  | 2026-05-01 | Scope herdefinieerd: focus op gegevensafspraken PGO-DVA en Module-DVA; workflow/orkestratie buiten scope |
 | 0.0.5  | 2026-05-01 | Aligned met Jelmer's Technical Design: PATCH ipv PUT, owner ipv patient, ServiceRequest.code.text als groepslabel, Organization toegevoegd |
+| 0.0.6  | 2026-05-07 | Aligned met Confluence 3.8 (06-05-2026): token revocation (RFC 7009) verwijderd; DVA als bron van waarheid voor `Task.status` bij terugkeer expliciet gemaakt |
 
 ---
 
@@ -95,6 +96,8 @@ GET /Task?owner=Patient/{patient-id}
 Het PGO groepeert de ontvangen taken op basis van `Task.basedOn` (verwijzing naar de groeperings-ServiceRequest). De display-naam van de groep komt uit `ServiceRequest.code.text` van de betreffende DigitalGroupPlan. Zo kan het PGO per interventie een overzicht tonen van individuele taken, met status per taak.
 
 Het PGO resolvet het launch-adres via de keten `Task → ActivityDefinition → Endpoint.address` (zie [Technical Walkthrough: Uitvoeren launch als PGO](technical-walkthrough-pgo-launch-uitvoeren.html)).
+
+**DVA is leidend voor `Task.status`.** Na terugkeer van een module-launch MOET het PGO de taak opnieuw ophalen bij de DVA en uitsluitend de daar verzamelde status overnemen. Eventuele `status`- of `error`-query-parameters op de `return_url` zijn slechts een UX-hint waarmee het PGO direct een gebruikersvriendelijke melding kan tonen, zonder te wachten op de her-synchronisatie.
 
 ### Gegevensafspraak Module - DVA (SMART on FHIR context)
 
