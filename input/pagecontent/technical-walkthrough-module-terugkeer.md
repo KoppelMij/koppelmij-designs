@@ -75,22 +75,16 @@ De `return_url` werkt ook voor mobiele apps: voor iOS via **Universal Links** en
 
 ### Sessie-management
 
-De sessie geldt zowel tussen persoon en aanbiedermodule als tussen aanbiedermodule en DVA. De sessie heeft een beperkte geldigheidsduur met een sliding window:
+De sessie geldt zowel tussen persoon en aanbiedermodule als tussen aanbiedermodule en DVA. De sessieduur is gelijk aan de geldigheidsduur van het `access_token`; er is geen sliding window.
 
-* **Maximale sessieduur**: 180 minuten (3 uur).
-* **Access_token geldigheid**: 900 seconden (15 minuten), conform `core.autorisatie.204`.
-* **Sliding window**: de module MAG de geldigheidsduur van het access_token tussen de 10e en 15e minuut telkens met 15 minuten verlengen, via een refresh_token (RFC 6749 §6).
+* **`expires_in` van het `access_token`**: 3600 seconden (1 uur).
+* **Maximale sessieduur**: 3600 seconden (1 uur).
 * **AM/DVA verplichtingen**:
-  - DVA MOET access_token en refresh_token na de maximale duur van het access_token automatisch vernietigen.
-  - AM MOET de sessie beëindigen bij het bereiken van de duur van het (huidige ofwel laatste) access_token.
-  - AM MAG om een nieuw access_token en nieuw refresh_token verzoeken.
-  - DVA MOET een verzoek om nieuw access_token en nieuw refresh_token inwilligen zolang de maximale sessieduur nog niet bereikt is.
-  - DVA MOET ervoor zorgen dat de `expires_in` van het access_token binnen de geldigheidsduur van het sliding window valt.
-
-> Het refresh-proces hier wijkt af van MedMij Verzamelen: het gaat om het verlengen van een actieve sessie. Is de sessie 900 seconden of langer offline, dan verloopt de sessie.
+  - DVA MOET het `access_token` na het verstrijken van `expires_in` automatisch vernietigen.
+  - AM MOET de sessie beëindigen bij het bereiken van de duur van het `access_token`.
 
 De sessie eindigt wanneer:
-1. De maximale sessieduur is bereikt.
+1. De geldigheidsduur van het `access_token` is bereikt.
 2. De persoon de sessie beëindigt.
 
 ### Discussie
