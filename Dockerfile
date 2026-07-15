@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0
 
-ARG PUBLISHER_VERSION=2.0.15
+ARG PUBLISHER_VERSION=2.2.10
 
 RUN dotnet tool install -g firely.terminal && apt-get update && apt install -y make jq default-jdk python3 python3-pip python3-yaml graphviz jekyll nodejs npm \
     xvfb libgbm1 libasound2 libgtk-3-0 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libdrm2
